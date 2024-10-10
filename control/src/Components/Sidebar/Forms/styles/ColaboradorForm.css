@@ -1,0 +1,187 @@
+/* Coloca el fondo oscuro */
+.form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    animation: fadeIn 0.3s ease-in-out; /* Animación de entrada */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilo de la ventana emergente */
+.form-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más profunda */
+    position: relative;
+    animation: slideDown 0.4s ease-in-out; /* Animación al aparecer */
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Botón de cierre */
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+/* Título del formulario */
+.form-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilos de los campos del formulario */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-group .fa-icon {
+    margin-right: 10px;
+    color: #1abc9c;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="email"],
+input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="file"]:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 10px rgba(26, 188, 156, 0.3); /* Brillo más suave y grande al enfocar */
+    outline: none;
+}
+
+/* Mejora en el estilo de los errores */
+.input-error {
+    border-color: red;
+    background-color: rgba(255, 0, 0, 0.1); /* Fondo ligero para resaltar error */
+}
+
+.error-text {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: bold; /* Negrita para hacer notar el error */
+}
+
+/* Botón de registro */
+.btn-register {
+    background-color: #1abc9c;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s;
+    margin-top: 20px;
+}
+
+.btn-register:hover {
+    background-color: #16a085; /* Color más oscuro al hacer hover */
+    box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3); /* Sombra al pasar el mouse */
+    transform: translateY(-2px); /* El botón parece elevarse */
+}
+
+.btn-register:active {
+    background-color: #149f7f; /* Color más oscuro al hacer clic */
+    transform: translateY(2px); /* Botón se hunde al hacer clic */
+}
+
+.btn-loading {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Estilo del input de archivos */
+input[type="file"] {
+    padding: 10px;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #16a085;
+}
+
+/* Efecto de transición más suave para botones */
+button {
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+button:focus {
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.4); /* Efecto de foco suave */
+}

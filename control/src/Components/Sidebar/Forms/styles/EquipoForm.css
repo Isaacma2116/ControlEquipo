@@ -1,0 +1,256 @@
+/* Estilos para el fondo cuando el modal está activo */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro más opaco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Para asegurarte de que esté encima de otros elementos */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  }
+  
+  /* Estilos para el contenido del modal */
+  .modal-content {
+    background-color: #fdfdfd; /* Fondo más claro */
+    padding: 30px;
+    border-radius: 12px;
+    width: 650px; /* Ajuste del ancho */
+    max-height: 85vh; /* Para evitar que sea más grande que la pantalla */
+    overflow-y: auto; /* Scroll si el contenido es muy grande */
+    position: relative;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+    color: #333;
+    transition: all 0.3s ease-in-out; /* Transiciones suaves */
+  }
+  
+  /* Botón de cierre (X) */
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  
+  .close-button:hover {
+    color: #e74c3c; /* Cambia de color en hover */
+  }
+  
+  /* Título del modal */
+  .modal-title {
+    margin-bottom: 25px;
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+    color: #2c3e50; /* Color del título más intenso */
+    letter-spacing: 1px;
+  }
+  
+  /* Estilos del formulario */
+  .equipo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: #2c3e50;
+  }
+  
+  /* Estilo para el botón de enviar */
+  .submit-button {
+    background-color: #27ae60;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+    align-self: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #219150;
+  }
+  
+  .submit-button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+  
+  /* Estilo para las filas de los campos del formulario */
+  .form-group-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  
+  /* Estilos para las entradas del formulario */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input[type="text"],
+  input[type="date"],
+  input[type="file"],
+  select {
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #bdc3c7; /* Bordes suaves */
+    margin-top: 5px;
+    background-color: #fff;
+    color: #34495e;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border 0.3s ease;
+  }
+  
+  input[type="text"]:focus,
+  input[type="date"]:focus,
+  input[type="file"]:focus,
+  select:focus {
+    border: 1px solid #3498db; /* Borde azul al enfocar */
+    outline: none;
+  }
+  
+  /* Estilos para los botones de agregar/quitar auxiliares y pantallas */
+  .add-button,
+  .remove-button {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-button:hover {
+    background-color: #2980b9;
+  }
+  
+  .remove-button {
+    background-color: #e74c3c;
+  }
+  
+  .remove-button:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Estilos para la ventana de confirmación, sobre el formulario */
+  .confirm-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro más opaco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+  }
+  
+  /* Estilos para el cuadro de confirmación */
+  .confirm-dialog {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1101;
+    width: 400px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .confirm-dialog p {
+    margin-bottom: 25px;
+    font-size: 18px;
+    color: #444;
+  }
+  
+  /* Estilos para los botones del cuadro de confirmación */
+  .confirm-dialog button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .confirm-dialog button:first-of-type {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .confirm-dialog button:last-of-type {
+    background-color: #2ecc71;
+    color: white;
+  }
+  
+  /* Estilos adicionales para los botones en el formulario */
+  button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  button[type="button"] {
+    background-color: #ecf0f1;
+    color: #333;
+  }
+  
+  button[type="button"]:hover {
+    background-color: #ddd;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  /* Estilos para iconos de FontAwesome en las etiquetas */
+  label {
+    display: flex;
+    align-items: center;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  label svg {
+    margin-right: 10px;
+  }
+  
+  /* Scroll en el modal si es necesario */
+  .modal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .modal-content::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: 4px;
+  }
+  
+  /* Estilos para que los inputs ocupen todo el ancho */
+  .form-group input,
+  .form-group select {
+    width: 100%;
+  }

@@ -1,0 +1,9 @@
+# Ignorar archivos de configuración sensibles
+.env
+
+# Ignorar directorios de dependencias
+node_modules/
+
+# Ignorar todo el contenido de uploads excepto .gitkeep
+uploads/*
+!uploads/.gitkeep
