@@ -2,8 +2,10 @@
 control-backend/.env
 
 # Ignorar la carpeta node_modules
+node_modules/
 control-backend/node_modules/
 
+# Ignorar todas las carpetas llamadas uploads y su contenido excepto .gitkeep
 # Ignorar todo el contenido de uploads excepto .gitkeep
 control-backend/uploads/*
 !control-backend/uploads/.gitkeep
