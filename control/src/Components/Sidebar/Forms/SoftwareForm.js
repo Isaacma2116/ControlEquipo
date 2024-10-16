@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './styles/SoftwareForm.css'; // Asegúrate de que la ruta al archivo CSS sea correcta
 
 const SoftwareForm = ({ onSave, onClose }) => {
@@ -14,47 +15,47 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [idEquipo, setIdEquipo] = useState('');
     const [estado, setEstado] = useState('sin uso');
     const [equipos, setEquipos] = useState([]);
-    const [licenciaCaducada, setLicenciaCaducada] = useState(false);  // Nuevo estado para controlar si la licencia está marcada como ya caducada
+    const [licenciaCaducada, setLicenciaCaducada] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [error, setError] = useState(null);
 
-    // Simula la obtención de la lista de equipos
+    // Cargar los equipos desde la API
     useEffect(() => {
         const fetchEquipos = async () => {
-            const equiposData = [
-                { id: 1, nombre: 'Equipo 1' },
-                { id: 2, nombre: 'Equipo 2' },
-                { id: 3, nombre: 'Equipo 3' }
-            ];
-            setEquipos(equiposData);
+            try {
+                const response = await axios.get('http://localhost:3550/api/equipos');
+                setEquipos(response.data);
+            } catch (error) {
+                console.error('Error al cargar los equipos:', error);
+                setError('Hubo un problema al cargar los equipos. Intenta nuevamente más tarde.');
+            }
         };
         fetchEquipos();
     }, []);
 
-    // Maneja la fecha de caducidad según el tipo de licencia
+    // Actualiza la fecha de caducidad automáticamente cuando cambia el tipo de licencia
     useEffect(() => {
         if (fechaAdquisicion) {
             const fecha = new Date(fechaAdquisicion);
             if (tipoLicencia === 'mensual') {
                 fecha.setMonth(fecha.getMonth() + 1);
-                setFechaCaducidad(fecha.toISOString().split('T')[0]); // Formato YYYY-MM-DD
             } else if (tipoLicencia === 'anual') {
                 fecha.setFullYear(fecha.getFullYear() + 1);
-                setFechaCaducidad(fecha.toISOString().split('T')[0]);
-            } else if (tipoLicencia === 'vitalicia') {
-                setFechaCaducidad(''); // No hay fecha de caducidad para licencias vitalicias
             }
+            setFechaCaducidad(tipoLicencia === 'vitalicia' ? '' : fecha.toISOString().split('T')[0]);
         }
     }, [fechaAdquisicion, tipoLicencia]);
 
-    // Maneja la lógica del estado del software según el equipo, la fecha de caducidad y si la licencia ya está caducada
+    // Actualiza el estado del software dinámicamente
     useEffect(() => {
-        const today = new Date();
+        const hoy = new Date();
         const caducidad = new Date(fechaCaducidad);
 
         if (licenciaCaducada) {
-            setEstado('vencido');  // Si la licencia ya está caducada, marca el estado como vencido
+            setEstado('vencido');
         } else if (!idEquipo) {
             setEstado('sin uso');
-        } else if (fechaCaducidad && caducidad < today) {
+        } else if (fechaCaducidad && caducidad < hoy) {
             setEstado('vencido');
         } else {
             setEstado('activo');
@@ -76,7 +77,23 @@ const SoftwareForm = ({ onSave, onClose }) => {
             estado,
             idEquipo
         });
-        onClose();  // Cierra el modal después de guardar
+        onClose();
+    };
+
+    // Filtrar equipos por ID o nombre basado en el término de búsqueda
+    const filteredEquipos = equipos.filter(equipo =>
+        equipo.id_equipos && equipo.id_equipos.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+        equipo.nombre && equipo.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Maneja la selección de un equipo en el select
+    const handleEquipoChange = (e) => {
+        setIdEquipo(e.target.value);
+    };
+
+    // Manejador de búsqueda
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
     };
 
     return (
@@ -86,7 +103,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                 <form onSubmit={handleSubmit}>
                     <h2>Agregar Software</h2>
 
-                    {/* Nombre del Software */}
                     <label>Nombre del Software:</label>
                     <input
                         type="text"
@@ -95,7 +111,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
 
-                    {/* Versión */}
                     <label>Versión:</label>
                     <input
                         type="text"
@@ -104,7 +119,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
 
-                    {/* Licencia */}
                     <label>Licencia:</label>
                     <input
                         type="text"
@@ -113,7 +127,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
 
-                    {/* Fecha de Adquisición */}
                     <label>Fecha de Adquisición:</label>
                     <input
                         type="date"
@@ -122,7 +135,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
 
-                    {/* Tipo de Licencia */}
                     <label>Tipo de Licencia:</label>
                     <select
                         value={tipoLicencia}
@@ -134,19 +146,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         <option value="vitalicia">Vitalicia</option>
                     </select>
 
-                    {/* Fecha de Caducidad (solo si no es vitalicia) */}
-                    {tipoLicencia !== 'vitalicia' && (
-                        <>
-                            <label>Fecha de Caducidad:</label>
-                            <input
-                                type="date"
-                                value={fechaCaducidad}
-                                readOnly
-                            />
-                        </>
-                    )}
-
-                    {/* Clave de Licencia */}
                     <label>Clave de Licencia:</label>
                     <input
                         type="text"
@@ -154,7 +153,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         onChange={(e) => setClaveLicencia(e.target.value)}
                     />
 
-                    {/* Correo Asociado */}
                     <label>Correo Asociado:</label>
                     <input
                         type="email"
@@ -163,7 +161,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
 
-                    {/* Contraseña del Correo */}
                     <label>Contraseña del Correo:</label>
                     <input
                         type="password"
@@ -172,22 +169,8 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
 
-                    {/* Equipo Asociado */}
-                    <label>Equipo Asociado:</label>
-                    <select
-                        value={idEquipo}
-                        onChange={(e) => setIdEquipo(e.target.value)}
-                    >
-                        <option value="">Selecciona un equipo</option>
-                        {equipos.map((equipo) => (
-                            <option key={equipo.id} value={equipo.id}>
-                                {equipo.nombre}
-                            </option>
-                        ))}
-                    </select>
-
-                    {/* Casilla para indicar si la licencia ya está caducada */}
                     <div>
+                        <p>Marca esta opción si la licencia ya ha caducado.</p>
                         <label>
                             <input
                                 type="checkbox"
@@ -198,8 +181,30 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         </label>
                     </div>
 
-                    {/* Estado del Software */}
-                    <label>Estado:</label>
+                    <label>Buscar y seleccionar Equipo Asociado:</label>
+                    <input
+                        type="text"
+                        placeholder="Buscar por ID de equipo o nombre..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                    
+                    {/* Select dinámico para elegir equipo */}
+                    <select value={idEquipo} onChange={handleEquipoChange}>
+                        {/* Opción para no seleccionar ningún equipo */}
+                        <option value="">Ningún equipo asociado</option>
+                        {filteredEquipos.length > 0 ? (
+                            filteredEquipos.map((equipo) => (
+                                <option key={equipo.id_equipos} value={equipo.id_equipos}>
+                                    {equipo.id_equipos} - {equipo.nombre}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>No se encontraron equipos</option>
+                        )}
+                    </select>
+
+                    <label>Estado del Software:</label>
                     <input type="text" value={estado} readOnly />
 
                     <button type="submit">Guardar</button>

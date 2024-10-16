@@ -1,140 +1,125 @@
-/* Estilos generales del contenedor del sidebar */
-.software-sidebar-menu {
+/* Fondo semitransparente que cubre toda la pantalla */
+.software-form-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 20px;
-    color: #ecf0f1;
-    font-family: 'Arial', sans-serif;
-    box-sizing: border-box;
-    overflow-y: auto;  /* Habilita el scroll vertical si hay más de 4 elementos */
-    overflow-x: hidden;  /* Oculta el scroll horizontal */
-}
-
-/* Estilos para la barra de desplazamiento (scrollbar) vertical */
-.software-sidebar-menu::-webkit-scrollbar {
-    width: 8px;  /* Ancho de la barra de desplazamiento vertical */
-}
-
-.software-sidebar-menu::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);  /* Color suave para la barra */
-    border-radius: 10px;  /* Bordes redondeados */
-}
-
-.software-sidebar-menu::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.4);  /* Un poco más visible al hacer hover */
-}
-
-.software-sidebar-menu::-webkit-scrollbar-track {
-    background: transparent;  /* Fondo transparente para la pista */
-}
-
-/* Para otros navegadores modernos que soporten scrollbars personalizados */
-.software-sidebar-menu {
-    scrollbar-width: thin;  /* Reduce el tamaño de la barra en Firefox */
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;  /* Colores de la barra y el fondo */
-}
-
-/* Contenedor de la barra de búsqueda */
-.software-sidebar-menu .search-container {
-    position: relative;
-    width: 100%;
-    margin-bottom: 20px;  /* Espacio debajo de la barra de búsqueda */
-}
-
-/* Icono de búsqueda dentro de la barra */
-.software-sidebar-menu .search-icon {
-    position: absolute;
-    left: 15px;  /* Ajustado para alinear correctamente dentro del campo */
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ccc;  /* Color sutil para el icono */
-    transition: color 0.3s ease;  /* Transición para el cambio de color */
-}
-
-.software-sidebar-menu .search-icon:hover {
-    color: #888;  /* Cambia el color del icono cuando se pasa el ratón por encima */
-}
-
-/* Estilo de la barra de búsqueda */
-.software-sidebar-menu .search-bar {
-    width: 100%;
-    padding: 10px 20px 10px 45px;  /* Ajustado para no sobreponer el icono */
-    border-radius: 25px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: #333;
-    box-sizing: border-box;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.software-sidebar-menu .search-bar:focus {
-    outline: none;
-    background-color: #e9e9e9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);  /* Añade sombra al enfocar */
-}
-
-/* Estilos para la lista de software */
-.software-sidebar-menu ul {
-    list-style: none;  /* Elimina los marcadores predeterminados */
-    padding: 0;
-    margin: 0;
-    max-height: 200px;  /* Limita la altura para mostrar solo 4 elementos */
-    overflow-y: auto;  /* Habilita el scroll si hay más de 4 elementos */
-    overflow-x: hidden;  /* Oculta la barra de desplazamiento horizontal */
-}
-
-/* Estilos para cada elemento de la lista de software */
-.software-sidebar-menu ul li {
-    padding: 10px;
-    margin-bottom: 8px;
-    background-color: #34495e;  /* Fondo oscuro para cada item */
-    border-radius: 10px;  /* Bordes redondeados */
-    cursor: pointer;  /* Indica que el elemento es interactivo */
-    transition: background-color 0.3s, transform 0.3s ease-in-out;  /* Transición suave para efectos */
-}
-
-.software-sidebar-menu ul li:hover {
-    background-color: #1abc9c;  /* Color al hacer hover */
-    transform: translateX(5px);  /* Desplazamiento lateral al hacer hover */
-    color: white;
-}
-
-/* Botón para agregar software */
-.add-software-button {
-    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);  /* Degradado verde */
-    color: white;
-    border: 1px solid #16a085;  /* Borde delgado */
-    height: 30px;  /* Altura fija más pequeña */
-    padding: 0 15px;  /* Ajuste del padding horizontal para el tamaño más pequeño */
-    border-radius: 30px;  /* Botón redondeado */
-    cursor: pointer;
-    font-size: 12px;  /* Tamaño de letra reducido */
-    font-weight: 600;  /* Negrita pero no exagerada */
-    text-transform: uppercase;  /* Letras mayúsculas */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);  /* Sombra suave */
-    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;  /* Espacio entre el icono y el texto ajustado */
-    margin-top: 20px;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
 }
 
-/* Efecto al pasar el mouse */
-.add-software-button:hover {
-    background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);  /* Inversión del degradado */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);  /* Sombra más definida */
-    transform: translateY(-3px);  /* Levanta ligeramente el botón */
+/* Contenedor del formulario */
+.software-form-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px; /* Ancho máximo del formulario */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Sombra alrededor del formulario */
+    position: relative;
 }
 
-/* Efecto al hacer clic */
-.add-software-button:active {
-    background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);  /* Conserva el degradado inverso */
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);  /* Sombra más pequeña */
-    transform: translateY(1px);  /* Desplaza el botón hacia abajo al hacer clic */
+/* Botón de cerrar (X) */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
 }
 
-/* Estilo del icono dentro del botón */
-.add-software-button svg {
-    font-size: 14px;  /* Tamaño del icono ajustado */
-    fill: white;  /* Color blanco para el icono */
+.close-button:hover {
+    color: red; /* Cambia a rojo al pasar el mouse por encima */
+}
+
+/* Título del formulario */
+.software-form-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo para las etiquetas */
+.software-form-content label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilo para los campos de entrada */
+.software-form-content input[type="text"],
+.software-form-content input[type="date"],
+.software-form-content input[type="password"],
+.software-form-content input[type="email"],
+.software-form-content select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Estilo del botón de guardar */
+.software-form-content button {
+    width: 100%;
+    padding: 12px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.software-form-content button:hover {
+    background-color: #004494;
+}
+
+/* Estilo para la lista de equipos */
+.software-form-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 150px; /* Limita la altura de la lista para evitar que crezca demasiado */
+    overflow-y: auto; /* Añade un scroll si la lista es muy larga */
+}
+
+.software-form-content ul li {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.software-form-content ul li.selected {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* Barra de búsqueda y contenedor */
+.software-form-content .search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.software-form-content .search-container input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.software-form-content .search-container svg {
+    color: #333;
 }

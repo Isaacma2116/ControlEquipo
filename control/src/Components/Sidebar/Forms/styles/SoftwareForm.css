@@ -1,126 +1,154 @@
-/* Estilos para el modal */
+/* styles/SoftwareForm.css */
+
 .software-form-modal {
     position: fixed;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 1000;
+    padding: 40px;
+    overflow: hidden;
 }
 
-/* Contenedor del contenido del modal */
 .software-form-content {
-    background-color: white;
-    padding: 20px; /* Agrega un padding para que el contenido no choque con los bordes */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
     width: 90%;
-    max-width: 500px; /* Ancho máximo del formulario */
-    max-height: 80vh; /* Altura máxima para que no ocupe toda la pantalla */
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     position: relative;
-    color: black;
-    font-family: Arial, sans-serif;
-    overflow-y: auto; /* Habilita la barra de desplazamiento vertical si el contenido excede el tamaño */
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Estilo para el botón de cierre (×) */
-.close-button {
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    font-size: 24px;
-    font-weight: bold;
-    color: black;
-    cursor: pointer;
+/* Estilo específico para los títulos (h2) */
+h2 {
+    color: #333; /* Texto oscuro para buena visibilidad */
+    font-size: 24px; /* Tamaño de fuente grande para destacar */
+    text-align: center; /* Centrar el título */
+    margin-bottom: 20px; /* Espacio inferior para separarlo del contenido */
 }
 
-.close-button:hover {
-    color: red; /* Cambia a rojo al pasar el cursor */
-}
-
-/* Estilo para el título */
-form h2 {
-    text-align: center;
-    color: black;
-    margin-bottom: 20px;
-}
-
-/* Estilo para las etiquetas */
-form label {
+label {
     display: block;
-    color: black;
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
-
-/* Estilo para los campos de entrada de texto, fecha, correo, etc. */
-form input[type="text"],
-form input[type="date"],
-form input[type="email"],
-form input[type="password"],
-form select {
-    width: calc(100% - 20px); /* Espacio dentro del contenedor */
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin: 0 0 5px;
+    color: #333;
     font-size: 14px;
-    box-sizing: border-box; /* Asegura que el padding y el ancho estén bien ajustados */
 }
 
-/* Estilo para el checkbox */
-form input[type="checkbox"] {
+input[type="text"], input[type="password"], input[type="email"], input[type="date"], select {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+input[type="checkbox"] {
     margin-right: 10px;
 }
 
-/* Estilo para el botón de guardar */
-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 15px;
+.search-container {
+    position: relative;
+    margin-bottom: 15px;
 }
 
-form button:hover {
-    background-color: #004494;
+.search-container input {
+    padding-left: 30px;
 }
 
-/* Para campos de texto largo, como el textarea */
-form textarea {
-    width: calc(100% - 20px);
+.search-container .fa-search {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+/* Estilos para los elementos de la lista */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+ul li {
     padding: 10px;
     margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
+    background-color: #f0f0f0; /* Fondo claro */
+    color: #333; /* Texto oscuro */
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Transición suave */
 }
 
-/* Agrega un scroll para el modal si el contenido es muy largo */
+ul li:hover, ul li.selected {
+    background-color: #007bff; /* Fondo azul para hover y seleccionado */
+    color: white; /* Texto blanco para contraste */
+}
+
+/* Evitar que los elementos no seleccionados tengan texto blanco */
+ul li:not(.selected) {
+    color: #333; /* Color oscuro para los elementos no seleccionados */
+}
+
+.button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* Mejorar la visibilidad de las etiquetas y los textos */
+p, label {
+    color: #333; /* Color de texto oscuro para mejor contraste */
+}
+
+/* Estilos personalizados para la barra de desplazamiento */
 .software-form-content::-webkit-scrollbar {
     width: 8px;
 }
 
 .software-form-content::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
 }
 
 .software-form-content::-webkit-scrollbar-thumb {
-    background: #888; 
-    border-radius: 4px;
+    background-color: #888;
+    border-radius: 10px;
 }
 
 .software-form-content::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background-color: #555;
+}
+
+/* Animación suave de entrada del modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
