@@ -38,9 +38,9 @@ exports.getEquipoById = async (req, res) => {
 // Crear un nuevo equipo
 exports.createEquipo = async (req, res) => {
     const {
-        id_equipos, tipoDispositivo, marca, modelo, numeroSerie, contrasenaEquipo, componentes,
-        modificaciones, estadoFisico, detallesIncidentes, garantia, fechaCompra, activo,
-        sistemaOperativo, mac, hostname, idColaborador
+        id_equipos, tipoDispositivo, marca, modelo, numeroSerie, contrasenaEquipo, ram, discoDuro,
+        tarjetaMadre, tarjetaGrafica, procesador, componentesAdicionales, estadoFisico, detallesIncidentes,
+        garantia, fechaCompra, activo, sistemaOperativo, mac, hostname, auxiliares, idColaborador
     } = req.body;
     const file = req.file;
 
@@ -54,9 +54,13 @@ exports.createEquipo = async (req, res) => {
 
     try {
         const equipo = await Equipo.create({
-            id_equipos, tipoDispositivo, marca, modelo, numeroSerie, contrasenaEquipo, componentes,
-            modificaciones, estadoFisico, detallesIncidentes, garantia, fechaCompra, activo,
-            sistemaOperativo, mac, hostname, idColaborador, imagen  // Usar la ruta relativa
+            id_equipos, tipoDispositivo, marca, modelo, numeroSerie, contrasenaEquipo, ram, discoDuro,
+            tarjetaMadre, tarjetaGrafica, procesador,
+            componentesAdicionales: componentesAdicionales ? JSON.parse(componentesAdicionales) : [],
+            estadoFisico, detallesIncidentes, garantia, fechaCompra, activo,
+            sistemaOperativo, mac, hostname,
+            auxiliares: auxiliares ? JSON.parse(auxiliares) : [],
+            idColaborador, imagen  // Usar la ruta relativa
         });
 
         res.status(201).json({ message: 'Equipo creado con éxito', equipo, imagenUrl: imagen });
@@ -92,6 +96,14 @@ exports.updateEquipo = async (req, res) => {
 
             // Almacenar la nueva ruta relativa
             data.imagen = `/uploads/equipos/${file.filename}`;
+        }
+
+        // Parsear los campos JSON antes de actualizarlos
+        if (data.componentesAdicionales) {
+            data.componentesAdicionales = JSON.parse(data.componentesAdicionales);
+        }
+        if (data.auxiliares) {
+            data.auxiliares = JSON.parse(data.auxiliares);
         }
 
         await equipo.update(data);

@@ -26,7 +26,7 @@ const Colaborador = sequelize.define('Colaborador', {
   telefono_personal: {
     type: DataTypes.STRING,
     validate: {
-      is: /^\d{10}$/,
+      is: /^\d{10}$/,  // Validación para asegurar que sea un número de 10 dígitos
     },
   },
   correo_smex: {
@@ -50,5 +50,13 @@ const Colaborador = sequelize.define('Colaborador', {
   tableName: 'colaboradores',
   timestamps: false,
 });
+
+// Definir la relación con `Equipo`
+Colaborador.associate = models => {
+  Colaborador.hasMany(models.Equipo, {
+    as: 'equipos', // Alias para la relación
+    foreignKey: 'idColaborador' // Clave foránea en la tabla `equipos`
+  });
+};
 
 module.exports = Colaborador;

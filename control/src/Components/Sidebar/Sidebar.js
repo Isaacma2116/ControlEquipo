@@ -4,10 +4,14 @@ import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import './styles/Sidebar.css';
 import Colaboradores from './Colaboradores';
 import Equipos from './Equipos';
+import Celulares from './Celulares'; // Importa el componente de Celulares
+import Software from './Software'; // Importa el componente de Software
 
-const Sidebar = ({ onColaboradorClick, onEquipoClick }) => {
+const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftwareClick }) => {
   const [isColaboradoresVisible, setIsColaboradoresVisible] = useState(false);
   const [isEquiposVisible, setIsEquiposVisible] = useState(false);
+  const [isCelularesVisible, setIsCelularesVisible] = useState(false); // Estado para la visibilidad de Celulares
+  const [isSoftwareVisible, setIsSoftwareVisible] = useState(false); // Estado para la visibilidad de Software
 
   const toggleColaboradoresVisibility = () => {
     setIsColaboradoresVisible(!isColaboradoresVisible);
@@ -15,6 +19,14 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick }) => {
 
   const toggleEquiposVisibility = () => {
     setIsEquiposVisible(!isEquiposVisible);
+  };
+
+  const toggleCelularesVisibility = () => {
+    setIsCelularesVisible(!isCelularesVisible);
+  };
+
+  const toggleSoftwareVisibility = () => {
+    setIsSoftwareVisible(!isSoftwareVisible);
   };
 
   return (
@@ -36,6 +48,22 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick }) => {
         </h2>
       </div>
       {isEquiposVisible && <Equipos onEquipoClick={onEquipoClick} />}
+
+      {/* Sección de Celulares */}
+      <div className="menu-item" onClick={toggleCelularesVisibility}>
+        <h2>
+          Celulares {isCelularesVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+        </h2>
+      </div>
+      {isCelularesVisible && <Celulares onCelularClick={onCelularClick} />}
+
+      {/* Sección de Software */}
+      <div className="menu-item" onClick={toggleSoftwareVisibility}>
+        <h2>
+          Software {isSoftwareVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+        </h2>
+      </div>
+      {isSoftwareVisible && <Software onSoftwareClick={onSoftwareClick} />}
     </div>
   );
 };

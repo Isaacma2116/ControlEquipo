@@ -1,7 +1,7 @@
 /* Contenedor general del detalle del colaborador */
 .colaborador-detail {
-    width: 90%;  /* Ancho relativo para responsividad */
-    max-width: 800px;  /* Ancho máximo más grande */
+    width: 90%;
+    max-width: 800px;
     margin: 60px auto;
     padding: 20px;
     background-color: #f4f7fa;
@@ -9,16 +9,16 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: 'Arial', sans-serif;
     position: relative;
-    padding-top: 200px;  /* Asegúrate de ajustar este valor si es necesario */
+    padding-top: 200px;
 }
 
 /* Contenedor para la imagen, centrado por encima del texto */
 .colaborador-detail .img-container {
     position: absolute;
-    top: 40px;  /* Controla la altura de la imagen respecto al borde superior */
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 40px;  /* Espacio entre la imagen y el texto */
+    margin-bottom: 40px;
 }
 
 .colaborador-detail .img-container img {
@@ -34,15 +34,15 @@
     transform: scale(1.05);
 }
 
-/* Estilos para la lista de información del colaborador */
+/* Estilos para los textos de información del colaborador */
 .colaborador-detail p {
     display: flex;
     align-items: center;
     font-size: 16px;
     color: #555;
     margin: 10px 0;
-    text-align: center;  /* Centrado del texto */
-    margin-top: 20px;  /* Espacio en la parte superior de cada sección de texto */
+    text-align: center;
+    margin-top: 20px;
 }
 
 .colaborador-detail p strong {
@@ -50,14 +50,14 @@
     color: #333;
 }
 
-/* Íconos */
+/* Estilos para los íconos */
 .colaborador-detail svg {
-    color: #1abc9c; /* Color principal para los íconos */
+    color: #1abc9c;
     margin-right: 10px;
     font-size: 18px;
 }
 
-/* Sombra alrededor de los íconos e información */
+/* Sombra alrededor de los íconos y la información */
 .colaborador-detail p {
     padding: 10px;
     background-color: white;
@@ -69,26 +69,93 @@
     background-color: #e9f6f2;
 }
 
-/* Espaciado para mejorar la estructura */
+/* Espaciado adicional entre los párrafos */
 .colaborador-detail p + p {
     margin-top: 15px;
 }
 
-/* Media Queries para ajustes en dispositivos más pequeños */
+/* Estilos para el botón que muestra los equipos */
+.colaborador-detail button {
+    display: block;
+    margin: 30px auto;
+    padding: 12px 20px;
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.colaborador-detail button:hover {
+    background-color: #16a085;
+}
+
+/* Estilos para la lista de equipos */
+.equipos-list {
+    margin-top: 20px;
+}
+
+.equipos-list h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.equipo-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.equipo-info img {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.equipo-info p {
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+.equipo-info:hover {
+    transform: translateY(-5px);
+}
+
+/* Ajustes de estilo para pantallas más pequeñas */
 @media (max-width: 768px) {
     .colaborador-detail {
         width: 95%;
-        padding-top: 150px;  /* Menor espacio superior para pantallas pequeñas */
+        padding-top: 150px;
     }
 
     .colaborador-detail .img-container img {
         width: 120px;
-        height: 120px;  /* Imagen más pequeña en dispositivos móviles */
+        height: 120px;
     }
 
     .colaborador-detail p {
-        flex-direction: column;  /* Stack vertically in smaller screens */
+        flex-direction: column;
         text-align: center;
-        margin-top: 10px;
+    }
+
+    .equipos-list h2 {
+        font-size: 20px;
+    }
+
+    .equipo-info {
+        width: 100%;
     }
 }

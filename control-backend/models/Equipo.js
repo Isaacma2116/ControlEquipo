@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Colaborador = require('./Colaborador'); // Asegúrate de importar el modelo Colaborador para la relación
 
 const Equipo = sequelize.define('Equipo', {
     id_equipos: {
@@ -28,12 +29,28 @@ const Equipo = sequelize.define('Equipo', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    componentes: {
-        type: DataTypes.TEXT,
+    ram: {
+        type: DataTypes.STRING,
         allowNull: true
     },
-    modificaciones: {
-        type: DataTypes.TEXT,
+    discoDuro: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    tarjetaMadre: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    tarjetaGrafica: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    procesador: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    componentesAdicionales: {
+        type: DataTypes.JSON,
         allowNull: true
     },
     estadoFisico: {
@@ -68,9 +85,17 @@ const Equipo = sequelize.define('Equipo', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    auxiliares: {
+        type: DataTypes.JSON,
+        allowNull: true
+    },
     idColaborador: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: true,
+        references: {
+            model: Colaborador, // Modelo al que hace referencia
+            key: 'id' // Clave primaria de la tabla `Colaborador`
+        }
     },
     imagen: {
         type: DataTypes.BLOB('long'),
@@ -80,5 +105,13 @@ const Equipo = sequelize.define('Equipo', {
     tableName: 'equipos',
     timestamps: false
 });
+
+// Definir la relación con `Colaborador`
+Equipo.associate = models => {
+    Equipo.belongsTo(models.Colaborador, {
+        foreignKey: 'idColaborador',
+        as: 'colaborador'
+    });
+};
 
 module.exports = Equipo;

@@ -1,4 +1,5 @@
 const Colaborador = require('../models/Colaborador');
+const Equipo = require('../models/Equipo');  // Asegúrate de que Equipo está correctamente importado
 const path = require('path');
 const fs = require('fs');
 
@@ -39,6 +40,22 @@ exports.getColaboradores = async (req, res) => {
 exports.getColaboradorById = async (req, res) => {
   try {
     const colaborador = await Colaborador.findByPk(req.params.id);
+    if (colaborador) {
+      res.status(200).json(colaborador);
+    } else {
+      res.status(404).json({ error: 'Colaborador no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Obtener un colaborador por ID, incluyendo sus equipos
+exports.getColaboradorWithEquipos = async (req, res) => {
+  try {
+    const colaborador = await Colaborador.findByPk(req.params.id, {
+      include: [{ model: Equipo, as: 'equipos' }]
+    });
     if (colaborador) {
       res.status(200).json(colaborador);
     } else {

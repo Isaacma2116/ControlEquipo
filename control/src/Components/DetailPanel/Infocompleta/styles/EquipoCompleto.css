@@ -1,73 +1,134 @@
-.equipo-detalles {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  max-width: 600px;
-  margin: 20px auto;
+/* Reset básico para inputs y box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
   font-family: 'Arial', sans-serif;
-  width: 1500px;
-}
-
-.equipo-detalles h1 {
+  background-color: #f4f4f4;
   color: #333;
-  font-size: 24px;
+  line-height: 1.6;
+}
+
+/* Estilo principal del contenedor de detalles del equipo */
+.equipo-detalles {
+  width: 90%;
+  max-width: 960px;
+  height: 800px; /* Altura fija para permitir el desplazamiento */
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+}
+
+/* Personalización de la scrollbar */
+.equipo-detalles::-webkit-scrollbar {
+  width: 8px;
+}
+
+.equipo-detalles::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.equipo-detalles::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.equipo-detalles::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Encabezados dentro del contenedor */
+.equipo-detalles h1,
+.equipo-detalles h2 {
+  color: #0056b3;
   margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
+/* Estilos para las etiquetas de formulario y textos normales */
+.equipo-detalles label,
 .equipo-detalles p {
-  font-size: 18px;
-  color: #555;
+  font-size: 16px;
   margin: 10px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: block;
 }
 
-/* Iconos de FontAwesome con diferentes colores */
-.equipo-detalles p .fa-icon {
-  color: #007bff;
+/* Alineación de iconos con texto */
+.equipo-detalles p svg {
+  vertical-align: middle;
+  margin-right: 5px;
 }
 
-.equipo-detalles p .fa-icon.shield {
-  color: #ff6347;
+/* Campos de entrada y área de texto */
+.equipo-detalles input[type="text"],
+.equipo-detalles textarea,
+.equipo-detalles select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+  transition: border-color 0.3s;
 }
 
-.equipo-detalles p .fa-icon.calendar {
-  color: #32cd32;
+.equipo-detalles input[type="text"]:focus,
+.equipo-detalles textarea:focus,
+.equipo-detalles select:focus {
+  border-color: #0056b3;
+  outline: none;
 }
 
-.equipo-detalles p .fa-icon.laptop {
-  color: #1e90ff;
+/* Botones y acciones */
+.equipo-detalles button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
 }
 
-.equipo-detalles p .fa-icon.microchip {
-  color: #6a5acd;
+.equipo-detalles button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Imagen del equipo */
-.equipo-detalles img {
-  width: 100px;
-  border-radius: 8px;
-  margin-top: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.equipo-detalles button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
-/* Responsive para pantallas pequeñas */
+/* Responsividad */
 @media (max-width: 768px) {
   .equipo-detalles {
+    width: 95%;
     padding: 15px;
-    margin: 10px;
   }
 
-  .equipo-detalles h1 {
-    font-size: 20px;
+  .equipo-detalles button {
+    width: 100%;
   }
+}
 
-  .equipo-detalles p {
-    font-size: 16px;
-  }
+/* Imágenes del equipo */
+.equipo-detalles img {
+  max-width: 100%;
+  display: block;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Sub-secciones como pantallas y auxiliares asociados */
+.equipo-detalles .sub-section {
+  border-top: 2px solid #007bff;
+  padding-top: 10px;
+  margin-top: 20px;
 }

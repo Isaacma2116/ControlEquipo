@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import axios from 'axios';
-import './styles/EquipoForm.css';
+import './styles/EquipoForm.css'; // Asegúrate de que este archivo CSS tenga los estilos que discutimos
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLaptop, faTag, faShieldAlt, faCalendarAlt, faMicrochip,
@@ -30,14 +30,18 @@ const FormRow = ({ children }) => (
 
 const EquipoForm = ({ show, handleClose }) => {
   const initialFormData = useMemo(() => ({
-    id_equipos: '', 
+    id_equipos: '',
     tipoDispositivo: '',
     marca: '',
     modelo: '',
     numeroSerie: '',
     contrasenaEquipo: '',
-    componentes: '',
-    modificaciones: '',
+    ram: '',
+    discoDuro: '',
+    tarjetaMadre: '',
+    tarjetaGrafica: '',
+    procesador: '',
+    componentesAdicionales: [{ nombre_componente: '' }], // Inicializado con un componente
     estadoFisico: '',
     detallesIncidentes: '',
     garantia: '',
@@ -46,22 +50,23 @@ const EquipoForm = ({ show, handleClose }) => {
     sistemaOperativo: '',
     mac: '',
     hostname: '',
-    auxiliares: [{ nombre_auxiliar: '', numeroSerieAux: '' }],
-    pantallas: [{ tipoPantalla: '', serialPantalla: '' }],
-    idColaborador: '',  // Se puede mantener vacío por defecto
+    auxiliares: [{ nombre_auxiliar: '', numeroSerieAux: '' }], // Inicializado con un periférico
+    idColaborador: '',
     imagen: null,
   }), []);
 
   const [formData, setFormData] = useState(initialFormData);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [colaboradores, setColaboradores] = useState([]); // Almacena las ID de los colaboradores desde la base de datos
+  const [colaboradores, setColaboradores] = useState([]);
+  const [peripheralsList, setPeripheralsList] = useState([
+    "Teclado", "Mouse", "Impresora", "Escáner", "Monitor", "Parlantes", "Cámara Web", "Micrófono", "Pantalla"
+  ]);
 
-  // Cargar las idColaborador desde la base de datos cuando el componente se monta
   useEffect(() => {
-    axios.get('http://localhost:3550/api/colaboradores') // Ajustar la URL según tu backend
+    axios.get('http://localhost:3550/api/colaboradores')
       .then(response => {
-        setColaboradores(response.data); // Almacenar las ID de colaboradores obtenidas
+        setColaboradores(response.data);
       })
       .catch(error => {
         console.error('Error al cargar los colaboradores:', error);
@@ -70,7 +75,7 @@ const EquipoForm = ({ show, handleClose }) => {
 
   const resetForm = useCallback(() => {
     setFormData(initialFormData);
-    handleClose(); 
+    handleClose();
   }, [initialFormData, handleClose]);
 
   const handleChange = useCallback((e) => {
@@ -82,16 +87,25 @@ const EquipoForm = ({ show, handleClose }) => {
     setFormData(prevData => ({ ...prevData, imagen: e.target.files[0] }));
   }, []);
 
-  const handlePantallaChange = useCallback((index, e) => {
+  // Manejo de componentes adicionales
+  const handleComponentChange = useCallback((index, e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
-      pantallas: prevData.pantallas.map((pantalla, i) =>
-        i === index ? { ...pantalla, [name]: value } : pantalla
+      componentesAdicionales: prevData.componentesAdicionales.map((componente, i) =>
+        i === index ? { ...componente, [name]: value } : componente
       )
     }));
   }, []);
 
+  const addComponent = useCallback(() => {
+    setFormData(prevData => ({
+      ...prevData,
+      componentesAdicionales: [...prevData.componentesAdicionales, { nombre_componente: '' }]
+    }));
+  }, []);
+
+  // Manejo de auxiliares/periféricos
   const handleAuxiliarChange = useCallback((index, e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -102,20 +116,6 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  const addPantalla = useCallback(() => {
-    setFormData(prevData => ({
-      ...prevData,
-      pantallas: [...prevData.pantallas, { tipoPantalla: '', serialPantalla: '' }]
-    }));
-  }, []);
-
-  const removePantalla = useCallback((index) => {
-    setFormData(prevData => ({
-      ...prevData,
-      pantallas: prevData.pantallas.filter((_, i) => i !== index)
-    }));
-  }, []);
-
   const addAuxiliar = useCallback(() => {
     setFormData(prevData => ({
       ...prevData,
@@ -123,16 +123,34 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
+  // Evitar que el último componente adicional o periférico se pueda eliminar
   const removeAuxiliar = useCallback((index) => {
-    setFormData(prevData => ({
-      ...prevData,
-      auxiliares: prevData.auxiliares.filter((_, i) => i !== index)
-    }));
-  }, []);
+    if (formData.auxiliares.length > 1) {
+      setFormData(prevData => ({
+        ...prevData,
+        auxiliares: prevData.auxiliares.filter((_, i) => i !== index)
+      }));
+    }
+  }, [formData.auxiliares]);
+
+  const removeComponent = useCallback((index) => {
+    if (formData.componentesAdicionales.length > 1) {
+      setFormData(prevData => ({
+        ...prevData,
+        componentesAdicionales: prevData.componentesAdicionales.filter((_, i) => i !== index)
+      }));
+    }
+  }, [formData.componentesAdicionales]);
+
+  const handleAddPeripheral = (newPeripheral) => {
+    if (!peripheralsList.includes(newPeripheral)) {
+      setPeripheralsList([...peripheralsList, newPeripheral]);
+    }
+  };
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     const formDataToSend = new FormData();
     formDataToSend.append('id_equipos', formData.id_equipos);
@@ -141,8 +159,12 @@ const EquipoForm = ({ show, handleClose }) => {
     formDataToSend.append('modelo', formData.modelo);
     formDataToSend.append('numeroSerie', formData.numeroSerie);
     formDataToSend.append('contrasenaEquipo', formData.contrasenaEquipo);
-    formDataToSend.append('componentes', formData.componentes);
-    formDataToSend.append('modificaciones', formData.modificaciones);
+    formDataToSend.append('ram', formData.ram);
+    formDataToSend.append('discoDuro', formData.discoDuro);
+    formDataToSend.append('tarjetaMadre', formData.tarjetaMadre);
+    formDataToSend.append('tarjetaGrafica', formData.tarjetaGrafica);
+    formDataToSend.append('procesador', formData.procesador);
+    formDataToSend.append('componentesAdicionales', JSON.stringify(formData.componentesAdicionales));
     formDataToSend.append('estadoFisico', formData.estadoFisico);
     formDataToSend.append('detallesIncidentes', formData.detallesIncidentes);
     formDataToSend.append('garantia', formData.garantia);
@@ -151,9 +173,8 @@ const EquipoForm = ({ show, handleClose }) => {
     formDataToSend.append('sistemaOperativo', formData.sistemaOperativo);
     formDataToSend.append('mac', formData.mac);
     formDataToSend.append('hostname', formData.hostname);
-    formDataToSend.append('idColaborador', formData.idColaborador || '');  // Validar si no se selecciona ningún colaborador
+    formDataToSend.append('idColaborador', formData.idColaborador || '');
     formDataToSend.append('auxiliares', JSON.stringify(formData.auxiliares));
-    formDataToSend.append('pantallas', JSON.stringify(formData.pantallas));
 
     if (formData.imagen) {
       formDataToSend.append('imagen', formData.imagen);
@@ -164,20 +185,20 @@ const EquipoForm = ({ show, handleClose }) => {
     })
       .then(response => {
         console.log('Datos del equipo enviados:', response.data);
-        resetForm(); 
-        window.location.reload(false);  
+        resetForm();
+        window.location.reload(false);
       })
       .catch(error => {
         console.error('Error al enviar los datos:', error.response?.data || error.message);
       })
       .finally(() => {
-        setLoading(false); 
+        setLoading(false);
       });
   }, [formData, resetForm]);
 
   const handleCloseRequest = useCallback(() => {
     const hasData = Object.values(formData).some(value =>
-      Array.isArray(value) ? value.some(innerValue => innerValue.tipoPantalla || innerValue.serialPantalla) : value
+      Array.isArray(value) ? value.some(innerValue => innerValue.nombre_auxiliar || innerValue.numeroSerieAux) : value
     );
     if (hasData) {
       setShowConfirm(true);
@@ -197,7 +218,7 @@ const EquipoForm = ({ show, handleClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-button" onClick={handleCloseRequest}>&times;</button>
+        <button className="close-button" onClick={handleClose}>&times;</button>
         <h2 className="modal-title">Registrar Equipo</h2>
         <form className="equipo-form" onSubmit={handleSubmit}>
           <FormField label="ID del equipo" icon={faLaptop} name="id_equipos" value={formData.id_equipos} onChange={handleChange} required />
@@ -215,8 +236,33 @@ const EquipoForm = ({ show, handleClose }) => {
             <FormField label="No. de serie" icon={faTag} name="numeroSerie" value={formData.numeroSerie} onChange={handleChange} required />
             <FormField label="Contraseña del equipo" icon={faShieldAlt} name="contrasenaEquipo" value={formData.contrasenaEquipo} onChange={handleChange} />
           </FormRow>
-          <FormField label="Componentes" icon={faMicrochip} name="componentes" value={formData.componentes} onChange={handleChange} />
-          <FormField label="Modificaciones" icon={faMicrochip} name="modificaciones" value={formData.modificaciones} onChange={handleChange} />
+
+          {/* Nuevos campos para componentes */}
+          <FormField label="RAM" icon={faMicrochip} name="ram" value={formData.ram} onChange={handleChange} />
+          <FormField label="Disco Duro" icon={faHdd} name="discoDuro" value={formData.discoDuro} onChange={handleChange} />
+          <FormField label="Tarjeta Madre" icon={faMicrochip} name="tarjetaMadre" value={formData.tarjetaMadre} onChange={handleChange} />
+          <FormField label="Tarjeta Gráfica" icon={faMicrochip} name="tarjetaGrafica" value={formData.tarjetaGrafica} onChange={handleChange} />
+          <FormField label="Procesador" icon={faMicrochip} name="procesador" value={formData.procesador} onChange={handleChange} />
+
+          {/* Componentes adicionales con la opción de agregar */}
+          {formData.componentesAdicionales.map((componente, index) => (
+            <FormRow key={index}>
+              <FormField
+                label={`Componente Adicional ${index + 1}`}
+                icon={faPlus}
+                name="nombre_componente"
+                value={componente.nombre_componente}
+                onChange={(e) => handleComponentChange(index, e)}
+              />
+              {formData.componentesAdicionales.length > 1 && (
+                <button type="button" onClick={() => removeComponent(index)} disabled={formData.componentesAdicionales.length <= 1}>
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+              )}
+            </FormRow>
+          ))}
+          <button type="button" onClick={addComponent}><FontAwesomeIcon icon={faPlus} /> Agregar Componente</button>
+
           <FormRow>
             <FormField label="Estado físico" icon={faHdd} name="estadoFisico" value={formData.estadoFisico} onChange={handleChange} />
             <FormField label="Detalles o incidentes" icon={faHdd} name="detallesIncidentes" value={formData.detallesIncidentes} onChange={handleChange} />
@@ -234,23 +280,35 @@ const EquipoForm = ({ show, handleClose }) => {
             <FormField label="Hostname" icon={faMicrochip} name="hostname" value={formData.hostname} onChange={handleChange} />
           </FormRow>
 
+          {/* Auxiliares modificados para ser periféricos */}
           {formData.auxiliares.map((auxiliar, index) => (
             <FormRow key={index}>
-              <FormField label="Nombre Auxiliar" icon={faTv} name="nombre_auxiliar" value={auxiliar.nombre_auxiliar} onChange={(e) => handleAuxiliarChange(index, e)} />
-              <FormField label="Número de serie Auxiliar" icon={faTv} name="numeroSerieAux" value={auxiliar.numeroSerieAux} onChange={(e) => handleAuxiliarChange(index, e)} />
-              <button type="button" onClick={() => removeAuxiliar(index)}><FontAwesomeIcon icon={faMinus} /></button>
+              <FormField
+                label={`Nombre Periférico ${index + 1}`}
+                icon={faTv}
+                name="nombre_auxiliar"
+                value={auxiliar.nombre_auxiliar}
+                onChange={(e) => {
+                  handleAuxiliarChange(index, e);
+                  handleAddPeripheral(e.target.value); // Guardar el nuevo periférico si no existe en la lista
+                }}
+                list={`peripheralList-${index}`}
+              >
+                <datalist id={`peripheralList-${index}`}>
+                  {peripheralsList.map((peripheral, idx) => (
+                    <option key={idx} value={peripheral} />
+                  ))}
+                </datalist>
+              </FormField>
+              <FormField label="Número de serie Periférico" icon={faTv} name="numeroSerieAux" value={auxiliar.numeroSerieAux} onChange={(e) => handleAuxiliarChange(index, e)} />
+              {formData.auxiliares.length > 1 && (
+                <button type="button" onClick={() => removeAuxiliar(index)} disabled={formData.auxiliares.length <= 1}>
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+              )}
             </FormRow>
           ))}
-          <button type="button" onClick={addAuxiliar}><FontAwesomeIcon icon={faPlus} /> Agregar Auxiliar</button>
-
-          {formData.pantallas.map((pantalla, index) => (
-            <FormRow key={index}>
-              <FormField label="Tipo de Pantalla" icon={faTv} name="tipoPantalla" value={pantalla.tipoPantalla} onChange={(e) => handlePantallaChange(index, e)} />
-              <FormField label="Número de serie Pantalla" icon={faTv} name="serialPantalla" value={pantalla.serialPantalla} onChange={(e) => handlePantallaChange(index, e)} />
-              <button type="button" onClick={() => removePantalla(index)}><FontAwesomeIcon icon={faMinus} /></button>
-            </FormRow>
-          ))}
-          <button type="button" onClick={addPantalla}><FontAwesomeIcon icon={faPlus} /> Agregar Pantalla</button>
+          <button type="button" onClick={addAuxiliar}><FontAwesomeIcon icon={faPlus} /> Agregar Periférico</button>
 
           <div className="form-group">
             <label>Imagen</label>
@@ -277,14 +335,14 @@ const EquipoForm = ({ show, handleClose }) => {
         </form>
 
         {showConfirm && (
-  <div className="confirm-dialog-overlay">
-    <div className="confirm-dialog">
-      <p>Hay datos no guardados. ¿Estás seguro de que quieres cerrar?</p>
-      <button onClick={confirmClose}>Sí</button>
-      <button onClick={() => setShowConfirm(false)}>No</button>
-    </div>
-  </div>
-)}
+          <div className="confirm-dialog-overlay">
+            <div className="confirm-dialog">
+              <p>Hay datos no guardados. ¿Estás seguro de que quieres cerrar?</p>
+              <button onClick={confirmClose}>Sí</button>
+              <button onClick={() => setShowConfirm(false)}>No</button>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

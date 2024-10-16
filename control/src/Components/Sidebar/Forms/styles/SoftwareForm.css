@@ -1,0 +1,126 @@
+/* Estilos para el modal */
+.software-form-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Contenedor del contenido del modal */
+.software-form-content {
+    background-color: white;
+    padding: 20px; /* Agrega un padding para que el contenido no choque con los bordes */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px; /* Ancho máximo del formulario */
+    max-height: 80vh; /* Altura máxima para que no ocupe toda la pantalla */
+    position: relative;
+    color: black;
+    font-family: Arial, sans-serif;
+    overflow-y: auto; /* Habilita la barra de desplazamiento vertical si el contenido excede el tamaño */
+}
+
+/* Estilo para el botón de cierre (×) */
+.close-button {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: red; /* Cambia a rojo al pasar el cursor */
+}
+
+/* Estilo para el título */
+form h2 {
+    text-align: center;
+    color: black;
+    margin-bottom: 20px;
+}
+
+/* Estilo para las etiquetas */
+form label {
+    display: block;
+    color: black;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+/* Estilo para los campos de entrada de texto, fecha, correo, etc. */
+form input[type="text"],
+form input[type="date"],
+form input[type="email"],
+form input[type="password"],
+form select {
+    width: calc(100% - 20px); /* Espacio dentro del contenedor */
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box; /* Asegura que el padding y el ancho estén bien ajustados */
+}
+
+/* Estilo para el checkbox */
+form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Estilo para el botón de guardar */
+form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+form button:hover {
+    background-color: #004494;
+}
+
+/* Para campos de texto largo, como el textarea */
+form textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Agrega un scroll para el modal si el contenido es muy largo */
+.software-form-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.software-form-content::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+.software-form-content::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 4px;
+}
+
+.software-form-content::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
