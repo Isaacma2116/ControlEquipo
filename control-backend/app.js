@@ -5,6 +5,7 @@ const sequelize = require('./config/database');
 const colaboradorRoutes = require('./routes/colaboradorRoutes');
 const equipoRoutes = require('./routes/equipoRoutes');
 const authRoutes = require('./routes/authRoutes');
+const softwareRoutes = require('./routes/softwareRoutes'); // Asegúrate de incluir el módulo de rutas de software
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/colaboradores', colaboradorRoutes);
 app.use('/api/equipos', equipoRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/software', softwareRoutes); // Rutas para gestionar software
 
 // Puerto de la aplicación
 const PORT = process.env.PORT || 3550;
