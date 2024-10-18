@@ -1,125 +1,166 @@
-/* Fondo semitransparente que cubre toda la pantalla */
-.software-form-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* Estilos generales del contenedor del sidebar de software */
+.software-sidebar-menu {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
-}
-
-/* Contenedor del formulario */
-.software-form-content {
-    background-color: #fff;
     padding: 20px;
+    color: #ecf0f1;
+    font-family: 'Arial', sans-serif;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #2c3e50;  /* Fondo oscuro para todo el contenedor */
     border-radius: 10px;
-    width: 90%;
-    max-width: 500px; /* Ancho máximo del formulario */
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Sombra alrededor del formulario */
+}
+
+/* Estilos para la barra de desplazamiento (scrollbar) vertical */
+.software-sidebar-menu::-webkit-scrollbar {
+    width: 8px;  /* Ancho de la barra de desplazamiento vertical */
+}
+
+.software-sidebar-menu::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);  /* Color suave para la barra */
+    border-radius: 10px;
+}
+
+.software-sidebar-menu::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);  /* Un poco más visible al hacer hover */
+}
+
+.software-sidebar-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Estilo para otros navegadores */
+.software-sidebar-menu {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Contenedor de la barra de búsqueda */
+.software-sidebar-menu .search-container {
     position: relative;
-}
-
-/* Botón de cerrar (X) */
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-}
-
-.close-button:hover {
-    color: red; /* Cambia a rojo al pasar el mouse por encima */
-}
-
-/* Título del formulario */
-.software-form-content h2 {
-    text-align: center;
+    width: 100%;
     margin-bottom: 20px;
 }
 
-/* Estilo para las etiquetas */
-.software-form-content label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-    font-weight: bold;
+/* Icono de búsqueda dentro de la barra */
+.software-sidebar-menu .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc;
+    transition: color 0.3s ease;
 }
 
-/* Estilo para los campos de entrada */
-.software-form-content input[type="text"],
-.software-form-content input[type="date"],
-.software-form-content input[type="password"],
-.software-form-content input[type="email"],
-.software-form-content select {
+.software-sidebar-menu .search-icon:hover {
+    color: #888;
+}
+
+/* Estilo de la barra de búsqueda */
+.software-sidebar-menu .search-bar {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 10px 20px 10px 45px;
+    border-radius: 25px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
     box-sizing: border-box;
-    font-size: 14px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Estilo del botón de guardar */
-.software-form-content button {
-    width: 100%;
-    padding: 12px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+.software-sidebar-menu .search-bar:focus {
+    outline: none;
+    background-color: #e9e9e9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.software-form-content button:hover {
-    background-color: #004494;
-}
-
-/* Estilo para la lista de equipos */
-.software-form-content ul {
+/* Estilos para la lista de software */
+.software-sidebar-menu ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 150px; /* Limita la altura de la lista para evitar que crezca demasiado */
-    overflow-y: auto; /* Añade un scroll si la lista es muy larga */
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-.software-form-content ul li {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* Estilos para cada elemento de la lista de software */
+.software-sidebar-menu ul li {
+    padding: 12px;
     margin-bottom: 10px;
+    background-color: #34495e;  /* Fondo oscuro para cada elemento */
+    border-radius: 10px;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s ease-in-out;
 }
 
-.software-form-content ul li.selected {
-    background-color: #0056b3;
+.software-sidebar-menu ul li:hover {
+    background-color: #1abc9c;
+    transform: translateX(5px);
     color: white;
 }
 
-/* Barra de búsqueda y contenedor */
-.software-form-content .search-container {
+/* Botón para agregar software */
+.add-software-button {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    border: 1px solid #2980b9;
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 15px;
+    gap: 8px;
+    margin-top: 20px;
 }
 
-.software-form-content .search-container input {
-    width: 100%;
+/* Efecto al pasar el ratón por encima */
+.add-software-button:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+}
+
+/* Efecto al hacer clic */
+.add-software-button:active {
+    background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+}
+
+/* Estilo del icono dentro del botón */
+.add-software-button svg {
+    font-size: 16px;
+    fill: white;
+}
+
+.info-icon {
+    margin-left: 8px;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.info-icon:hover {
+    color: #3498db;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: white;
     padding: 8px;
-    border: 1px solid #ccc;
     border-radius: 5px;
-    margin-left: 10px;
-}
-
-.software-form-content .search-container svg {
-    color: #333;
+    font-size: 12px;
+    margin-top: 5px;
+    z-index: 100;
+    white-space: nowrap;
+    max-width: 250px; /* Limita el ancho del tooltip */
 }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './styles/SoftwareForm.css'; // Asegúrate de que la ruta al archivo CSS sea correcta
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import './styles/SoftwareForm.css';
 
-// Función de debounce para mejorar la búsqueda
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -23,9 +24,9 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [nombre, setNombre] = useState('');
     const [version, setVersion] = useState('');
     const [licencia, setLicencia] = useState('');
-    const [fechaAdquisicion, setFechaAdquisicion] = useState(null); // Cambiado a null
-    const [fechaCaducidad, setFechaCaducidad] = useState(null); // Cambiado a null
-    const [tipoLicencia, setTipoLicencia] = useState('mensual'); // Valor por defecto
+    const [fechaAdquisicion, setFechaAdquisicion] = useState(null); 
+    const [fechaCaducidad, setFechaCaducidad] = useState(null); 
+    const [tipoLicencia, setTipoLicencia] = useState('mensual'); 
     const [claveLicencia, setClaveLicencia] = useState('');
     const [correoAsociado, setCorreoAsociado] = useState('');
     const [contrasenaCorreo, setContrasenaCorreo] = useState('');
@@ -37,14 +38,10 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [recentSearches, setRecentSearches] = useState([]);
-
-    // Estado para almacenar los nombres de software existentes
     const [softwareNames, setSoftwareNames] = useState([]);
-
-    // Filtrar los términos de búsqueda con debounce (espera de 500ms)
+    const [tooltip, setTooltip] = useState(null); // Para manejar el tooltip visible
     const searchTerm = useDebounce(searchTermInput, 500);
 
-    // Cargar los equipos desde la API
     useEffect(() => {
         const fetchEquipos = async () => {
             setLoading(true);
@@ -52,14 +49,13 @@ const SoftwareForm = ({ onSave, onClose }) => {
                 const response = await axios.get('http://localhost:3550/api/equipos');
                 setEquipos(response.data);
             } catch (error) {
-                setError('Hubo un problema al cargar los equipos. Intenta nuevamente más tarde.');
+                setError('Hubo un problema al cargar los equipos.');
             }
             setLoading(false);
         };
         fetchEquipos();
     }, []);
 
-    // Cargar los nombres de software desde la base de datos
     useEffect(() => {
         const fetchSoftwareNames = async () => {
             try {
@@ -73,26 +69,22 @@ const SoftwareForm = ({ onSave, onClose }) => {
         fetchSoftwareNames();
     }, []);
 
-    // Cargar búsquedas recientes desde localStorage
     useEffect(() => {
         const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
         setRecentSearches(storedSearches);
     }, []);
 
-    // Guardar búsquedas recientes
     const saveRecentSearch = (search) => {
-        const updatedSearches = [search, ...recentSearches.slice(0, 4)]; // Solo guarda las últimas 5
+        const updatedSearches = [search, ...recentSearches.slice(0, 4)]; 
         setRecentSearches(updatedSearches);
         localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
     };
 
-    // Filtrar equipos por ID o nombre basado en el término de búsqueda
     const filteredEquipos = equipos.filter(equipo =>
         equipo.id_equipos.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
         equipo.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Maneja la selección de un equipo en el select
     const handleEquipoChange = (e) => {
         setIdEquipo(e.target.value);
         if (e.target.value !== '') {
@@ -100,17 +92,14 @@ const SoftwareForm = ({ onSave, onClose }) => {
         }
     };
 
-    // Maneja el campo de búsqueda
     const handleSearchChange = (event) => {
         setSearchTermInput(event.target.value);
     };
 
-    // Opción para agregar nuevo equipo
     const handleAddNewEquipo = () => {
         alert('Redirigir o abrir modal para agregar un nuevo equipo.');
     };
 
-    // Actualizar el estado del software dinámicamente
     useEffect(() => {
         const hoy = new Date();
         const caducidad = new Date(fechaCaducidad);
@@ -118,22 +107,16 @@ const SoftwareForm = ({ onSave, onClose }) => {
         if (!idEquipo) {
             setEstado('sin uso');
         } else if (licenciaCaducada || (fechaCaducidad && caducidad < hoy)) {
-            if (idEquipo) {
-                setEstado('vencido con equipo');
-            } else {
-                setEstado('vencido');
-            }
+            setEstado(idEquipo ? 'vencido con equipo' : 'vencido');
         } else {
             setEstado('activo');
         }
     }, [idEquipo, fechaCaducidad, licenciaCaducada]);
 
-    // Verifica si el formulario es válido antes de enviarlo
     const isFormValid = () => {
-        return nombre; // Asegúrate de que el campo obligatorio esté lleno
+        return nombre; 
     };
 
-    // Maneja el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -146,15 +129,15 @@ const SoftwareForm = ({ onSave, onClose }) => {
             nombre,
             version,
             licencia,
-            fechaAdquisicion: fechaAdquisicion || null, // Asegúrate de enviar null si no se proporciona
+            fechaAdquisicion: fechaAdquisicion || null,
             fechaCaducidad: tipoLicencia === 'vitalicia' ? null : fechaCaducidad,
-            tipoLicencia,  // Asegúrate de que esto tenga un valor
+            tipoLicencia,
             claveLicencia,
             correoAsociado,
             contrasenaCorreo,
             estado,
-            idEquipo,
-            licenciaCaducada // Asegúrate de que esto tenga un valor booleano
+            id_equipos: idEquipo,
+            licenciaCaducada
         };
 
         try {
@@ -168,7 +151,11 @@ const SoftwareForm = ({ onSave, onClose }) => {
             console.error('Error al enviar los datos al backend:', error);
         }
 
-        onClose();  // Cierra el formulario
+        onClose();
+    };
+
+    const toggleTooltip = (field) => {
+        setTooltip(tooltip === field ? null : field);
     };
 
     return (
@@ -178,8 +165,11 @@ const SoftwareForm = ({ onSave, onClose }) => {
                 <form onSubmit={handleSubmit}>
                     <h2>Agregar Software</h2>
 
-                    {/* Campo obligatorio */}
-                    <label>Nombre del Software:</label>
+                    <label>
+                        Nombre del Software:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('nombre')} className="info-icon" />
+                        {tooltip === 'nombre' && <div className="tooltip">Este campo es obligatorio. Ingresa el nombre completo del software que deseas registrar. Ejemplo: "Microsoft Office 365".</div>}
+                    </label>
                     <input
                         list="software-names"
                         type="text"
@@ -195,29 +185,44 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         ))}
                     </datalist>
 
-                    {/* Campos opcionales */}
-                    <label>Versión:</label>
+                    <label>
+                        Versión:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('version')} className="info-icon" />
+                        {tooltip === 'version' && <div className="tooltip">Ingresa la versión específica del software. Esto es opcional pero puede ayudar a identificar exactamente qué versión se está utilizando. Ejemplo: "16.0.13328.20262".</div>}
+                    </label>
                     <input
                         type="text"
                         value={version}
                         onChange={(e) => setVersion(e.target.value)}
                     />
 
-                    <label>Licencia:</label>
+                    <label>
+                        Licencia:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('licencia')} className="info-icon" />
+                        {tooltip === 'licencia' && <div className="tooltip">Si el software tiene una licencia, ingresa aquí la clave o código de licencia. Ejemplo: "XXXXX-XXXXX-XXXXX-XXXXX".</div>}
+                    </label>
                     <input
                         type="text"
                         value={licencia}
                         onChange={(e) => setLicencia(e.target.value)}
                     />
 
-                    <label>Fecha de Adquisición:</label>
+                    <label>
+                        Fecha de Adquisición:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('fechaAdquisicion')} className="info-icon" />
+                        {tooltip === 'fechaAdquisicion' && <div className="tooltip">Selecciona la fecha en que adquiriste este software. Esto es importante para llevar un control de cuándo fue comprado o descargado.</div>}
+                    </label>
                     <input
                         type="date"
                         value={fechaAdquisicion}
                         onChange={(e) => setFechaAdquisicion(e.target.value)}
                     />
 
-                    <label>Tipo de Licencia:</label>
+                    <label>
+                        Tipo de Licencia:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('tipoLicencia')} className="info-icon" />
+                        {tooltip === 'tipoLicencia' && <div className="tooltip">Selecciona el tipo de licencia. Esto puede ser "Mensual", "Anual" o "Vitalicia". Cada una tiene un significado diferente en cuanto a la duración de la licencia.</div>}
+                    </label>
                     <select
                         value={tipoLicencia}
                         onChange={(e) => setTipoLicencia(e.target.value)}
@@ -227,21 +232,33 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         <option value="vitalicia">Vitalicia</option>
                     </select>
 
-                    <label>Clave de Licencia:</label>
+                    <label>
+                        Clave de Licencia:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('claveLicencia')} className="info-icon" />
+                        {tooltip === 'claveLicencia' && <div className="tooltip">Introduce aquí la clave de licencia que recibiste al comprar el software. Este campo puede ser opcional dependiendo del tipo de software.</div>}
+                    </label>
                     <input
                         type="text"
                         value={claveLicencia}
                         onChange={(e) => setClaveLicencia(e.target.value)}
                     />
 
-                    <label>Correo Asociado:</label>
+                    <label>
+                        Correo Asociado:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('correoAsociado')} className="info-icon" />
+                        {tooltip === 'correoAsociado' && <div className="tooltip">Ingresa el correo electrónico asociado al software, si aplica. Este puede ser el correo que utilizaste para registrarte o activar la licencia del software.</div>}
+                    </label>
                     <input
                         type="email"
                         value={correoAsociado}
                         onChange={(e) => setCorreoAsociado(e.target.value)}
                     />
 
-                    <label>Contraseña del Correo:</label>
+                    <label>
+                        Contraseña del Correo:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('contrasenaCorreo')} className="info-icon" />
+                        {tooltip === 'contrasenaCorreo' && <div className="tooltip">Introduce la contraseña del correo asociado, si aplica. Esto solo se requiere si necesitas almacenar la contraseña en un lugar seguro para futuras referencias.</div>}
+                    </label>
                     <input
                         type="password"
                         value={contrasenaCorreo}
@@ -257,10 +274,16 @@ const SoftwareForm = ({ onSave, onClose }) => {
                                 onChange={(e) => setLicenciaCaducada(e.target.checked)}
                             />
                             Licencia ya caducada
+                            <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('licenciaCaducada')} className="info-icon" />
+                            {tooltip === 'licenciaCaducada' && <div className="tooltip">Marca esta casilla si la licencia del software ya ha expirado. Esto es útil para mantener el seguimiento de las licencias caducadas en tu sistema.</div>}
                         </label>
                     </div>
 
-                    <label>Buscar y seleccionar Equipo Asociado:</label>
+                    <label>
+                        Buscar y seleccionar Equipo Asociado:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('equipoAsociado')} className="info-icon" />
+                        {tooltip === 'equipoAsociado' && <div className="tooltip">Buscar y seleccionar un equipo (computadora o dispositivo) que esté asociado a este software. Esto permite saber en qué equipo está instalado.</div>}
+                    </label>
                     <input
                         type="text"
                         placeholder="Buscar por ID de equipo o nombre..."
@@ -282,15 +305,18 @@ const SoftwareForm = ({ onSave, onClose }) => {
                             ) : (
                                 <option disabled>No se encontraron equipos</option>
                             )}
-                            {/* Opción para agregar un nuevo equipo */}
                             <option onClick={handleAddNewEquipo}>Agregar nuevo equipo</option>
                         </select>
                     )}
 
-                    <label>Estado del Software:</label>
+                    <label>
+                        Estado del Software:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('estado')} className="info-icon" />
+                        {tooltip === 'estado' && <div className="tooltip">Este campo muestra el estado actual del software, que puede ser "Activo", "Sin uso", o "Vencido". Este campo se actualiza automáticamente en función de la información ingresada.</div>}
+                    </label>
                     <input type="text" value={estado} readOnly />
 
-                    <button type="submit">Guardar</button>
+                    <button className="button" type="submit">Guardar</button>
                 </form>
             </div>
         </div>

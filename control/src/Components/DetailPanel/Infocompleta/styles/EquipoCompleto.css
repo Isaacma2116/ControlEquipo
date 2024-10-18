@@ -16,8 +16,8 @@ body {
 /* Estilo principal del contenedor de detalles del equipo */
 .equipo-detalles {
   width: 90%;
-  max-width: 960px;
-  height: 800px; /* Altura fija para permitir el desplazamiento */
+  max-width: 1400px;
+  height: 1000px; /* Altura fija para permitir el desplazamiento */
   margin: 20px auto;
   background-color: #ffffff;
   border-radius: 10px;

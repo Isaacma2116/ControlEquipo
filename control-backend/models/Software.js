@@ -21,7 +21,8 @@ const Software = sequelize.define('Software', {
     },
     fecha_adquisicion: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: true,
+        defaultValue: DataTypes.NOW // Asigna la fecha actual por defecto si no se proporciona
     },
     fecha_caducidad: {
         type: DataTypes.DATE,
@@ -29,7 +30,7 @@ const Software = sequelize.define('Software', {
     },
     tipo_licencia: {
         type: DataTypes.ENUM('mensual', 'anual', 'vitalicia'),
-        allowNull: true // Cambiado a true para permitir valores nulos
+        allowNull: true
     },
     clave_licencia: {
         type: DataTypes.STRING,
@@ -53,7 +54,7 @@ const Software = sequelize.define('Software', {
     },
     licencia_caducada: {
         type: DataTypes.BOOLEAN,
-        allowNull: true // Cambiado a true para permitir valores nulos
+        allowNull: true
     }
 }, {
     tableName: 'software', // Nombre de la tabla en minúsculas, si es necesario

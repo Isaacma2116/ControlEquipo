@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faLaptop, faTag, faShieldAlt, faCalendarAlt, faMicrochip, faTv, faBarcode, faKey, faWrench, faTools, faExclamationTriangle, faEdit, faSave, faHdd
+  faLaptop, faTag, faShieldAlt, faCalendarAlt, faMicrochip, faTv, faBarcode, faKey, faWrench, faExclamationTriangle, faEdit, faSave, faHdd, faPlus
 } from '@fortawesome/free-solid-svg-icons';
 
 import './styles/EquipoCompleto.css';
@@ -11,11 +11,11 @@ const EquipoCompleto = ({ idEquipo }) => {
   const [equipo, setEquipo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [colaborador, setColaborador] = useState(null); // Estado para los datos del colaborador
-  const [isEditing, setIsEditing] = useState(false); // Estado para controlar el modo de edición
-  const [updatedEquipo, setUpdatedEquipo] = useState({}); // Estado para almacenar los cambios
-  const [colaboradores, setColaboradores] = useState([]); // Estado para almacenar la lista de colaboradores
-  const [hasChanges, setHasChanges] = useState(false); // Estado para detectar cambios en el formulario
+  const [colaborador, setColaborador] = useState(null); 
+  const [isEditing, setIsEditing] = useState(false); 
+  const [updatedEquipo, setUpdatedEquipo] = useState({}); 
+  const [colaboradores, setColaboradores] = useState([]); 
+  const [hasChanges, setHasChanges] = useState(false); 
 
   useEffect(() => {
     const fetchEquipo = async () => {
@@ -23,16 +23,13 @@ const EquipoCompleto = ({ idEquipo }) => {
       try {
         const response = await axios.get(`http://localhost:3550/api/equipos/${idEquipo}`);
         setEquipo(response.data);
-        setUpdatedEquipo(response.data); // Inicializamos con los datos obtenidos
+        setUpdatedEquipo(response.data); 
 
-        // Fetch detalles del colaborador basado en `idColaborador`
         if (response.data.idColaborador) {
           const colaboradorResponse = await axios.get(`http://localhost:3550/api/colaboradores/${response.data.idColaborador}`);
-          console.log("Colaborador response: ", colaboradorResponse.data); // Verificar si la API devuelve el colaborador
-          setColaborador(colaboradorResponse.data);  // Guardar los detalles del colaborador
+          setColaborador(colaboradorResponse.data);
         }
 
-        // Cargar la lista de todos los colaboradores
         const colaboradoresResponse = await axios.get('http://localhost:3550/api/colaboradores');
         setColaboradores(colaboradoresResponse.data);
 
@@ -56,15 +53,15 @@ const EquipoCompleto = ({ idEquipo }) => {
       ...prev,
       [name]: value
     }));
-    setHasChanges(true); // Marca que hay cambios
+    setHasChanges(true);
   };
 
   const handleSave = async () => {
     try {
       await axios.put(`http://localhost:3550/api/equipos/${idEquipo}`, updatedEquipo);
-      setEquipo(updatedEquipo); // Actualizamos los datos con los cambios guardados
-      setIsEditing(false); // Volvemos al modo "ver"
-      setHasChanges(false); // Restablecemos el estado de cambios
+      setEquipo(updatedEquipo); 
+      setIsEditing(false); 
+      setHasChanges(false); 
     } catch (error) {
       console.error('Error al guardar los cambios:', error);
       setError('Error al guardar los cambios.');
@@ -78,9 +75,9 @@ const EquipoCompleto = ({ idEquipo }) => {
         return;
       }
     }
-    setUpdatedEquipo(equipo); // Restablece los datos originales del equipo
-    setIsEditing(false); // Vuelve al modo de solo lectura
-    setHasChanges(false); // Restablece el estado de cambios
+    setUpdatedEquipo(equipo); 
+    setIsEditing(false); 
+    setHasChanges(false); 
   };
 
   if (loading) {
@@ -116,6 +113,7 @@ const EquipoCompleto = ({ idEquipo }) => {
         )}
       </div>
 
+      {/* Detalles del equipo */}
       <p><FontAwesomeIcon icon={faTag} /> ID Equipo: {equipo.id_equipos}</p>
       <p><FontAwesomeIcon icon={faLaptop} /> Tipo de Dispositivo: {isEditing ? (
         <input type="text" name="tipoDispositivo" value={updatedEquipo.tipoDispositivo} onChange={handleInputChange} />
@@ -126,12 +124,12 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faMicrochip} /> Modelo: {isEditing ? (
         <input type="text" name="modelo" value={updatedEquipo.modelo} onChange={handleInputChange} />
       ) : equipo.modelo}</p>
-      <p><FontAwesomeIcon icon={faBarcode} /> Número de Serie: {equipo.numeroSerie}</p> {/* Este campo no es editable */}
+      <p><FontAwesomeIcon icon={faBarcode} /> Número de Serie: {equipo.numeroSerie}</p> 
       <p><FontAwesomeIcon icon={faKey} /> Contraseña del Equipo: {isEditing ? (
         <input type="text" name="contrasenaEquipo" value={updatedEquipo.contrasenaEquipo} onChange={handleInputChange} />
       ) : equipo.contrasenaEquipo}</p>
 
-      {/* Nuevos campos de componentes */}
+      {/* Campos de componentes adicionales */}
       <p><FontAwesomeIcon icon={faMicrochip} /> RAM: {isEditing ? (
         <input type="text" name="ram" value={updatedEquipo.ram} onChange={handleInputChange} />
       ) : equipo.ram}</p>
@@ -147,26 +145,21 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faMicrochip} /> Procesador: {isEditing ? (
         <input type="text" name="procesador" value={updatedEquipo.procesador} onChange={handleInputChange} />
       ) : equipo.procesador}</p>
+      <p><FontAwesomeIcon icon={faWrench} /> Componentes Adicionales: {isEditing ? (
+        <textarea name="componentesAdicionales" value={JSON.stringify(updatedEquipo.componentesAdicionales)} onChange={handleInputChange} />
+      ) : JSON.stringify(equipo.componentesAdicionales)}</p>
 
-      {/* Campo de modificaciones */}
-      <p><FontAwesomeIcon icon={faWrench} /> Modificaciones: {isEditing ? (
-        <textarea name="modificaciones" value={updatedEquipo.modificaciones} onChange={handleInputChange} />
-      ) : equipo.modificaciones}</p>
-
+      {/* Campos adicionales */}
       <p><FontAwesomeIcon icon={faShieldAlt} /> Estado Físico: {isEditing ? (
         <input type="text" name="estadoFisico" value={updatedEquipo.estadoFisico} onChange={handleInputChange} />
       ) : equipo.estadoFisico}</p>
-
-      {/* Detalles de Incidentes */}
       <p><FontAwesomeIcon icon={faExclamationTriangle} /> Detalles de Incidentes: {isEditing ? (
         <textarea name="detallesIncidentes" value={updatedEquipo.detallesIncidentes} onChange={handleInputChange} />
       ) : equipo.detallesIncidentes}</p>
-
-      {/* Otros detalles */}
       <p><FontAwesomeIcon icon={faShieldAlt} /> Garantía: {isEditing ? (
         <input type="text" name="garantia" value={updatedEquipo.garantia} onChange={handleInputChange} />
       ) : equipo.garantia}</p>
-      <p><FontAwesomeIcon icon={faCalendarAlt} /> Fecha de Compra: {equipo.fechaCompra}</p> {/* No editable */}
+      <p><FontAwesomeIcon icon={faCalendarAlt} /> Fecha de Compra: {equipo.fechaCompra}</p> 
       <p><FontAwesomeIcon icon={faShieldAlt} /> Activo: {isEditing ? (
         <input type="text" name="activo" value={updatedEquipo.activo} onChange={handleInputChange} />
       ) : equipo.activo}</p>
@@ -203,13 +196,20 @@ const EquipoCompleto = ({ idEquipo }) => {
       {equipo.auxiliares && equipo.auxiliares.length > 0 ? (
         equipo.auxiliares.map((auxiliar, index) => (
           <div key={index}>
-            <p><FontAwesomeIcon icon={faTv} /> Nombre del Auxiliar: {auxiliar.nombre_auxiliar}</p> {/* Cambiado a nombre_auxiliar */}
+            <p><FontAwesomeIcon icon={faTv} /> Nombre del Auxiliar: {auxiliar.nombre_auxiliar}</p> 
             <p><FontAwesomeIcon icon={faBarcode} /> Número de Serie: {auxiliar.numeroSerieAux}</p>
           </div>
         ))
       ) : (
         <p>No hay auxiliares asociados.</p>
       )}
+
+      {/* Botón para agregar software */}
+      <div className="add-software">
+        <button className="add-software-button">
+          <FontAwesomeIcon icon={faPlus} /> Agregar Software
+        </button>
+      </div>
     </div>
   );
 };
