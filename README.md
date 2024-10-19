@@ -18,3 +18,61 @@ de equipos mediante una interfaz fácil de usar y funcionalidades robustas.
 
 ### Estado del Proyecto ###
 Actualmente, el proyecto está en la fase de desarrollo inicial. 
+
+
+# Control Equipos
+
+## Descripción del Proyecto
+
+El proyecto "Control de equipos" es una aplicación web diseñada para mejorar la gestión de equipos de computo.
+
+## Instrucciones de Instalación y Ejecución
+
+### Requisitos Previos
+
+- Node.js (versión 18 o superior)
+- npm (versión 6 o superior)
+- MySQL (para la base de datos)
+
+### Instalación
+
+1. Clona el repositorio en tu máquina local:
+
+git clone [enlace-del-repositorio]
+
+2. Navega al directorio del proyecto:
+
+cd ControlEquipo
+
+3. Instala las dependencias necesarias:
+npm install
+
+
+### Ejecución
+
+1. Asegúrate de que MySQL esté corriendo en tu máquina local.
+2. Ingresa en las carpetas correspondientes (control para el Front-End y control-backend para el Back-End)
+3. Inicia la aplicación:
+
+#### Front-End
+npm start
+
+#### Back-End
+noed app.js
+
+3. Abre tu navegador y visita `http://localhost:3000` para ver la aplicación en funcionamiento.
+
+## Tecnologías Utilizadas
+
+- **Frontend**: HTML, CSS, JavaScript, React JS
+- **Backend**: Node.js.
+- **Base de Datos**: MySQL
+- **Control de Versiones**: Git y GitHub
+
+## Autores o Colaboradores
+
+-	[Gerente de Proyecto]: Jose Isaac Macias Delgado
+-	[Arquitecto de Software]: Cliente servidor
+-	[Desarrolladores de Software]: Isaac Macias y Alfredo Alejandro
+-	[Diseñador de UX/UI]: Alfredo Alejandro Avila Medina
+-	[Tester/QA]: Alfredo Alejandro Avila Medina
