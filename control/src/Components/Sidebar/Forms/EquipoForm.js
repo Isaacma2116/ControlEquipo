@@ -41,7 +41,7 @@ const EquipoForm = ({ show, handleClose }) => {
     tarjetaMadre: '',
     tarjetaGrafica: '',
     procesador: '',
-    componentesAdicionales: [{ nombre_componente: '' }], // Inicializado con un componente
+    componentesAdicionales: [''], // Array de strings, no de objetos
     estadoFisico: '',
     detallesIncidentes: '',
     garantia: '',
@@ -50,7 +50,7 @@ const EquipoForm = ({ show, handleClose }) => {
     sistemaOperativo: '',
     mac: '',
     hostname: '',
-    auxiliares: [{ nombre_auxiliar: '', numeroSerieAux: '' }], // Inicializado con un periférico
+    auxiliares: [{ nombre_auxiliar: '', numeroSerieAux: '' }],
     idColaborador: '',
     imagen: null,
   }), []);
@@ -87,13 +87,13 @@ const EquipoForm = ({ show, handleClose }) => {
     setFormData(prevData => ({ ...prevData, imagen: e.target.files[0] }));
   }, []);
 
-  // Manejo de componentes adicionales
+  // Manejo de componentes adicionales como strings
   const handleComponentChange = useCallback((index, e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     setFormData(prevData => ({
       ...prevData,
       componentesAdicionales: prevData.componentesAdicionales.map((componente, i) =>
-        i === index ? { ...componente, [name]: value } : componente
+        i === index ? value : componente
       )
     }));
   }, []);
@@ -101,9 +101,18 @@ const EquipoForm = ({ show, handleClose }) => {
   const addComponent = useCallback(() => {
     setFormData(prevData => ({
       ...prevData,
-      componentesAdicionales: [...prevData.componentesAdicionales, { nombre_componente: '' }]
+      componentesAdicionales: [...prevData.componentesAdicionales, '']
     }));
   }, []);
+
+  const removeComponent = useCallback((index) => {
+    if (formData.componentesAdicionales.length > 1) {
+      setFormData(prevData => ({
+        ...prevData,
+        componentesAdicionales: prevData.componentesAdicionales.filter((_, i) => i !== index)
+      }));
+    }
+  }, [formData.componentesAdicionales]);
 
   // Manejo de auxiliares/periféricos
   const handleAuxiliarChange = useCallback((index, e) => {
@@ -123,7 +132,6 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Evitar que el último componente adicional o periférico se pueda eliminar
   const removeAuxiliar = useCallback((index) => {
     if (formData.auxiliares.length > 1) {
       setFormData(prevData => ({
@@ -132,15 +140,6 @@ const EquipoForm = ({ show, handleClose }) => {
       }));
     }
   }, [formData.auxiliares]);
-
-  const removeComponent = useCallback((index) => {
-    if (formData.componentesAdicionales.length > 1) {
-      setFormData(prevData => ({
-        ...prevData,
-        componentesAdicionales: prevData.componentesAdicionales.filter((_, i) => i !== index)
-      }));
-    }
-  }, [formData.componentesAdicionales]);
 
   const handleAddPeripheral = (newPeripheral) => {
     if (!peripheralsList.includes(newPeripheral)) {
@@ -164,7 +163,10 @@ const EquipoForm = ({ show, handleClose }) => {
     formDataToSend.append('tarjetaMadre', formData.tarjetaMadre);
     formDataToSend.append('tarjetaGrafica', formData.tarjetaGrafica);
     formDataToSend.append('procesador', formData.procesador);
-    formDataToSend.append('componentesAdicionales', JSON.stringify(formData.componentesAdicionales));
+
+    // Aquí cambiamos el JSON.stringify por join(', ') para evitar los corchetes
+    formDataToSend.append('componentesAdicionales', formData.componentesAdicionales.join(', '));
+
     formDataToSend.append('estadoFisico', formData.estadoFisico);
     formDataToSend.append('detallesIncidentes', formData.detallesIncidentes);
     formDataToSend.append('garantia', formData.garantia);
@@ -250,8 +252,8 @@ const EquipoForm = ({ show, handleClose }) => {
               <FormField
                 label={`Componente Adicional ${index + 1}`}
                 icon={faPlus}
-                name="nombre_componente"
-                value={componente.nombre_componente}
+                name={`componenteAdicional${index}`}
+                value={componente}
                 onChange={(e) => handleComponentChange(index, e)}
               />
               {formData.componentesAdicionales.length > 1 && (

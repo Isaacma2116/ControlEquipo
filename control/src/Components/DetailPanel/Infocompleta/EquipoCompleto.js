@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Modal from 'react-modal'; // Importamos Modal
+import SoftwareForm from './SoftwareForm'; // Asegúrate de tener la ruta correcta
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLaptop, faTag, faShieldAlt, faCalendarAlt, faMicrochip, faTv, faBarcode, faKey, faWrench, faExclamationTriangle, faEdit, faSave, faHdd, faPlus
 } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 
 import './styles/EquipoCompleto.css';
+
+// Configuración inicial para Modal
+Modal.setAppElement('#root'); // #root es el ID del elemento raíz de tu aplicación
 
 const EquipoCompleto = ({ idEquipo }) => {
   const [equipo, setEquipo] = useState(null);
@@ -16,6 +22,8 @@ const EquipoCompleto = ({ idEquipo }) => {
   const [updatedEquipo, setUpdatedEquipo] = useState({}); 
   const [colaboradores, setColaboradores] = useState([]); 
   const [hasChanges, setHasChanges] = useState(false); 
+  const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para el modal
+  const navigate = useNavigate(); // Hook de navegación
 
   useEffect(() => {
     const fetchEquipo = async () => {
@@ -80,6 +88,14 @@ const EquipoCompleto = ({ idEquipo }) => {
     setHasChanges(false); 
   };
 
+  const handleOpenModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalIsOpen(false);
+  };
+
   if (loading) {
     return <div>Cargando datos del equipo...</div>;
   }
@@ -111,6 +127,8 @@ const EquipoCompleto = ({ idEquipo }) => {
             <FontAwesomeIcon icon={faEdit} /> Editar
           </button>
         )}
+        {/* Botón para abrir el modal */}
+        <button onClick={handleOpenModal}><FontAwesomeIcon icon={faPlus} /> Agregar Software</button>
       </div>
 
       {/* Detalles del equipo */}
@@ -145,9 +163,22 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faMicrochip} /> Procesador: {isEditing ? (
         <input type="text" name="procesador" value={updatedEquipo.procesador} onChange={handleInputChange} />
       ) : equipo.procesador}</p>
-      <p><FontAwesomeIcon icon={faWrench} /> Componentes Adicionales: {isEditing ? (
-        <textarea name="componentesAdicionales" value={JSON.stringify(updatedEquipo.componentesAdicionales)} onChange={handleInputChange} />
-      ) : JSON.stringify(equipo.componentesAdicionales)}</p>
+      
+ <p><FontAwesomeIcon icon={faWrench} /> Componentes Adicionales: {isEditing ? (
+  <textarea 
+    name="componentesAdicionales"
+    value={updatedEquipo.componentesAdicionales ? JSON.stringify(updatedEquipo.componentesAdicionales, null, 2) : ''}
+    onChange={e => {
+      // Almacenamos el texto sin tratar de convertirlo a JSON de inmediato
+      setUpdatedEquipo((prev) => ({
+        ...prev,
+        componentesAdicionales: e.target.value, // Mantenemos el valor como string
+      }));
+      setHasChanges(true);
+    }}
+  />
+) : JSON.stringify(equipo.componentesAdicionales, null, 2)}</p>
+
 
       {/* Campos adicionales */}
       <p><FontAwesomeIcon icon={faShieldAlt} /> Estado Físico: {isEditing ? (
@@ -204,12 +235,16 @@ const EquipoCompleto = ({ idEquipo }) => {
         <p>No hay auxiliares asociados.</p>
       )}
 
-      {/* Botón para agregar software */}
-      <div className="add-software">
-        <button className="add-software-button">
-          <FontAwesomeIcon icon={faPlus} /> Agregar Software
-        </button>
-      </div>
+      {/* Modal para agregar software */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={handleCloseModal}
+        contentLabel="Agregar Software"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <SoftwareForm idEquipo={idEquipo} onClose={handleCloseModal} />
+      </Modal>
     </div>
   );
 };
