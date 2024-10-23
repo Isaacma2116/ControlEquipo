@@ -1,0 +1,14 @@
+/* styles/SoftwareDetail.css */
+.software-detail {
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+.software-item {
+    margin-bottom: 15px;
+}
+
+.software-item p {
+    margin: 5px 0;
+}

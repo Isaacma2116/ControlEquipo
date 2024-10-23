@@ -21,6 +21,7 @@ const EquipoCompleto = ({ idEquipo }) => {
   const [isEditing, setIsEditing] = useState(false); 
   const [updatedEquipo, setUpdatedEquipo] = useState({}); 
   const [colaboradores, setColaboradores] = useState([]); 
+  const [softwares, setSoftwares] = useState([]); // Nuevo estado para los softwares asociados
   const [hasChanges, setHasChanges] = useState(false); 
   const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para el modal
   const navigate = useNavigate(); // Hook de navegación
@@ -29,27 +30,34 @@ const EquipoCompleto = ({ idEquipo }) => {
     const fetchEquipo = async () => {
       setLoading(true);
       try {
+        // Solicitud para obtener los datos del equipo
         const response = await axios.get(`http://localhost:3550/api/equipos/${idEquipo}`);
         setEquipo(response.data);
-        setUpdatedEquipo(response.data); 
-
+        setUpdatedEquipo(response.data);
+  
+        // Si el equipo tiene un colaborador asociado, cargarlo
         if (response.data.idColaborador) {
           const colaboradorResponse = await axios.get(`http://localhost:3550/api/colaboradores/${response.data.idColaborador}`);
           setColaborador(colaboradorResponse.data);
         }
-
+  
+        // Cargar lista de todos los colaboradores
         const colaboradoresResponse = await axios.get('http://localhost:3550/api/colaboradores');
         setColaboradores(colaboradoresResponse.data);
-
+  
+        // Nueva solicitud: cargar los softwares asociados al equipo
+        const softwareResponse = await axios.get(`http://localhost:3550/api/software/equipo/${idEquipo}`);
+        setSoftwares(softwareResponse.data);  // Guardar los softwares asociados en el estado
+  
         setError(null);
       } catch (error) {
-        console.error('Error al cargar los datos del equipo:', error);
-        setError('Error al cargar los datos del equipo.');
+        console.error('Error al cargar los datos del equipo o los softwares:', error);
+        setError('Error al cargar los datos del equipo o los softwares.');
       } finally {
         setLoading(false);
       }
     };
-
+  
     if (idEquipo) {
       fetchEquipo();
     }
@@ -163,24 +171,8 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faMicrochip} /> Procesador: {isEditing ? (
         <input type="text" name="procesador" value={updatedEquipo.procesador} onChange={handleInputChange} />
       ) : equipo.procesador}</p>
-      
- <p><FontAwesomeIcon icon={faWrench} /> Componentes Adicionales: {isEditing ? (
-  <textarea 
-    name="componentesAdicionales"
-    value={updatedEquipo.componentesAdicionales ? JSON.stringify(updatedEquipo.componentesAdicionales, null, 2) : ''}
-    onChange={e => {
-      // Almacenamos el texto sin tratar de convertirlo a JSON de inmediato
-      setUpdatedEquipo((prev) => ({
-        ...prev,
-        componentesAdicionales: e.target.value, // Mantenemos el valor como string
-      }));
-      setHasChanges(true);
-    }}
-  />
-) : JSON.stringify(equipo.componentesAdicionales, null, 2)}</p>
 
-
-      {/* Campos adicionales */}
+      {/* Estado Físico y Componentes adicionales */}
       <p><FontAwesomeIcon icon={faShieldAlt} /> Estado Físico: {isEditing ? (
         <input type="text" name="estadoFisico" value={updatedEquipo.estadoFisico} onChange={handleInputChange} />
       ) : equipo.estadoFisico}</p>
@@ -197,7 +189,7 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faMicrochip} /> Sistema Operativo: {isEditing ? (
         <input type="text" name="sistemaOperativo" value={updatedEquipo.sistemaOperativo} onChange={handleInputChange} />
       ) : equipo.sistemaOperativo}</p>
-      <p><FontAwesomeIcon icon={faMicrochip} /> Dirección MAC: {isEditing ? (
+      <p><FontAwesomeIcon icon={faMicrochip} /> MAC: {isEditing ? (
         <input type="text" name="mac" value={updatedEquipo.mac} onChange={handleInputChange} />
       ) : equipo.mac}</p>
       <p><FontAwesomeIcon icon={faMicrochip} /> Hostname: {isEditing ? (
@@ -211,15 +203,6 @@ const EquipoCompleto = ({ idEquipo }) => {
           <p><FontAwesomeIcon icon={faTag} /> ID Empleado: {colaborador.id_empleado}</p>
           <p><FontAwesomeIcon icon={faTag} /> Nombre del Colaborador: {colaborador.nombre}</p>
         </>
-      )}
-
-      {/* Imagen del equipo */}
-      {equipo.imagen && (
-        <img
-          src={`http://localhost:3550${equipo.imagen}`}
-          alt="Imagen del equipo"
-          style={{ width: '150px' }}
-        />
       )}
 
       {/* Auxiliares asociados */}
@@ -245,6 +228,20 @@ const EquipoCompleto = ({ idEquipo }) => {
       >
         <SoftwareForm idEquipo={idEquipo} onClose={handleCloseModal} />
       </Modal>
+
+      {/* Listado de Softwares Asociados */}
+      <h2>Softwares Asociados</h2>
+      {softwares.length > 0 ? (
+        <ul>
+          {softwares.map((software, index) => (
+            <li key={index}>
+              <p>{software.nombre} - {software.version}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No hay softwares asociados a este equipo.</p>
+      )}
     </div>
   );
 };

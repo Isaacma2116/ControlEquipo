@@ -16,9 +16,18 @@ const Home = () => {
     setSelectedType('equipo');
   };
 
+  const handleSoftwareClick = (id) => {
+    setSelectedId(id);
+    setSelectedType('software');
+  };
+
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <Sidebar onColaboradorClick={handleColaboradorClick} onEquipoClick={handleEquipoClick} />
+      <Sidebar
+        onColaboradorClick={handleColaboradorClick}
+        onEquipoClick={handleEquipoClick}
+        onSoftwareClick={handleSoftwareClick} // Añadir el manejador para software
+      />
       {selectedId && <DetailPanel id={selectedId} tipo={selectedType} />}
     </div>
   );
