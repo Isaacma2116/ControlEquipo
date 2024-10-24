@@ -24,9 +24,9 @@ const useDebounce = (value, delay) => {
 const SoftwareForm = ({ onSave, onClose }) => {
     const [nombre, setNombre] = useState('');
     const [version, setVersion] = useState('');
-    const [fechaAdquisicion, setFechaAdquisicion] = useState(null); 
-    const [fechaCaducidad, setFechaCaducidad] = useState(null); 
-    const [tipoLicencia, setTipoLicencia] = useState('mensual'); 
+    const [fechaAdquisicion, setFechaAdquisicion] = useState(null);
+    const [fechaCaducidad, setFechaCaducidad] = useState(null);
+    const [tipoLicencia, setTipoLicencia] = useState('mensual');
     const [claveLicencia, setClaveLicencia] = useState('');
     const [correoAsociado, setCorreoAsociado] = useState('');
     const [contrasenaCorreo, setContrasenaCorreo] = useState('');
@@ -39,25 +39,27 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [error, setError] = useState(null);
     const [recentSearches, setRecentSearches] = useState([]);
     const [softwareNames, setSoftwareNames] = useState([]);
-    const [tooltip, setTooltip] = useState(null); 
+    const [tooltip, setTooltip] = useState(null);
 
     // Valor debounced para la búsqueda
     const searchTerm = useDebounce(searchTermInput, 500);
 
     // Fetch para equipos
     useEffect(() => {
-        const fetchEquipos = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('http://localhost:3550/api/equipos');
-                setEquipos(response.data);
-            } catch (error) {
-                setError('Hubo un problema al cargar los equipos.');
-            }
-            setLoading(false);
-        };
-        fetchEquipos();
-    }, []);
+        if (equipos.length === 0) {
+            const fetchEquipos = async () => {
+                setLoading(true);
+                try {
+                    const response = await axios.get('http://localhost:3550/api/equipos');
+                    setEquipos(response.data);
+                } catch (error) {
+                    setError('Hubo un problema al cargar los equipos.');
+                }
+                setLoading(false);
+            };
+            fetchEquipos();
+        }
+    }, [equipos]);
 
     // Fetch para nombres de software
     useEffect(() => {
@@ -141,45 +143,44 @@ const SoftwareForm = ({ onSave, onClose }) => {
 
     // Validar si el formulario es válido
     const isFormValid = () => {
-        return nombre && claveLicencia;
+        return nombre.trim() && claveLicencia.trim();
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!isFormValid()) {
-            alert("Por favor, completa todos los campos obligatorios.");
+            setError("Por favor, completa todos los campos obligatorios.");
             return;
         }
-    
+
         const softwareData = {
             nombre,
             version,
             fechaAdquisicion: fechaAdquisicion || null,
             fechaCaducidad: tipoLicencia === 'vitalicia' ? null : fechaCaducidad,
             tipoLicencia,
-            claveLicencia,  // Solo clave de licencia
+            claveLicencia,
             correoAsociado,
             contrasenaCorreo,
             estado,
-            id_equipos: idEquipo,  // Asegúrate de que `idEquipo` esté aquí
+            id_equipos: idEquipo,
             licenciaCaducada
         };
-    
+
         try {
             const response = await axios.post('http://localhost:3550/api/software', softwareData);
             if (response.status === 201) {
                 onSave(response.data);
             } else {
-                console.error('Error al guardar el software:', response.status);
+                setError('Error al guardar el software.');
             }
         } catch (error) {
-            console.error('Error al enviar los datos al backend:', error.response?.data || error.message);
+            setError(error.response?.data || 'Error al enviar los datos.');
         }
-    
+
         onClose();
     };
-    
 
     const toggleTooltip = (field) => {
         setTooltip(tooltip === field ? null : field);
@@ -191,6 +192,8 @@ const SoftwareForm = ({ onSave, onClose }) => {
                 <span className="close-button" onClick={onClose}>&times;</span>
                 <form onSubmit={handleSubmit}>
                     <h2>Agregar Software</h2>
+
+                    {error && <p className="error-message">{error}</p>}
 
                     <label>
                         Nombre del Software:
@@ -205,11 +208,15 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         required
                     />
                     <datalist id="software-names">
-                        {softwareNames.map((software, index) => (
-                            <option key={index} value={software.nombre}>
-                                {software.nombre} (Registrado {software.count} veces)
-                            </option>
-                        ))}
+                        {softwareNames.length > 0 ? (
+                            softwareNames.map((software, index) => (
+                                <option key={index} value={software.nombre}>
+                                    {software.nombre} (Registrado {software.count || 0} veces)
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>No se encontraron nombres de software</option>
+                        )}
                     </datalist>
 
                     <label>
@@ -320,19 +327,21 @@ const SoftwareForm = ({ onSave, onClose }) => {
                     {loading ? (
                         <p>Buscando equipos...</p>
                     ) : (
-                        <select value={idEquipo} onChange={handleEquipoChange}>
-                            <option value="">Ningún equipo asociado</option>
-                            {filteredEquipos.length > 0 ? (
-                                filteredEquipos.map((equipo) => (
-                                    <option key={equipo.id_equipos} value={equipo.id_equipos}>
-                                        {equipo.id_equipos} - {equipo.nombre}
-                                    </option>
-                                ))
-                            ) : (
-                                <option disabled>No se encontraron equipos</option>
-                            )}
-                            <option onClick={handleAddNewEquipo}>Agregar nuevo equipo</option>
-                        </select>
+                        <>
+                            <select value={idEquipo} onChange={handleEquipoChange}>
+                                <option value="">Ningún equipo asociado</option>
+                                {filteredEquipos.length > 0 ? (
+                                    filteredEquipos.map((equipo) => (
+                                        <option key={equipo.id_equipos} value={equipo.id_equipos}>
+                                            {equipo.id_equipos} - {equipo.nombre}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>No se encontraron equipos</option>
+                                )}
+                            </select>
+                            <button type="button" onClick={handleAddNewEquipo}>Agregar nuevo equipo</button>
+                        </>
                     )}
 
                     <label>

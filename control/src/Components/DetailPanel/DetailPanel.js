@@ -1,7 +1,8 @@
 import React from 'react';
 import ColaboradorDetail from './Infocompleta/ColaboradorDetail';
 import EquipoCompleto from './Infocompleta/EquipoCompleto';
-import SoftwareDetail from './Infocompleta/SoftwareDetail';  // Asegúrate de importar correctamente
+import SoftwareDetail from './Infocompleta/SoftwareDetail';
+import EquipoAnalysis from './Infocompleta/EquipoAnalysis';  // Asegúrate de importar correctamente
 
 const DetailPanel = ({ id, tipo }) => {
   if (tipo === 'colaborador') {
@@ -10,6 +11,8 @@ const DetailPanel = ({ id, tipo }) => {
     return <EquipoCompleto idEquipo={id} />;
   } else if (tipo === 'software') {
     return <SoftwareDetail softwareId={id} />;
+  } else if (tipo === 'equipo-analysis') {
+    return <EquipoAnalysis idEquipo={id} />;
   }
 
   return <p>Seleccione un elemento para ver detalles.</p>;

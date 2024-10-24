@@ -265,10 +265,16 @@ const EquipoForm = ({ show, handleClose }) => {
           ))}
           <button type="button" onClick={addComponent}><FontAwesomeIcon icon={faPlus} /> Agregar Componente</button>
 
-          <FormRow>
-            <FormField label="Estado físico" icon={faHdd} name="estadoFisico" value={formData.estadoFisico} onChange={handleChange} />
-            <FormField label="Detalles o incidentes" icon={faHdd} name="detallesIncidentes" value={formData.detallesIncidentes} onChange={handleChange} />
-          </FormRow>
+          <FormField label="Estado físico" icon={faHdd} name="estadoFisico" value={formData.estadoFisico} onChange={handleChange} list="estadoFisicoList" required>
+  <datalist id="estadoFisicoList">
+    <option value="Excelente (nuevo) y garantía" />
+    <option value="Bueno (Pérdida de garantía y raspones)" />
+    <option value="Regular (Golpes, Rayones grandes)" />
+    <option value="Malo (Cambio de piezas y pérdidas)" />
+    <option value="Urgente (No funciona correctamente)" />
+  </datalist>
+</FormField>
+
           <FormRow>
             <FormField label="Garantía" icon={faShieldAlt} name="garantia" value={formData.garantia} onChange={handleChange} />
             <FormField label="Fecha de compra" icon={faCalendarAlt} name="fechaCompra" value={formData.fechaCompra} type="date" onChange={handleChange} />

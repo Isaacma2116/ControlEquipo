@@ -7,11 +7,12 @@ import Equipos from './Equipos';
 import Celulares from './Celulares'; // Importa el componente de Celulares
 import Software from './Software'; // Importa el componente de Software
 
-const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftwareClick }) => {
+const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftwareClick, onEquipoAnalysisClick }) => {
   const [isColaboradoresVisible, setIsColaboradoresVisible] = useState(false);
   const [isEquiposVisible, setIsEquiposVisible] = useState(false);
   const [isCelularesVisible, setIsCelularesVisible] = useState(false); // Estado para la visibilidad de Celulares
   const [isSoftwareVisible, setIsSoftwareVisible] = useState(false); // Estado para la visibilidad de Software
+  const [isEquipoAnalysisVisible, setIsEquipoAnalysisVisible] = useState(false); // Estado para la visibilidad de EquipoAnalysis
 
   const toggleColaboradoresVisibility = () => {
     setIsColaboradoresVisible(!isColaboradoresVisible);
@@ -27,6 +28,10 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftware
 
   const toggleSoftwareVisibility = () => {
     setIsSoftwareVisible(!isSoftwareVisible);
+  };
+
+  const handleEquipoAnalysisClick = () => {
+    onEquipoAnalysisClick(); // Aquí llamamos directamente la función sin lista
   };
 
   return (
@@ -64,6 +69,13 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftware
         </h2>
       </div>
       {isSoftwareVisible && <Software onSoftwareClick={onSoftwareClick} />}
+
+      {/* Sección de EquipoAnalysis */}
+      <div className="menu-item" onClick={handleEquipoAnalysisClick}>
+        <h2>
+          Análisis de Equipos
+        </h2>
+      </div>
     </div>
   );
 };

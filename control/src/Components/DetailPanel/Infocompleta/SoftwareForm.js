@@ -40,6 +40,7 @@ const SoftwareForm = ({ idEquipo, onSave, onClose }) => {
         const fetchSoftwareNames = async () => {
             try {
                 const response = await axios.get('http://localhost:3550/api/software/names');
+                console.log('Datos recibidos:', response.data); // Verificar la respuesta de la API
                 setSoftwareNames(Array.isArray(response.data) ? response.data : []);
             } catch (error) {
                 console.error('Error al cargar nombres de software:', error);
@@ -143,7 +144,7 @@ const SoftwareForm = ({ idEquipo, onSave, onClose }) => {
                         onChange={(e) => setVersion(e.target.value)}
                     />
 
-<label>
+                    <label>
                         Clave de Licencia:
                         <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('claveLicencia')} className="info-icon" />
                         {tooltip === 'claveLicencia' && <div className="tooltip">Introduce aquí la clave de licencia que recibiste al comprar el software.</div>}

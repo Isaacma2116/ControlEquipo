@@ -228,21 +228,31 @@ const EquipoCompleto = ({ idEquipo }) => {
       >
         <SoftwareForm idEquipo={idEquipo} onClose={handleCloseModal} />
       </Modal>
-
-      {/* Listado de Softwares Asociados */}
       <h2>Softwares Asociados</h2>
-      {softwares.length > 0 ? (
-        <ul>
-          {softwares.map((software, index) => (
-            <li key={index}>
-              <p>{software.nombre} - {software.version}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No hay softwares asociados a este equipo.</p>
-      )}
+<div className="software-grid">
+  {softwares.length > 0 ? (
+    softwares.map((software, index) => (
+      <div key={index} className="software-item">
+        <p><strong>Nombre:</strong> {software.nombre}</p>
+        <p><strong>Versión:</strong> {software.version}</p>
+        <p><strong>Fecha de Adquisición:</strong> {software.fecha_adquisicion ? new Date(software.fecha_adquisicion).toLocaleDateString() : 'N/A'}</p>
+        <p><strong>Fecha de Caducidad:</strong> {software.fecha_caducidad ? new Date(software.fecha_caducidad).toLocaleDateString() : 'N/A'}</p>
+        <p><strong>Tipo de Licencia:</strong> {software.tipo_licencia}</p>
+        <p><strong>Clave de Licencia:</strong> {software.clave_licencia || 'N/A'}</p>
+        <p><strong>Correo Asociado:</strong> {software.correo_asociado || 'N/A'}</p>
+        <p><strong>Contraseña del Correo:</strong> {software.contrasena_correo || 'N/A'}</p>
+        <p><strong>Estado:</strong> {software.estado}</p>
+        <p><strong>ID del Equipo:</strong> {software.id_equipos}</p>
+        <p><strong>Licencia Caducada:</strong> {software.licencia_caducada ? 'Sí' : 'No'}</p>
+      </div>
+    ))
+  ) : (
+    <p>No hay softwares asociados a este equipo.</p>
+  )}
+</div>
+
     </div>
+    
   );
 };
 
