@@ -62,13 +62,11 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftware
       </div>
       {isCelularesVisible && <Celulares onCelularClick={onCelularClick} />}
 
-      {/* Sección de Software */}
-      <div className="menu-item" onClick={toggleSoftwareVisibility}>
+      <div className="menu-item" onClick={() => onSoftwareClick(null)}>  {/* No uses un enlace, simplemente llama al manejador */}
         <h2>
-          Software {isSoftwareVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+          Software <FontAwesomeIcon icon={faChevronRight} />
         </h2>
       </div>
-      {isSoftwareVisible && <Software onSoftwareClick={onSoftwareClick} />}
 
       {/* Sección de EquipoAnalysis */}
       <div className="menu-item" onClick={handleEquipoAnalysisClick}>

@@ -17,8 +17,8 @@ const Home = () => {
     setSelectedType('equipo');
   };
 
-  const handleSoftwareClick = (id) => {
-    setSelectedId(id);
+  const handleSoftwareClick = () => {
+    setSelectedId(null);  // No necesitas un ID específico para listar todos los software
     setSelectedType('software');
   };
 

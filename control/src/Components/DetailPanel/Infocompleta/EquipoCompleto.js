@@ -1,54 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal'; // Importamos Modal
+import Modal from 'react-modal';
 import SoftwareForm from './SoftwareForm'; // Asegúrate de tener la ruta correcta
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLaptop, faTag, faShieldAlt, faCalendarAlt, faMicrochip, faTv, faBarcode, faKey, faWrench, faExclamationTriangle, faEdit, faSave, faHdd, faPlus
 } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
+import { useNavigate } from 'react-router-dom';
 
 import './styles/EquipoCompleto.css';
 
-// Configuración inicial para Modal
-Modal.setAppElement('#root'); // #root es el ID del elemento raíz de tu aplicación
+Modal.setAppElement('#root');
 
 const EquipoCompleto = ({ idEquipo }) => {
   const [equipo, setEquipo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [colaborador, setColaborador] = useState(null); 
-  const [isEditing, setIsEditing] = useState(false); 
-  const [updatedEquipo, setUpdatedEquipo] = useState({}); 
-  const [colaboradores, setColaboradores] = useState([]); 
-  const [softwares, setSoftwares] = useState([]); // Nuevo estado para los softwares asociados
-  const [hasChanges, setHasChanges] = useState(false); 
-  const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para el modal
-  const navigate = useNavigate(); // Hook de navegación
+  const [colaborador, setColaborador] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [updatedEquipo, setUpdatedEquipo] = useState({});
+  const [colaboradores, setColaboradores] = useState([]);
+  const [softwares, setSoftwares] = useState([]); // Softwares asociados
+  const [hasChanges, setHasChanges] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const navigate = useNavigate(); // Para navegación
 
   useEffect(() => {
     const fetchEquipo = async () => {
       setLoading(true);
       try {
-        // Solicitud para obtener los datos del equipo
+        // Obtener datos del equipo
         const response = await axios.get(`http://localhost:3550/api/equipos/${idEquipo}`);
         setEquipo(response.data);
         setUpdatedEquipo(response.data);
-  
-        // Si el equipo tiene un colaborador asociado, cargarlo
+
+        // Obtener colaborador asociado, si lo hay
         if (response.data.idColaborador) {
           const colaboradorResponse = await axios.get(`http://localhost:3550/api/colaboradores/${response.data.idColaborador}`);
           setColaborador(colaboradorResponse.data);
         }
-  
-        // Cargar lista de todos los colaboradores
+
+        // Obtener lista de todos los colaboradores
         const colaboradoresResponse = await axios.get('http://localhost:3550/api/colaboradores');
         setColaboradores(colaboradoresResponse.data);
-  
-        // Nueva solicitud: cargar los softwares asociados al equipo
+
+        // Obtener los softwares asociados al equipo
         const softwareResponse = await axios.get(`http://localhost:3550/api/software/equipo/${idEquipo}`);
-        setSoftwares(softwareResponse.data);  // Guardar los softwares asociados en el estado
-  
+        setSoftwares(softwareResponse.data);
+
         setError(null);
       } catch (error) {
         console.error('Error al cargar los datos del equipo o los softwares:', error);
@@ -57,7 +56,7 @@ const EquipoCompleto = ({ idEquipo }) => {
         setLoading(false);
       }
     };
-  
+
     if (idEquipo) {
       fetchEquipo();
     }
@@ -75,9 +74,9 @@ const EquipoCompleto = ({ idEquipo }) => {
   const handleSave = async () => {
     try {
       await axios.put(`http://localhost:3550/api/equipos/${idEquipo}`, updatedEquipo);
-      setEquipo(updatedEquipo); 
-      setIsEditing(false); 
-      setHasChanges(false); 
+      setEquipo(updatedEquipo);
+      setIsEditing(false);
+      setHasChanges(false);
     } catch (error) {
       console.error('Error al guardar los cambios:', error);
       setError('Error al guardar los cambios.');
@@ -91,9 +90,9 @@ const EquipoCompleto = ({ idEquipo }) => {
         return;
       }
     }
-    setUpdatedEquipo(equipo); 
-    setIsEditing(false); 
-    setHasChanges(false); 
+    setUpdatedEquipo(equipo);
+    setIsEditing(false);
+    setHasChanges(false);
   };
 
   const handleOpenModal = () => {
@@ -119,7 +118,7 @@ const EquipoCompleto = ({ idEquipo }) => {
   return (
     <div className="equipo-detalles">
       <h1><FontAwesomeIcon icon={faLaptop} /> Detalles del Equipo</h1>
-      
+
       <div className="actions">
         {isEditing ? (
           <>
@@ -150,12 +149,12 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faMicrochip} /> Modelo: {isEditing ? (
         <input type="text" name="modelo" value={updatedEquipo.modelo} onChange={handleInputChange} />
       ) : equipo.modelo}</p>
-      <p><FontAwesomeIcon icon={faBarcode} /> Número de Serie: {equipo.numeroSerie}</p> 
+      <p><FontAwesomeIcon icon={faBarcode} /> Número de Serie: {equipo.numeroSerie}</p>
       <p><FontAwesomeIcon icon={faKey} /> Contraseña del Equipo: {isEditing ? (
         <input type="text" name="contrasenaEquipo" value={updatedEquipo.contrasenaEquipo} onChange={handleInputChange} />
       ) : equipo.contrasenaEquipo}</p>
 
-      {/* Campos de componentes adicionales */}
+      {/* Componentes adicionales */}
       <p><FontAwesomeIcon icon={faMicrochip} /> RAM: {isEditing ? (
         <input type="text" name="ram" value={updatedEquipo.ram} onChange={handleInputChange} />
       ) : equipo.ram}</p>
@@ -172,7 +171,7 @@ const EquipoCompleto = ({ idEquipo }) => {
         <input type="text" name="procesador" value={updatedEquipo.procesador} onChange={handleInputChange} />
       ) : equipo.procesador}</p>
 
-      {/* Estado Físico y Componentes adicionales */}
+      {/* Estado Físico */}
       <p><FontAwesomeIcon icon={faShieldAlt} /> Estado Físico: {isEditing ? (
         <input type="text" name="estadoFisico" value={updatedEquipo.estadoFisico} onChange={handleInputChange} />
       ) : equipo.estadoFisico}</p>
@@ -182,7 +181,7 @@ const EquipoCompleto = ({ idEquipo }) => {
       <p><FontAwesomeIcon icon={faShieldAlt} /> Garantía: {isEditing ? (
         <input type="text" name="garantia" value={updatedEquipo.garantia} onChange={handleInputChange} />
       ) : equipo.garantia}</p>
-      <p><FontAwesomeIcon icon={faCalendarAlt} /> Fecha de Compra: {equipo.fechaCompra}</p> 
+      <p><FontAwesomeIcon icon={faCalendarAlt} /> Fecha de Compra: {equipo.fechaCompra}</p>
       <p><FontAwesomeIcon icon={faShieldAlt} /> Activo: {isEditing ? (
         <input type="text" name="activo" value={updatedEquipo.activo} onChange={handleInputChange} />
       ) : equipo.activo}</p>
@@ -196,7 +195,7 @@ const EquipoCompleto = ({ idEquipo }) => {
         <input type="text" name="hostname" value={updatedEquipo.hostname} onChange={handleInputChange} />
       ) : equipo.hostname}</p>
 
-      {/* Detalles del colaborador */}
+      {/* Colaborador asignado */}
       <p> Colaborador Asignado</p>
       {colaborador && (
         <>
@@ -210,7 +209,7 @@ const EquipoCompleto = ({ idEquipo }) => {
       {equipo.auxiliares && equipo.auxiliares.length > 0 ? (
         equipo.auxiliares.map((auxiliar, index) => (
           <div key={index}>
-            <p><FontAwesomeIcon icon={faTv} /> Nombre del Auxiliar: {auxiliar.nombre_auxiliar}</p> 
+            <p><FontAwesomeIcon icon={faTv} /> Nombre del Auxiliar: {auxiliar.nombre_auxiliar}</p>
             <p><FontAwesomeIcon icon={faBarcode} /> Número de Serie: {auxiliar.numeroSerieAux}</p>
           </div>
         ))
@@ -228,31 +227,32 @@ const EquipoCompleto = ({ idEquipo }) => {
       >
         <SoftwareForm idEquipo={idEquipo} onClose={handleCloseModal} />
       </Modal>
+
+      {/* Softwares asociados */}
       <h2>Softwares Asociados</h2>
-<div className="software-grid">
-  {softwares.length > 0 ? (
-    softwares.map((software, index) => (
-      <div key={index} className="software-item">
-        <p><strong>Nombre:</strong> {software.nombre}</p>
-        <p><strong>Versión:</strong> {software.version}</p>
-        <p><strong>Fecha de Adquisición:</strong> {software.fecha_adquisicion ? new Date(software.fecha_adquisicion).toLocaleDateString() : 'N/A'}</p>
-        <p><strong>Fecha de Caducidad:</strong> {software.fecha_caducidad ? new Date(software.fecha_caducidad).toLocaleDateString() : 'N/A'}</p>
-        <p><strong>Tipo de Licencia:</strong> {software.tipo_licencia}</p>
-        <p><strong>Clave de Licencia:</strong> {software.clave_licencia || 'N/A'}</p>
-        <p><strong>Correo Asociado:</strong> {software.correo_asociado || 'N/A'}</p>
-        <p><strong>Contraseña del Correo:</strong> {software.contrasena_correo || 'N/A'}</p>
-        <p><strong>Estado:</strong> {software.estado}</p>
-        <p><strong>ID del Equipo:</strong> {software.id_equipos}</p>
-        <p><strong>Licencia Caducada:</strong> {software.licencia_caducada ? 'Sí' : 'No'}</p>
+      <div className="software-grid">
+        {softwares.length > 0 ? (
+          softwares.map((software, index) => (
+            <div key={index} className="software-item">
+              <p><strong>Nombre:</strong> {software.nombre}</p>
+              <p><strong>Versión:</strong> {software.version}</p>
+              <p><strong>Fecha de Adquisición:</strong> {software.fecha_adquisicion ? new Date(software.fecha_adquisicion).toLocaleDateString() : 'N/A'}</p>
+              <p><strong>Fecha de Caducidad:</strong> {software.fecha_caducidad ? new Date(software.fecha_caducidad).toLocaleDateString() : 'N/A'}</p>
+              <p><strong>Tipo de Licencia:</strong> {software.tipo_licencia}</p>
+              <p><strong>Clave de Licencia:</strong> {software.clave_licencia || 'N/A'}</p>
+              <p><strong>Correo Asociado:</strong> {software.correo_asociado || 'N/A'}</p>
+              <p><strong>Contraseña del Correo:</strong> {software.contrasena_correo || 'N/A'}</p>
+              <p><strong>Estado:</strong> {software.estado}</p>
+              <p><strong>ID del Equipo:</strong> {software.id_equipos}</p>
+              <p><strong>Licencia Caducada:</strong> {software.licencia_caducada ? 'Sí' : 'No'}</p>
+            </div>
+          ))
+        ) : (
+          <p>No hay softwares asociados a este equipo.</p>
+        )}
       </div>
-    ))
-  ) : (
-    <p>No hay softwares asociados a este equipo.</p>
-  )}
-</div>
 
     </div>
-    
   );
 };
 

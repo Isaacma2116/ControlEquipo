@@ -2,21 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
-import './styles/Software.css'; // Asegúrate de que este archivo exista
-import SoftwareForm from './Forms/SoftwareForm'; // Ajusta la ruta si es necesario
+import './styles/Software.css';
+import { Link } from 'react-router-dom';
 
 const Software = ({ onSoftwareClick }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [softwareList, setSoftwareList] = useState([]);
-    const [showForm, setShowForm] = useState(false); // Estado para controlar la visibilidad del formulario
+    const [softwareList, setSoftwareList] = useState([]); // Inicializar como array vacío
 
     useEffect(() => {
         const fetchSoftware = async () => {
             try {
                 const response = await axios.get('http://localhost:3550/api/software');
-                setSoftwareList(response.data);
+                console.log(response.data); // Añadir esto para verificar la respuesta de la API
+                setSoftwareList(Array.isArray(response.data) ? response.data : []); // Verifica que sea un array
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setSoftwareList([]); // En caso de error, mantener un array vacío
             }
         };
 
@@ -25,14 +26,6 @@ const Software = ({ onSoftwareClick }) => {
 
     const handleChange = (event) => {
         setSearchTerm(event.target.value);
-    };
-
-    const handleAddClick = () => {
-        setShowForm(true); // Muestra el formulario cuando se hace clic
-    };
-
-    const handleFormClose = () => {
-        setShowForm(false); // Cierra el formulario
     };
 
     return (
@@ -59,14 +52,10 @@ const Software = ({ onSoftwareClick }) => {
                     ))}
             </ul>
 
-            {/* Mostrar el formulario si showForm es true */}
-            {showForm && (
-                <SoftwareForm onSave={() => { /* Aquí puedes agregar lógica para guardar */ }} onClose={handleFormClose} />
-            )}
-
-            <button onClick={handleAddClick} className="add-software-button">
+            {/* Enlace para agregar software en lugar de botón */}
+            <Link to="/agregar-software" className="add-software-button">
                 <FontAwesomeIcon icon={faPlus} /> Agregar Software
-            </button>
+            </Link>
         </div>
     );
 };

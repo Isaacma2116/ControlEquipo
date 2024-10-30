@@ -40,6 +40,10 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [recentSearches, setRecentSearches] = useState([]);
     const [softwareNames, setSoftwareNames] = useState([]);
     const [tooltip, setTooltip] = useState(null);
+    
+    // Campos nuevos
+    const [tipoUso, setTipoUso] = useState('unico'); // Tipo de uso: único equipo o compartido
+    const [maxEquipos, setMaxEquipos] = useState(1); // Máximo de equipos en caso de uso compartido
 
     // Valor debounced para la búsqueda
     const searchTerm = useDebounce(searchTermInput, 500);
@@ -165,7 +169,9 @@ const SoftwareForm = ({ onSave, onClose }) => {
             contrasenaCorreo,
             estado,
             id_equipos: idEquipo,
-            licenciaCaducada
+            licenciaCaducada,
+            tipoUso, // Se incluye el tipo de uso (único o compartido)
+            maxEquipos: tipoUso === 'compartido' ? maxEquipos : 1 // Máximo de equipos en caso de licencia compartida
         };
 
         try {
@@ -311,6 +317,33 @@ const SoftwareForm = ({ onSave, onClose }) => {
                             {tooltip === 'licenciaCaducada' && <div className="tooltip">Marca esta casilla si la licencia del software ya ha expirado.</div>}
                         </label>
                     </div>
+
+                    <label>
+                        Tipo de Uso:
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('tipoUso')} className="info-icon" />
+                        {tooltip === 'tipoUso' && <div className="tooltip">Selecciona si esta licencia es para un solo equipo o compartida en múltiples equipos.</div>}
+                    </label>
+                    <select value={tipoUso} onChange={(e) => setTipoUso(e.target.value)}>
+                        <option value="unico">Un solo equipo</option>
+                        <option value="compartido">Compartida en múltiples equipos</option>
+                    </select>
+
+                    {tipoUso === 'compartido' && (
+                        <>
+                            <label>
+                                Número máximo de equipos:
+                                <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('maxEquipos')} className="info-icon" />
+                                {tooltip === 'maxEquipos' && <div className="tooltip">Ingresa el número máximo de equipos en los que esta licencia puede ser utilizada.</div>}
+                            </label>
+                            <input
+                                type="number"
+                                value={maxEquipos}
+                                onChange={(e) => setMaxEquipos(e.target.value)}
+                                min="1"
+                                required
+                            />
+                        </>
+                    )}
 
                     <label>
                         Buscar y seleccionar Equipo Asociado:
