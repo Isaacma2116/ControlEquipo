@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
-import SoftwareForm from './SoftwareForm'; // Asegúrate de tener la ruta correcta
+import SoftwareManagementForm from './Forms/SoftwareManagementForm'; // Actualiza la ruta aquí
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLaptop, faTag, faShieldAlt, faCalendarAlt, faMicrochip, faTv, faBarcode, faKey, faWrench, faExclamationTriangle, faEdit, faSave, faHdd, faPlus
@@ -225,7 +225,7 @@ const EquipoCompleto = ({ idEquipo }) => {
         className="modal"
         overlayClassName="overlay"
       >
-        <SoftwareForm idEquipo={idEquipo} onClose={handleCloseModal} />
+        <SoftwareManagementForm idEquipo={idEquipo} onClose={handleCloseModal} />
       </Modal>
 
       {/* Softwares asociados */}
@@ -238,20 +238,18 @@ const EquipoCompleto = ({ idEquipo }) => {
               <p><strong>Versión:</strong> {software.version}</p>
               <p><strong>Fecha de Adquisición:</strong> {software.fecha_adquisicion ? new Date(software.fecha_adquisicion).toLocaleDateString() : 'N/A'}</p>
               <p><strong>Fecha de Caducidad:</strong> {software.fecha_caducidad ? new Date(software.fecha_caducidad).toLocaleDateString() : 'N/A'}</p>
-              <p><strong>Tipo de Licencia:</strong> {software.tipo_licencia}</p>
-              <p><strong>Clave de Licencia:</strong> {software.clave_licencia || 'N/A'}</p>
-              <p><strong>Correo Asociado:</strong> {software.correo_asociado || 'N/A'}</p>
-              <p><strong>Contraseña del Correo:</strong> {software.contrasena_correo || 'N/A'}</p>
+              <p><strong>Tipo de Licencia:</strong> {software.tipoLicencia}</p> {/* Asegúrate de que el nombre del campo sea correcto */}
+              <p><strong>Clave de Licencia:</strong> {software.claveLicencia || 'N/A'}</p>
+              <p><strong>Correo Asociado:</strong> {software.correoAsociado || 'N/A'}</p>
+              <p><strong>Contraseña del Correo:</strong> {software.contrasenaCorreo || 'N/A'}</p>
               <p><strong>Estado:</strong> {software.estado}</p>
-              <p><strong>ID del Equipo:</strong> {software.id_equipos}</p>
-              <p><strong>Licencia Caducada:</strong> {software.licencia_caducada ? 'Sí' : 'No'}</p>
+              <p><strong>Licencia Caducada:</strong> {software.licenciaCaducada ? 'Sí' : 'No'}</p>
             </div>
           ))
         ) : (
           <p>No hay softwares asociados a este equipo.</p>
         )}
       </div>
-
     </div>
   );
 };

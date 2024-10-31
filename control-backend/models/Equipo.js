@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Colaborador = require('./Colaborador'); // Asegúrate de importar el modelo Colaborador para la relación
+const Colaborador = require('./Colaborador'); // Asegúrate de que el modelo Colaborador esté definido correctamente
 
 const Equipo = sequelize.define('Equipo', {
     id_equipos: {
@@ -93,8 +93,8 @@ const Equipo = sequelize.define('Equipo', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: Colaborador, // Modelo al que hace referencia
-            key: 'id' // Clave primaria de la tabla `Colaborador`
+            model: Colaborador, // Relación con la tabla de `Colaborador`
+            key: 'id'
         }
     },
     imagen: {
@@ -103,11 +103,11 @@ const Equipo = sequelize.define('Equipo', {
     }
 }, {
     tableName: 'equipos',
-    timestamps: false
+    timestamps: false // No usar timestamps automáticos
 });
 
 // Definir la relación con `Colaborador`
-Equipo.associate = models => {
+Equipo.associate = (models) => {
     Equipo.belongsTo(models.Colaborador, {
         foreignKey: 'idColaborador',
         as: 'colaborador'

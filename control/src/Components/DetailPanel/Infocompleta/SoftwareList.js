@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './styles/SoftwareList.css'; 
-import Modal from 'react-modal'; // Importamos Modal
-import SoftwareForm from './Forms/SoftwareForm'; // Asegúrate de que la ruta sea correcta
+import './styles/SoftwareList.css';
+import Modal from 'react-modal';
+import SoftwareForm from './Forms/SoftwareForm';
 
 const SoftwareList = () => {
   const [softwareList, setSoftwareList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [editSoftwareId, setEditSoftwareId] = useState(null); // ID del software en edición
-  const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para controlar el modal
+  const [editSoftwareId, setEditSoftwareId] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
     fetchSoftware();
@@ -21,36 +21,32 @@ const SoftwareList = () => {
       setSoftwareList(response.data);
       setLoading(false);
     } catch (error) {
-      setError('Error al cargar la lista de software');
+      setError(error.message || 'Error al cargar la lista de software'); // Convertir a cadena
       setLoading(false);
     }
   };
 
-  // Función para abrir el modal y establecer el software a editar
   const handleEditClick = (software) => {
-    setEditSoftwareId(software.id_software); // Establecer el ID del software en edición
-    setModalIsOpen(true); // Abrir el modal
+    setEditSoftwareId(software.id_software);
+    setModalIsOpen(true);
   };
 
-  // Función para abrir el modal para agregar nuevo software
   const handleAddNewSoftware = () => {
-    setEditSoftwareId(null); // No estamos editando, es un nuevo software
-    setModalIsOpen(true); // Abrir el modal
+    setEditSoftwareId(null);
+    setModalIsOpen(true);
   };
 
-  // Función para cerrar el modal
   const handleCloseModal = () => {
-    setModalIsOpen(false); // Cerrar el modal
-    fetchSoftware(); // Recargar la lista después de cerrar el modal
+    setModalIsOpen(false);
+    fetchSoftware();
   };
 
-  // Función para manejar la eliminación de software
   const handleDeleteClick = async (id_software) => {
     const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este software?');
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:3550/api/software/${id_software}`);
-        fetchSoftware(); // Recargar la lista después de eliminar
+        fetchSoftware();
       } catch (error) {
         console.error('Error al eliminar el software:', error);
       }
@@ -62,19 +58,15 @@ const SoftwareList = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div>{error}</div>; // Asegúrate de que error es una cadena
   }
 
   return (
     <div className="software-list-container">
       <h1>Lista de Software</h1>
-
-      {/* Botón para agregar nuevo software */}
       <button className="add-software-button" onClick={handleAddNewSoftware}>
         Agregar Nuevo Software
       </button>
-
-      {/* Listado de software */}
       {softwareList.length === 0 ? (
         <p>No hay software registrado.</p>
       ) : (
@@ -85,25 +77,31 @@ const SoftwareList = () => {
               <p>Versión: {software.version}</p>
               <p>Fecha de Adquisición: {software.fecha_adquisicion}</p>
               <p>Fecha de Caducidad: {software.fecha_caducidad || 'N/A'}</p>
-              <p>Tipo de Licencia: {software.tipo_licencia}</p>
-              <p>Clave de Licencia: {software.clave_licencia || 'N/A'}</p>
-              <p>Correo Asociado: {software.correo_asociado || 'N/A'}</p>
-              <p>Contraseña de Correo: {software.contrasena_correo || 'N/A'}</p>
+              <p>Tipo de Licencia: {software.tipoLicencia}</p>
+              <p>Clave de Licencia: {software.claveLicencia || 'N/A'}</p>
+              <p>Correo Asociado: {software.correoAsociado || 'N/A'}</p>
+              <p>Contraseña de Correo: {software.contrasenaCorreo || 'N/A'}</p>
               <p>Estado: {software.estado}</p>
-              <p>Licencia Caducada: {software.licencia_caducada ? 'Sí' : 'No'}</p>
+              <p>Licencia Caducada: {software.licenciaCaducada ? 'Sí' : 'No'}</p>
+              <p>Máximo de Licencias: {software.maxLicencias || 'N/A'}</p> {/* Agregado para mostrar maxLicencias */}
 
-              {/* Botones de editar y eliminar */}
+              {/* Mostrar los equipos asociados */}
+              <p>Equipos Asociados:</p>
+              {software.softwareEquipos && software.softwareEquipos.length > 0 ? (
+                <ul>
+                  {software.softwareEquipos.map((equipo) => (
+                    <li key={equipo.id_equipos}>{equipo.id_equipos} - {equipo.fechaAsignacion}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No hay equipos asociados.</p>
+              )}
+
               <div className="software-actions">
-                <button
-                  className="edit-button"
-                  onClick={() => handleEditClick(software)}
-                >
+                <button className="edit-button" onClick={() => handleEditClick(software)}>
                   Editar
                 </button>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteClick(software.id_software)}
-                >
+                <button className="delete-button" onClick={() => handleDeleteClick(software.id_software)}>
                   Eliminar
                 </button>
               </div>
@@ -111,8 +109,6 @@ const SoftwareList = () => {
           ))}
         </div>
       )}
-
-      {/* Modal para el formulario de agregar/editar software */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={handleCloseModal}

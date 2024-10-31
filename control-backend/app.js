@@ -5,14 +5,15 @@ const sequelize = require('./config/database');
 const colaboradorRoutes = require('./routes/colaboradorRoutes');
 const equipoRoutes = require('./routes/equipoRoutes');
 const authRoutes = require('./routes/authRoutes');
-const softwareRoutes = require('./routes/softwareRoutes'); // Asegúrate de incluir el módulo de rutas de software
+const softwareRoutes = require('./routes/softwareRoutes');
+const { Software, SoftwareEquipos } = require('./models/associations');
 
 const app = express();
 
 // Cargar variables de entorno desde el archivo .env
 require('dotenv').config();
 
-// Configurar CORS según las necesidades (puedes ajustar los orígenes permitidos)
+// Configurar CORS según las necesidades
 app.use(cors());
 
 // Middleware para parsear JSON y formularios
@@ -26,7 +27,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/colaboradores', colaboradorRoutes);
 app.use('/api/equipos', equipoRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/software', softwareRoutes); // Rutas para gestionar software
+app.use('/api/software', softwareRoutes);
 
 // Puerto de la aplicación
 const PORT = process.env.PORT || 3550;
@@ -36,7 +37,6 @@ sequelize.sync()
     .then(() => {
         app.listen(PORT, () => {
             console.log(`Servidor corriendo en el puerto ${PORT}`);
-            console.log(`Entorno: ${process.env.NODE_ENV || 'desarrollo'}`);
         });
     })
     .catch(error => {

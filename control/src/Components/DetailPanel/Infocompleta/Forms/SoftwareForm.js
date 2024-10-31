@@ -30,7 +30,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [claveLicencia, setClaveLicencia] = useState('');
     const [correoAsociado, setCorreoAsociado] = useState('');
     const [contrasenaCorreo, setContrasenaCorreo] = useState('');
-    const [equiposSeleccionados, setEquiposSeleccionados] = useState([]); 
+    const [equiposSeleccionados, setEquiposSeleccionados] = useState([]);
     const [estado, setEstado] = useState('sin uso');
     const [equipos, setEquipos] = useState([]);
     const [licenciaCaducada, setLicenciaCaducada] = useState(false);
@@ -40,7 +40,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [softwareNames, setSoftwareNames] = useState([]);
     const [noResults, setNoResults] = useState(false);
     const [tooltip, setTooltip] = useState(null);
-    const [maxDispositivos, setMaxDispositivos] = useState(1); 
+    const [maxDispositivos, setMaxDispositivos] = useState(1);
     const [dispositivosUsados, setDispositivosUsados] = useState(0);
     const [maxDispositivosError, setMaxDispositivosError] = useState('');
 
@@ -54,7 +54,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
                 const response = await axios.get('http://localhost:3550/api/equipos');
                 setEquipos(response.data);
             } catch (error) {
-                setError('Hubo un problema al cargar los equipos.');
+                setError('Hubo un problema al cargar los equipos.'); 
             }
             setLoading(false);
         };
@@ -91,23 +91,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
         fetchSoftwareNames();
     }, [searchTerm]);
 
-    // Fetch para contar cuántos equipos están usando esta licencia (usando id_software en lugar de nombre)
-    useEffect(() => {
-        const fetchDispositivosUsados = async () => {
-            if (!nombre) return;  // No hacemos la solicitud si el nombre está vacío.
-
-            try {
-                const response = await axios.get(`http://localhost:3550/api/software/${nombre}/equipos-usados`);
-                setDispositivosUsados(response.data.count);
-            } catch (error) {
-                console.error('Error al cargar dispositivos usados:', error);
-            }
-        };
-
-        fetchDispositivosUsados();
-    }, [nombre]);
-
-    // Verificación de que los valores no sean undefined antes de llamar a toLowerCase
     const filteredEquipos = equipos.filter(equipo => {
         const id_equipos = equipo.id_equipos ? equipo.id_equipos.toString().toLowerCase() : '';
         const nombreEquipo = equipo.nombre ? equipo.nombre.toLowerCase() : '';
@@ -138,7 +121,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
         alert('Redirigir o abrir modal para agregar un nuevo equipo.');
     };
 
-    // Cálculo del estado del software basado en la fecha de caducidad y equipos
+    // Cálculo del estado del software
     useEffect(() => {
         const hoy = new Date();
         const caducidad = new Date(fechaCaducidad);
@@ -152,7 +135,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
         }
     }, [equiposSeleccionados, fechaCaducidad, licenciaCaducada]);
 
-    // Cálculo automático de la fecha de caducidad basado en la fecha de adquisición y tipo de licencia
+    // Cálculo automático de la fecha de caducidad
     useEffect(() => {
         if (!fechaAdquisicion) return;
 
@@ -164,7 +147,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
         } else if (tipoLicencia === 'anual') {
             nuevaFechaCaducidad = new Date(fecha.setFullYear(fecha.getFullYear() + 1));
         } else if (tipoLicencia === 'vitalicia') {
-            nuevaFechaCaducidad = null; // No hay fecha de caducidad para licencias vitalicias
+            nuevaFechaCaducidad = null;
         }
 
         setFechaCaducidad(nuevaFechaCaducidad ? nuevaFechaCaducidad.toISOString().split('T')[0] : null);
@@ -172,7 +155,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
 
     const isFormValid = () => {
         if (!nombre.trim()) {
-            setError('El nombre del software es obligatorio.');
+            setError('El nombre del software es obligatorio.'); 
             return false;
         }
 
@@ -191,9 +174,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
             return;
         }
 
-        // Generamos los equipos restantes como 'sin uso'
-        const equiposRestantes = new Array(maxDispositivos - equiposSeleccionados.length).fill('sin uso');
-
         const softwareData = {
             nombre,
             version,
@@ -204,7 +184,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
             correoAsociado,
             contrasenaCorreo,
             estado,
-            equipos_asociados: [...equiposSeleccionados, ...equiposRestantes], // Equipos seleccionados + los sin uso
+            equipos_asociados: equiposSeleccionados,
             licenciaCaducada,
             maxDispositivos,
         };
@@ -213,11 +193,12 @@ const SoftwareForm = ({ onSave, onClose }) => {
             const response = await axios.post('http://localhost:3550/api/software', softwareData);
             if (response.status === 201) {
                 onSave(response.data);
+                window.location.reload(); // Refresca la página sin que el usuario lo note
             } else {
-                setError('Error al guardar el software.');
+                setError('Error al guardar el software.'); 
             }
         } catch (error) {
-            setError(error.response?.data || 'Error al enviar los datos.');
+            setError(error.response?.data.message || 'Error al enviar los datos.');
         }
 
         onClose();
@@ -234,7 +215,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
                 <form onSubmit={handleSubmit}>
                     <h2>Agregar Software</h2>
 
-                    {error && <p className="error-message">{error}</p>}
+                    {error && <p className="error-message">{error}</p>} 
 
                     <label>
                         Nombre del Software:

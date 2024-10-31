@@ -1,62 +1,62 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); 
+const sequelize = require('../config/database');
 
 const Software = sequelize.define('Software', {
     id_software: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
     nombre: {
         type: DataTypes.STRING,
-        allowNull: false // Este campo es obligatorio
+        allowNull: false,
     },
     version: {
         type: DataTypes.STRING,
-        allowNull: true // Opcional
+        allowNull: true,
     },
     fecha_adquisicion: {
         type: DataTypes.DATE,
         allowNull: true,
-        defaultValue: DataTypes.NOW // Asignar la fecha actual como valor por defecto
     },
     fecha_caducidad: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: true,
     },
-    tipo_licencia: {
+    tipoLicencia: {
         type: DataTypes.ENUM('mensual', 'anual', 'vitalicia'),
         allowNull: true,
-        defaultValue: 'mensual' // Valor por defecto para evitar nulos
+        defaultValue: 'mensual',
     },
-    clave_licencia: {
+    claveLicencia: {
         type: DataTypes.STRING,
-        allowNull: true // Clave opcional
+        allowNull: true,
     },
-    correo_asociado: {
+    correoAsociado: {
         type: DataTypes.STRING,
-        allowNull: true // No siempre es necesario
+        allowNull: true,
     },
-    contrasena_correo: {
+    contrasenaCorreo: {
         type: DataTypes.STRING,
-        allowNull: true // Campo opcional
+        allowNull: true,
     },
     estado: {
-        type: DataTypes.ENUM('activo', 'sin uso', 'vencido', 'vencido con equipo'),
-        allowNull: false // Campo obligatorio, siempre debe tener un estado
+        type: DataTypes.ENUM('sin uso', 'activo', 'vencido con equipo'),
+        allowNull: false,
     },
-    id_equipos: {
-        type: DataTypes.STRING(50),  
-        allowNull: true // Puede no estar asociado a un equipo
-    },
-    licencia_caducada: {
+    licenciaCaducada: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        defaultValue: false // Por defecto, se asume que la licencia no está caducada
-    }
+        defaultValue: false,
+    },
+    maxDispositivos: {
+        type: DataTypes.INTEGER,
+        allowNull: false, // Cambiado a false
+        defaultValue: 1,  // Establecer un valor por defecto
+    },
 }, {
     tableName: 'software',
-    timestamps: false // Deshabilitar timestamps si no se utilizan
+    timestamps: false,
 });
 
 module.exports = Software;
