@@ -39,7 +39,7 @@ exports.createSoftware = async (req, res) => {
             estado,
             equipos_asociados,
             licenciaCaducada,
-            maxLicencias, // Renombrar a maxLicencias para mayor claridad
+            maxDispositivos,
         } = req.body;
 
         // Validaciones
@@ -60,7 +60,7 @@ exports.createSoftware = async (req, res) => {
                 contrasenaCorreo: contrasenaCorreo || null,
                 estado: estado || 'sin uso',
                 licenciaCaducada: licenciaCaducada || false,
-                maxDispositivos: maxLicencias || 1, // Asegúrate de que se guarde un valor
+                maxDispositivos: parseInt(maxDispositivos, 10) || 1, // Asegura que se guarde como un número entero
             },
             { transaction: t }
         );
@@ -154,17 +154,19 @@ exports.getSoftwaresByEquipo = async (req, res) => {
 
         const softwareEquipos = await SoftwareEquipos.findAll({
             where: { id_equipos: idEquipo },
-            include: [{
-                model: Software,
-                as: 'software', // Asegúrate de que este alias coincide con la asociación
-            }],
+            include: [
+                {
+                    model: Software,
+                    as: 'software', // Asegúrate de que este alias coincide con la asociación
+                },
+            ],
         });
 
         if (softwareEquipos.length === 0) {
             return res.status(200).json({ message: 'No hay softwares asociados a este equipo.', data: [] });
         }
 
-        const softwareData = softwareEquipos.map(se => se.software); // Extraer solo el software asociado
+        const softwareData = softwareEquipos.map((se) => se.software); // Extraer solo el software asociado
         res.status(200).json(softwareData);
     } catch (error) {
         console.error('Error al obtener los softwares por equipo:', error);
@@ -176,7 +178,6 @@ exports.getSoftwaresByEquipo = async (req, res) => {
 exports.getSoftwareNames = async (req, res) => {
     try {
         const { query } = req.query;
-
         let condition = query ? { nombre: { [Op.like]: `%${query}%` } } : {};
 
         const softwareNames = await Software.findAll({
@@ -201,7 +202,6 @@ exports.getSoftwareNames = async (req, res) => {
 exports.getEquiposUsados = async (req, res) => {
     try {
         const { idSoftware } = req.params;
-
         const software = await Software.findByPk(idSoftware);
         if (!software) {
             return res.status(404).json({ message: 'Software no encontrado' });

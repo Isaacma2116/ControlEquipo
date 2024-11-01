@@ -21,7 +21,7 @@ const SoftwareList = () => {
       setSoftwareList(response.data);
       setLoading(false);
     } catch (error) {
-      setError(error.message || 'Error al cargar la lista de software'); // Convertir a cadena
+      setError(error.message || 'Error al cargar la lista de software');
       setLoading(false);
     }
   };
@@ -58,7 +58,7 @@ const SoftwareList = () => {
   }
 
   if (error) {
-    return <div>{error}</div>; // Asegúrate de que error es una cadena
+    return <div>{error}</div>;
   }
 
   return (
@@ -83,14 +83,14 @@ const SoftwareList = () => {
               <p>Contraseña de Correo: {software.contrasenaCorreo || 'N/A'}</p>
               <p>Estado: {software.estado}</p>
               <p>Licencia Caducada: {software.licenciaCaducada ? 'Sí' : 'No'}</p>
-              <p>Máximo de Licencias: {software.maxLicencias || 'N/A'}</p> {/* Agregado para mostrar maxLicencias */}
+              <p>Máximo de Licencias: {software.maxDispositivos || 'N/A'}</p> {/* Asegúrate de que el campo sea maxDispositivos */}
 
               {/* Mostrar los equipos asociados */}
               <p>Equipos Asociados:</p>
               {software.softwareEquipos && software.softwareEquipos.length > 0 ? (
                 <ul>
                   {software.softwareEquipos.map((equipo) => (
-                    <li key={equipo.id_equipos}>{equipo.id_equipos} - {equipo.fechaAsignacion}</li>
+                    <li key={equipo.id_equipos}>{equipo.id_equipos}</li>
                   ))}
                 </ul>
               ) : (

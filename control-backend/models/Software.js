@@ -51,8 +51,8 @@ const Software = sequelize.define('Software', {
     },
     maxDispositivos: {
         type: DataTypes.INTEGER,
-        allowNull: false, // Cambiado a false
-        defaultValue: 1,  // Establecer un valor por defecto
+        allowNull: false, // El valor no puede ser nulo
+        defaultValue: 1,  // Puedes cambiar o eliminar este valor por defecto
     },
 }, {
     tableName: 'software',
