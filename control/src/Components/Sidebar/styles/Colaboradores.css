@@ -1,145 +1,207 @@
-/* Estilos generales del contenedor del sidebar */
+/* Contenedor del sidebar */
 .colaboradores-sidebar-menu {
     width: 100%;
     padding: 20px;
     color: #ecf0f1;
     font-family: 'Arial', sans-serif;
     box-sizing: border-box;
-    overflow-y: auto;  /* Habilita el scroll vertical si hay más de 4 elementos */
-    overflow-x: hidden;  /* Oculta el scroll horizontal */
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #2c3e50; /* Fondo azul oscuro */
+    border-radius: 15px; /* Bordes más redondeados */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra más definida para destacar */
 }
 
-/* Estilos para la barra de desplazamiento (scrollbar) vertical */
-.colaboradores-sidebar-menu::-webkit-scrollbar {
-    width: 8px;  /* Ancho de la barra de desplazamiento vertical */
-}
-
-.colaboradores-sidebar-menu::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);  /* Color suave para la barra */
-    border-radius: 10px;  /* Bordes redondeados */
-}
-
-.colaboradores-sidebar-menu::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.4);  /* Un poco más visible al hacer hover */
-}
-
-.colaboradores-sidebar-menu::-webkit-scrollbar-track {
-    background: transparent;  /* Fondo transparente para la pista */
-}
-
-/* Para otros navegadores modernos que soporten scrollbars personalizados */
-.colaboradores-sidebar-menu {
-    scrollbar-width: thin;  /* Reduce el tamaño de la barra en Firefox */
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;  /* Colores de la barra y el fondo */
-}
-
-/* Contenedor de la barra de búsqueda */
+/* Contenedor del buscador */
 .colaboradores-sidebar-menu .search-container {
     position: relative;
-    width: 100%;
-    margin-bottom: 20px;  /* Espacio debajo de la barra de búsqueda */
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaciado entre la barra de búsqueda y el filtro */
+    margin-bottom: 25px;
 }
 
-/* Icono de búsqueda dentro de la barra */
-.colaboradores-sidebar-menu .search-icon {
+/* Icono de búsqueda */
+.search-icon {
     position: absolute;
-    left: 15px;  /* Ajustado para alinear correctamente dentro del campo */
+    left: 20px; /* Más espacio del borde izquierdo */
     top: 50%;
     transform: translateY(-50%);
-    color: #ccc;  /* Color sutil para el icono */
-    transition: color 0.3s ease;  /* Transición para el cambio de color */
+    color: #7f8c8d;
+    font-size: 20px; /* Tamaño de icono más grande */
 }
 
-.colaboradores-sidebar-menu .search-icon:hover {
-    color: #888;  /* Cambia el color del icono cuando se pasa el ratón por encima */
-}
-
-/* Estilo de la barra de búsqueda */
-.colaboradores-sidebar-menu .search-bar {
+/* Campo de entrada del buscador */
+.search-bar {
     width: 100%;
-    padding: 10px 20px 10px 45px;  /* Ajustado para no sobreponer el icono */
-    border-radius: 25px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: #333;
+    padding: 12px 20px 12px 50px; /* Espacio para el icono de búsqueda */
+    border-radius: 30px;
+    border: 1px solid #bbb;
+    background-color: #f5f5f5;
+    color: #2c3e50;
     box-sizing: border-box;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    height: 50px; /* Altura del campo de búsqueda */
+    font-size: 16px; /* Tamaño de fuente más grande */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
 }
 
-.colaboradores-sidebar-menu .search-bar:focus {
+.search-bar:focus {
     outline: none;
-    background-color: #e9e9e9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);  /* Añade sombra al enfocar */
+    background-color: #fff;
+    border: 1px solid #3498db; /* Borde azul al enfocar */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más suave */
 }
 
-/* Estilos para la lista de colaboradores */
+/* Botón del filtro */
+.filter-button {
+    background-color: #3498db; /* Color azul claro */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0;
+}
+
+.filter-button:hover {
+    background-color: #1f77b4; /* Azul más oscuro */
+    transform: translateY(-3px); /* Efecto de levantamiento */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25); /* Sombra más profunda */
+}
+
+.filter-button:active {
+    transform: translateY(1px); /* Efecto de presión */
+}
+
+/* Menú emergente de filtros */
+.filter-menu {
+    position: absolute;
+    top: 60px; /* Ajustado para colocarlo debajo del botón de filtro */
+    right: 0;
+    background-color: #ecf0f1; /* Fondo claro */
+    border: 1px solid #ccc;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 10;
+    width: 240px;
+    animation: fadeIn 0.3s ease; /* Efecto de aparición */
+}
+
+.filter-menu p {
+    margin: 0 0 15px;
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.filter-menu button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: #2c3e50;
+    font-size: 15px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filter-menu button:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Lista de colaboradores */
 .colaboradores-sidebar-menu ul {
-    list-style: none;  /* Elimina los marcadores predeterminados */
+    list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 200px;  /* Limita la altura para mostrar solo 4 elementos */
-    overflow-y: auto;  /* Habilita el scroll si hay más de 4 elementos */
-    overflow-x: hidden;  /* Oculta la barra de desplazamiento horizontal */
+    max-height: 280px; /* Más altura para mostrar más elementos */
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #7f8c8d;
+    border-radius: 10px;
+    background-color: #34495e;
+    padding: 10px;
 }
 
-/* Estilos para cada elemento de la lista de colaboradores */
 .colaboradores-sidebar-menu ul li {
-    padding: 10px;
-    margin-bottom: 8px;
-    background-color: #34495e;  /* Fondo oscuro para cada item */
-    border-radius: 10px;  /* Bordes redondeados */
-    cursor: pointer;  /* Indica que el elemento es interactivo */
-    transition: background-color 0.3s, transform 0.3s ease-in-out;  /* Transición suave para efectos */
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #2c3e50;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #ecf0f1;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .colaboradores-sidebar-menu ul li:hover {
-    background-color: #1abc9c;  /* Color al hacer hover */
-    transform: translateX(5px);  /* Desplazamiento lateral al hacer hover */
-    color: white;
+    background-color: #1abc9c;
+    transform: translateX(7px);
+    color: #fff;
+    box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Botón para agregar colaborador */
+/* Scrollbar personalizado para la lista de colaboradores */
+.colaboradores-sidebar-menu ul::-webkit-scrollbar {
+    width: 10px; /* Ancho de la barra de desplazamiento */
+}
+
+.colaboradores-sidebar-menu ul::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3); /* Color suave para la barra */
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+.colaboradores-sidebar-menu ul::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.6); /* Más visible al hacer hover */
+}
+
+/* Botón agregar colaborador */
 .add-colaborador-button {
-    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);  /* Degradado verde */
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
     color: white;
-    border: 1px solid #16a085;  /* Borde delgado */
-    height: 30px;  /* Altura fija más pequeña */
-    padding: 0 15px;  /* Ajuste del padding horizontal para el tamaño más pequeño */
-    border-radius: 30px;  /* Botón redondeado */
-    cursor: pointer;
-    font-size: 12px;  /* Tamaño de letra reducido */
-    font-weight: 600;  /* Negrita pero no exagerada */
-    text-transform: uppercase;  /* Letras mayúsculas */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);  /* Sombra suave */
-    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 8px;  /* Espacio entre el icono y el texto ajustado */
-    margin-top: 20px;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 30px;
 }
 
-/* Efecto al pasar el mouse */
 .add-colaborador-button:hover {
-    background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);  /* Inversión del degradado */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);  /* Sombra más definida */
-    transform: translateY(-3px);  /* Levanta ligeramente el botón */
+    background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 
-/* Efecto al hacer clic */
 .add-colaborador-button:active {
-    background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);  /* Conserva el degradado inverso */
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);  /* Sombra más pequeña */
-    transform: translateY(1px);  /* Desplaza el botón hacia abajo al hacer clic */
+    transform: translateY(1px);
 }
-
-/* Estilo del icono dentro del botón */
-.add-colaborador-button svg {
-    font-size: 14px;  /* Tamaño del icono ajustado */
-    fill: white;  /* Color blanco para el icono */
-}
-
-
-
-
-

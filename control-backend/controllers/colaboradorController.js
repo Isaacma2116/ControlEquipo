@@ -1,5 +1,5 @@
 const Colaborador = require('../models/Colaborador');
-const Equipo = require('../models/Equipo');  // Asegúrate de que Equipo está correctamente importado
+const Equipo = require('../models/Equipo'); // Asegúrate de que Equipo está correctamente importado
 const path = require('path');
 const fs = require('fs');
 
@@ -7,6 +7,10 @@ const fs = require('fs');
 exports.createColaborador = async (req, res) => {
   try {
     const { id_empleado, nombre, area, cargo, correo, telefono_personal, correo_smex } = req.body;
+    if (!id_empleado || !nombre || !area || !cargo || !correo) {
+      return res.status(400).json({ error: 'Faltan datos requeridos.' });
+    }
+
     const fotografia = req.file ? req.file.filename : null;
 
     const newColaborador = await Colaborador.create({
@@ -22,6 +26,7 @@ exports.createColaborador = async (req, res) => {
 
     res.status(201).json(newColaborador);
   } catch (error) {
+    console.error('Error al crear colaborador:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -30,8 +35,12 @@ exports.createColaborador = async (req, res) => {
 exports.getColaboradores = async (req, res) => {
   try {
     const colaboradores = await Colaborador.findAll();
+    if (colaboradores.length === 0) {
+      return res.status(200).json({ message: 'No se encontraron colaboradores.', colaboradores: [] });
+    }
     res.status(200).json(colaboradores);
   } catch (error) {
+    console.error('Error al obtener colaboradores:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -46,6 +55,7 @@ exports.getColaboradorById = async (req, res) => {
       res.status(404).json({ error: 'Colaborador no encontrado' });
     }
   } catch (error) {
+    console.error('Error al obtener colaborador:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -54,15 +64,22 @@ exports.getColaboradorById = async (req, res) => {
 exports.getColaboradorWithEquipos = async (req, res) => {
   try {
     const colaborador = await Colaborador.findByPk(req.params.id, {
-      include: [{ model: Equipo, as: 'equipos' }]
+      include: [
+        {
+          model: Equipo,
+          as: 'equipos',
+        },
+      ],
     });
-    if (colaborador) {
-      res.status(200).json(colaborador);
-    } else {
-      res.status(404).json({ error: 'Colaborador no encontrado' });
+
+    if (!colaborador) {
+      return res.status(404).json({ error: 'Colaborador no encontrado' });
     }
+
+    res.status(200).json(colaborador);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error al obtener colaborador con equipos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
@@ -70,32 +87,37 @@ exports.getColaboradorWithEquipos = async (req, res) => {
 exports.updateColaborador = async (req, res) => {
   try {
     const { id_empleado, nombre, area, cargo, correo, telefono_personal, correo_smex } = req.body;
+    if (!id_empleado || !nombre || !area || !cargo || !correo) {
+      return res.status(400).json({ error: 'Faltan datos requeridos.' });
+    }
+
     const fotografia = req.file ? req.file.filename : req.body.fotografia;
 
     const colaborador = await Colaborador.findByPk(req.params.id);
-    if (colaborador) {
-      // Si hay una nueva imagen, elimina la anterior
-      if (req.file && colaborador.fotografia) {
-        const oldPath = path.join(__dirname, '..', 'uploads', 'colaboradores', colaborador.fotografia);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
-
-      colaborador.update({
-        id_empleado,
-        nombre,
-        area,
-        cargo,
-        correo,
-        telefono_personal,
-        correo_smex,
-        fotografia,
-      });
-
-      res.status(200).json(colaborador);
-    } else {
-      res.status(404).json({ error: 'Colaborador no encontrado' });
+    if (!colaborador) {
+      return res.status(404).json({ error: 'Colaborador no encontrado' });
     }
+
+    // Eliminar imagen anterior si hay una nueva
+    if (req.file && colaborador.fotografia) {
+      const oldPath = path.join(__dirname, '..', 'uploads', 'colaboradores', colaborador.fotografia);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
+    await colaborador.update({
+      id_empleado,
+      nombre,
+      area,
+      cargo,
+      correo,
+      telefono_personal,
+      correo_smex,
+      fotografia,
+    });
+
+    res.status(200).json(colaborador);
   } catch (error) {
+    console.error('Error al actualizar colaborador:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -117,6 +139,7 @@ exports.deleteColaborador = async (req, res) => {
       res.status(404).json({ error: 'Colaborador no encontrado' });
     }
   } catch (error) {
+    console.error('Error al eliminar colaborador:', error);
     res.status(500).json({ error: error.message });
   }
 };

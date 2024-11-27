@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronRight, faBars, faUsers, faDesktop, faMobileAlt, faTools } from '@fortawesome/free-solid-svg-icons';
 import './styles/Sidebar.css';
 import Colaboradores from './Colaboradores';
 import Equipos from './Equipos';
@@ -36,12 +36,21 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftware
 
   return (
     <div className="sidebar">
-      <h1>Menú</h1>
+      {/* Logo encima del menú */}
+      <div className="logo-container">
+        <img src="/SysLink.png" alt="SysLink Logo" className="logo" />
+      </div>
+
+      {/* Título del menú con icono */}
+      <h1 className="menu-title">
+        <FontAwesomeIcon icon={faBars} className="menu-icon" /> Menú
+      </h1>
 
       {/* Sección de Colaboradores */}
       <div className="menu-item" onClick={toggleColaboradoresVisibility}>
         <h2>
-          Colaboradores {isColaboradoresVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+          <FontAwesomeIcon icon={faUsers} className="menu-icon" /> Colaboradores 
+          {isColaboradoresVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
         </h2>
       </div>
       {isColaboradoresVisible && <Colaboradores onColaboradorClick={onColaboradorClick} />}
@@ -49,7 +58,8 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftware
       {/* Sección de Equipos */}
       <div className="menu-item" onClick={toggleEquiposVisibility}>
         <h2>
-          Equipos {isEquiposVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+          <FontAwesomeIcon icon={faDesktop} className="menu-icon" /> Equipos 
+          {isEquiposVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
         </h2>
       </div>
       {isEquiposVisible && <Equipos onEquipoClick={onEquipoClick} />}
@@ -57,21 +67,24 @@ const Sidebar = ({ onColaboradorClick, onEquipoClick, onCelularClick, onSoftware
       {/* Sección de Celulares */}
       <div className="menu-item" onClick={toggleCelularesVisibility}>
         <h2>
-          Celulares {isCelularesVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+          <FontAwesomeIcon icon={faMobileAlt} className="menu-icon" /> Celulares 
+          {isCelularesVisible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
         </h2>
       </div>
       {isCelularesVisible && <Celulares onCelularClick={onCelularClick} />}
 
-      <div className="menu-item" onClick={() => onSoftwareClick(null)}>  {/* No uses un enlace, simplemente llama al manejador */}
+      {/* Sección de Software */}
+      <div className="menu-item" onClick={() => onSoftwareClick(null)}>
         <h2>
-          Software <FontAwesomeIcon icon={faChevronRight} />
+          <FontAwesomeIcon icon={faTools} className="menu-icon" /> Software 
+          <FontAwesomeIcon icon={faChevronRight} />
         </h2>
       </div>
 
       {/* Sección de EquipoAnalysis */}
       <div className="menu-item" onClick={handleEquipoAnalysisClick}>
         <h2>
-          Análisis de Equipos
+          <FontAwesomeIcon icon={faDesktop} className="menu-icon" /> Análisis de Equipos
         </h2>
       </div>
     </div>

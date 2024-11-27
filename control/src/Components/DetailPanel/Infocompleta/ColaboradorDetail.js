@@ -1,54 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUser, faIdBadge, faBuilding, faEnvelope, faPhone, faLaptop
-} from '@fortawesome/free-solid-svg-icons';
-import './styles/ColaboradorDetail.css';  // Asegúrate de que la ruta al archivo CSS es correcta
+import { faUser, faIdBadge, faBuilding, faEnvelope, faPhone, faLaptop } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import './styles/ColaboradorDetail.css';
+import EquiposAsociados from './Forms/EquiposAsociados'; // Importamos el nuevo componente
 
 const ColaboradorDetail = ({ colaboradorId }) => {
   const [colaborador, setColaborador] = useState(null);
-  const [equipos, setEquipos] = useState([]);  // Estado para los equipos asociados
-  const [showEquipos, setShowEquipos] = useState(false);  // Controla la visibilidad de los equipos
-  const [loading, setLoading] = useState(true);  // Estado de carga
-  const [error, setError] = useState(null);  // Estado para manejar errores
+  const [equipos, setEquipos] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Reiniciar los estados en cada carga del colaborador
-    setColaborador(null);
-    setEquipos([]);
-    setShowEquipos(false);
     setLoading(true);
     setError(null);
 
-    // Solicitud para obtener los datos del colaborador
-    axios.get(`http://localhost:3550/api/colaboradores/${colaboradorId}`)
-      .then(response => {
+    axios
+      .get(`http://localhost:3550/api/colaboradores/${colaboradorId}/equipos`) // Ajusta la URL según tu backend
+      .then((response) => {
         const data = response.data;
-
-        // Verifica si el colaborador tiene equipos y asigna los estados correctamente
         setColaborador(data);
-        setEquipos(data.equipos || []);  // Asegurarse de que siempre sea un array
+        setEquipos(data.equipos || []);
       })
-      .catch(error => {
+      .catch((err) => {
+        console.error('Error al cargar los datos del colaborador:', err);
         setError('Error al cargar los datos del colaborador.');
       })
       .finally(() => {
-        setLoading(false);  // Finalizar la carga independientemente del resultado
+        setLoading(false);
       });
   }, [colaboradorId]);
 
-  // Mostrar un mensaje de carga si los datos aún no están disponibles
   if (loading) {
     return <div>Cargando información del colaborador...</div>;
   }
 
-  // Mostrar un mensaje de error si algo salió mal
   if (error) {
     return <div>{error}</div>;
   }
 
-  // Verificar si no se encontró el colaborador
   if (!colaborador) {
     return <div>No se encontraron los datos del colaborador.</div>;
   }
@@ -57,41 +48,40 @@ const ColaboradorDetail = ({ colaboradorId }) => {
     <div className="colaborador-detail">
       <div className="img-container">
         {colaborador.fotografia && (
-          <img src={`http://localhost:3550/uploads/colaboradores/${colaborador.fotografia}`} alt="Fotografía del colaborador" />
+          <img
+            src={`http://localhost:3550/uploads/colaboradores/${colaborador.fotografia}`}
+            alt="Fotografía del colaborador"
+            className="colaborador-foto"
+          />
         )}
       </div>
-      <p><FontAwesomeIcon icon={faIdBadge} /> ID Empleado: {colaborador.id_empleado}</p>
-      <p><FontAwesomeIcon icon={faUser} /> Nombre: {colaborador.nombre}</p>
-      <p><FontAwesomeIcon icon={faBuilding} /> Área: {colaborador.area}</p>
-      <p><FontAwesomeIcon icon={faUser} /> Cargo: {colaborador.cargo}</p>
-      <p><FontAwesomeIcon icon={faEnvelope} /> Correo Personal: {colaborador.correo}</p>
-      <p><FontAwesomeIcon icon={faPhone} /> Teléfono Personal: {colaborador.telefono_personal}</p>
+      <p>
+        <FontAwesomeIcon icon={faIdBadge} /> <strong>ID Empleado:</strong> {colaborador.id_empleado}
+      </p>
+      <p>
+        <FontAwesomeIcon icon={faUser} /> <strong>Nombre:</strong> {colaborador.nombre}
+      </p>
+      <p>
+        <FontAwesomeIcon icon={faBuilding} /> <strong>Área:</strong> {colaborador.area}
+      </p>
+      <p>
+        <FontAwesomeIcon icon={faUser} /> <strong>Cargo:</strong> {colaborador.cargo}
+      </p>
+      <p>
+        <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo Personal:</strong> {colaborador.correo}
+      </p>
+      <p>
+        <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono Personal:</strong> {colaborador.telefono_personal}
+      </p>
 
-      {/* Botón para mostrar/ocultar equipos solo si existen */}
       {equipos.length > 0 && (
-        <button onClick={() => setShowEquipos(!showEquipos)}>
-          <FontAwesomeIcon icon={faLaptop} /> {showEquipos ? 'Ocultar Equipos' : 'Ver Equipos'}
+        <button onClick={() => setShowModal(true)} className="show-modal-btn">
+          <FontAwesomeIcon icon={faLaptop} /> Ver Equipos Asociados
         </button>
       )}
 
-      {/* Lista de equipos asociados si se han cargado */}
-      {showEquipos && equipos.length > 0 && (
-        <div className="equipos-list">
-          <h2>Equipos Asociados</h2>
-          {equipos.map(equipo => (
-            <div key={equipo.id_equipos} className="equipo-info">
-              {equipo.imagen && (
-                <img src={`http://localhost:3550/uploads/equipos/${equipo.imagen}`} alt={`Equipo ${equipo.nombre}`} />
-              )}
-              <p><strong>ID:</strong> {equipo.id_equipos}</p>
-              <p><strong>Nombre:</strong> {equipo.nombre}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Si no hay equipos */}
-      {equipos.length === 0 && <p>No hay equipos asociados.</p>}
+      {/* Renderizamos el modal de Equipos Asociados */}
+      <EquiposAsociados equipos={equipos} showModal={showModal} setShowModal={setShowModal} />
     </div>
   );
 };

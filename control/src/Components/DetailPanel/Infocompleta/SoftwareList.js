@@ -2,14 +2,25 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles/SoftwareList.css';
 import Modal from 'react-modal';
-import SoftwareForm from './Forms/SoftwareForm';
+import SoftwareEditForm from './Forms/SoftwareEditForm';
+import SoftwareForm from './Forms/SoftwareForm'; // Formulario para agregar software
+import SoftwareHistory from './Forms/SoftwareHistory';
+import ExpiryNotifications from './ExpiryNotifications';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
-const SoftwareList = () => {
+const SoftwareList = ({ onChangeTipo }) => {
   const [softwareList, setSoftwareList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editSoftwareId, setEditSoftwareId] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [addSoftwareModalIsOpen, setAddSoftwareModalIsOpen] = useState(false);
+  const [historyModalIsOpen, setHistoryModalIsOpen] = useState(false);
+  const [selectedSoftwareId, setSelectedSoftwareId] = useState(null);
+  const [showMenu, setShowMenu] = useState(null);
+  const [expandedLicenses, setExpandedLicenses] = useState(null);
+  const [expandedEquipments, setExpandedEquipments] = useState(null);
 
   useEffect(() => {
     fetchSoftware();
@@ -21,7 +32,7 @@ const SoftwareList = () => {
       setSoftwareList(response.data);
       setLoading(false);
     } catch (error) {
-      setError(error.message || 'Error al cargar la lista de software');
+      setError('Error al cargar la lista de software');
       setLoading(false);
     }
   };
@@ -31,14 +42,28 @@ const SoftwareList = () => {
     setModalIsOpen(true);
   };
 
-  const handleAddNewSoftware = () => {
-    setEditSoftwareId(null);
-    setModalIsOpen(true);
-  };
-
-  const handleCloseModal = () => {
+  const handleCloseEditModal = () => {
     setModalIsOpen(false);
     fetchSoftware();
+  };
+
+  const handleOpenAddSoftwareModal = () => {
+    setAddSoftwareModalIsOpen(true);
+  };
+
+  const handleCloseAddSoftwareModal = () => {
+    setAddSoftwareModalIsOpen(false);
+    fetchSoftware();
+  };
+
+  const handleViewHistory = (id) => {
+    setSelectedSoftwareId(id);
+    setHistoryModalIsOpen(true);
+  };
+
+  const handleCloseHistoryModal = () => {
+    setHistoryModalIsOpen(false);
+    setSelectedSoftwareId(null);
   };
 
   const handleDeleteClick = async (id_software) => {
@@ -53,6 +78,18 @@ const SoftwareList = () => {
     }
   };
 
+  const toggleMenu = (id) => {
+    setShowMenu(showMenu === id ? null : id);
+  };
+
+  const toggleLicenses = (id) => {
+    setExpandedLicenses(expandedLicenses === id ? null : id);
+  };
+
+  const toggleEquipments = (id) => {
+    setExpandedEquipments(expandedEquipments === id ? null : id);
+  };
+
   if (loading) {
     return <div>Cargando software...</div>;
   }
@@ -64,59 +101,134 @@ const SoftwareList = () => {
   return (
     <div className="software-list-container">
       <h1>Lista de Software</h1>
-      <button className="add-software-button" onClick={handleAddNewSoftware}>
+
+      {/* Componente de notificaciones */}
+      <ExpiryNotifications />
+
+      {/* Botón para navegar a nombres agrupados */}
+      <button className="add-software-button" onClick={() => onChangeTipo('grouped-names')}>
+        Ver Nombres Agrupados
+      </button>
+
+      {/* Botón para agregar software */}
+      <button className="add-software-button" onClick={handleOpenAddSoftwareModal}>
         Agregar Nuevo Software
       </button>
+
       {softwareList.length === 0 ? (
         <p>No hay software registrado.</p>
       ) : (
         <div className="software-grid">
           {softwareList.map((software) => (
             <div key={software.id_software} className="software-card">
-              <h3>{software.nombre}</h3>
+              <div className="software-header">
+                <h3>{software.nombre}</h3>
+                <button className="menu-button" onClick={() => toggleMenu(software.id_software)}>
+                  <FontAwesomeIcon icon={faCog} />
+                </button>
+              </div>
+
+              {showMenu === software.id_software && (
+                <div className="dropdown-menu">
+                  <button onClick={() => handleEditClick(software)}>Editar</button>
+                  <button onClick={() => handleDeleteClick(software.id_software)}>Eliminar</button>
+                  <button onClick={() => handleViewHistory(software.id_software)}>Historial</button>
+                </div>
+              )}
+
               <p>Versión: {software.version}</p>
               <p>Fecha de Adquisición: {software.fecha_adquisicion}</p>
               <p>Fecha de Caducidad: {software.fecha_caducidad || 'N/A'}</p>
               <p>Tipo de Licencia: {software.tipoLicencia}</p>
-              <p>Clave de Licencia: {software.claveLicencia || 'N/A'}</p>
-              <p>Correo Asociado: {software.correoAsociado || 'N/A'}</p>
-              <p>Contraseña de Correo: {software.contrasenaCorreo || 'N/A'}</p>
               <p>Estado: {software.estado}</p>
               <p>Licencia Caducada: {software.licenciaCaducada ? 'Sí' : 'No'}</p>
-              <p>Máximo de Licencias: {software.maxDispositivos || 'N/A'}</p> {/* Asegúrate de que el campo sea maxDispositivos */}
+              <p>Máximo de Licencias: {software.maxDispositivos || 'N/A'}</p>
 
-              {/* Mostrar los equipos asociados */}
-              <p>Equipos Asociados:</p>
-              {software.softwareEquipos && software.softwareEquipos.length > 0 ? (
-                <ul>
-                  {software.softwareEquipos.map((equipo) => (
-                    <li key={equipo.id_equipos}>{equipo.id_equipos}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No hay equipos asociados.</p>
+              {/* Botón para expandir licencias */}
+              <button onClick={() => toggleLicenses(software.id_software)}>
+                {expandedLicenses === software.id_software ? 'Ocultar Licencias' : 'Ver Licencias'}
+              </button>
+              {expandedLicenses === software.id_software && (
+                <div className="licenses">
+                  {software.licencias && software.licencias.length > 0 ? (
+                    software.licencias.map((licencia, index) => (
+                      <div key={`${licencia.id_licencia || 'licencia'}-${index}`}>
+                        <p>Clave de Licencia: {licencia.claveLicencia}</p>
+                        <p>Correo Asociado: {licencia.correoAsociado}</p>
+                        <p>Estado de Renovación: {licencia.estado_renovacion}</p>
+                        <p>Licencia Compartida: {licencia.compartida ? 'Sí' : 'No'}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No hay licencias asociadas.</p>
+                  )}
+                </div>
               )}
 
-              <div className="software-actions">
-                <button className="edit-button" onClick={() => handleEditClick(software)}>
-                  Editar
-                </button>
-                <button className="delete-button" onClick={() => handleDeleteClick(software.id_software)}>
-                  Eliminar
-                </button>
-              </div>
+              {/* Botón para expandir equipos asociados */}
+              <button onClick={() => toggleEquipments(software.id_software)}>
+                {expandedEquipments === software.id_software ? 'Ocultar Equipos' : 'Ver Equipos'}
+              </button>
+              {expandedEquipments === software.id_software && (
+                <div className="equipments">
+                  {software.equiposAsociados && software.equiposAsociados.length > 0 ? (
+                    software.equiposAsociados.map((equipo, index) => (
+                      <div key={`${equipo.id || 'equipo'}-${index}`}>
+                        <p>ID del Equipo: {equipo.id_equipos}</p>
+                        <p>Fecha de Asignación: {equipo.fechaAsignacion}</p>
+                        <p>Estado de Asignación: {equipo.estado_asignacion}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No hay equipos asociados.</p>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
+
+      {/* Modal para el formulario de edición */}
       <Modal
         isOpen={modalIsOpen}
-        onRequestClose={handleCloseModal}
-        contentLabel="Formulario de Software"
+        onRequestClose={handleCloseEditModal}
+        contentLabel="Formulario de Edición de Software"
         className="modal"
         overlayClassName="overlay"
       >
-        <SoftwareForm idSoftware={editSoftwareId} onClose={handleCloseModal} />
+        <SoftwareEditForm
+          idSoftware={editSoftwareId}
+          onClose={handleCloseEditModal}
+          onSave={fetchSoftware}
+        />
+      </Modal>
+
+      {/* Modal para agregar software */}
+      <Modal
+        isOpen={addSoftwareModalIsOpen}
+        onRequestClose={handleCloseAddSoftwareModal}
+        contentLabel="Agregar Nuevo Software"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <SoftwareForm onClose={handleCloseAddSoftwareModal} />
+      </Modal>
+
+      {/* Modal para el historial */}
+      <Modal
+        isOpen={historyModalIsOpen}
+        onRequestClose={handleCloseHistoryModal}
+        contentLabel="Historial de Software"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        {selectedSoftwareId && (
+          <SoftwareHistory
+            idSoftware={selectedSoftwareId}
+            onClose={handleCloseHistoryModal}
+          />
+        )}
       </Modal>
     </div>
   );

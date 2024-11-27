@@ -1,82 +1,198 @@
+/* Contenedor principal para el sidebar y el contenido */
+.container {
+    display: flex;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    overflow: hidden;
+}
+
 /* Estilos generales para el sidebar */
 .sidebar {
-    width: 300px;
-    background-color: #2c3e50;
+    width: 500px; /* Ancho del sidebar */
+    background-color: #34495e; /* Azul más oscuro */
     color: #ecf0f1;
     padding: 20px;
     box-sizing: border-box;
-    height: 100vh;  /* Asegúrate de que el sidebar ocupe todo el alto de la ventana */
-    overflow-y: auto;  /* Habilita el scroll vertical si el contenido crece */
-    transition: width 0.3s ease;
+    height: 100vh;
+    overflow-y: auto;
+    transition: all 0.3s ease-in-out;
+    flex-shrink: 0; /* Evita que el sidebar se reduzca */
+    border-right: 2px solid #1abc9c; /* Línea de separación */
+    position: relative;
 }
 
-/* Estilos para la lista de enlaces en el sidebar */
-.sidebar-list {
-    margin-top: 20px;
-    list-style: none;
-    padding: 0;
+/* Hover del sidebar para hacer colapsable */
+.sidebar:hover {
+    width: 520px; /* Expande ligeramente al pasar el mouse */
+}
+
+/* Contenedor del logo */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 30px; /* Espacio debajo del logo */
+    padding: 30px;
+    background: linear-gradient(145deg, #2c3e50, #3c4d62); /* Fondo con degradado */
+    border-radius: 20px; /* Bordes redondeados */
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4); /* Sombra prominente */
+    border: 2px solid rgba(26, 188, 156, 0.5); /* Borde decorativo */
+    position: relative; /* Necesario para posicionar elementos internos */
+    overflow: hidden; /* Oculta elementos que se salen del contenedor */
+}
+
+/* Imagen del logo con animación interactiva */
+.logo {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%; /* Convierte en un círculo */
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.3); /* Sombra atractiva */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transiciones suaves */
+    pointer-events: none; /* Evita interferencia del cursor en la animación */
+}
+
+/* Animación dinámica */
+.logo-container:hover .logo {
+    transform: scale(1.2); /* Aumenta el tamaño */
+    box-shadow: 0px 20px 40px rgba(26, 188, 156, 0.6); /* Resplandor dinámico */
+}
+
+/* Resplandor interactivo cuando el cursor está cerca */
+.logo-container:hover {
+    box-shadow: 0px 15px 30px rgba(26, 188, 156, 0.7); /* Más luz en el contenedor */
+}
+
+/* Título del logo debajo de la imagen */
+.logo-title {
+    font-size: 24px; /* Tamaño más grande */
+    color: #1abc9c;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px; /* Espaciado entre letras */
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Sombra ligera en el texto */
+}
+
+/* Estilos para el título principal */
+.sidebar h1 {
+    font-size: 26px; /* Ajusta el tamaño del título */
+    font-weight: bold;
+    margin-bottom: 30px; /* Espacio adicional debajo del título */
+    text-align: center;
+    color: #1abc9c;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icono junto al título */
+.menu-title .menu-icon {
+    margin-right: 10px;
 }
 
 /* Estilos para los elementos del menú */
 .menu-item {
-    margin-bottom: 20px;
+    display: flex; /* Asegura la alineación horizontal */
+    align-items: center; /* Centra los iconos verticalmente */
+    margin-bottom: 30px; /* Espacio entre ítems */
+    padding: 15px 20px; /* Espaciado interno uniforme */
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea sutil debajo */
+    border-radius: 8px; /* Bordes redondeados */
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease;
 }
 
+/* Alineación precisa de iconos y texto */
 .menu-item h2 {
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    margin: 0;
+    margin: 0; /* Elimina márgenes adicionales */
+    font-size: 20px;
     color: #ecf0f1;
+    flex-grow: 1; /* Asegura que el texto ocupe el espacio correcto */
+    display: flex;
+    justify-content: space-between; /* Alinea texto e iconos de flecha */
+    align-items: center;
     transition: color 0.3s ease;
 }
 
-.menu-item h2:hover {
+/* Asegura que todos los iconos queden alineados */
+.menu-icon {
+    font-size: 18px; /* Tamaño uniforme */
+    color: #1abc9c;
+    margin-right: 15px; /* Espaciado entre icono y texto */
+}
+
+/* Cambiar color al hacer hover en el texto */
+.menu-item:hover h2 {
     color: #1abc9c;
 }
 
-/* Estilos para los enlaces */
-.sidebar-list li {
-    margin-bottom: 15px;
-    position: relative;
+/* Hover para el ítem completo */
+.menu-item:hover {
+    background-color: rgba(26, 188, 156, 0.2); /* Fondo verde agua tenue */
+    transform: translateY(-2px); /* Efecto de elevación */
 }
 
-.sidebar-list a {
-    text-decoration: none;
-    color: #ecf0f1;
-    font-size: 16px;
-    padding: 10px 0;
-    display: block;
-    transition: color 0.3s ease, padding-left 0.3s ease;
+/* Estilo para el ítem activo */
+.menu-item.active {
+    background-color: rgba(26, 188, 156, 0.3); /* Fondo verde agua */
+    color: #1abc9c; /* Color de texto activo */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para el activo */
 }
 
-.sidebar-list a:hover {
-    color: #1abc9c;
-    padding-left: 10px;
+/* Ajusta el espacio del ícono de flecha derecha */
+.menu-item h2 svg {
+    margin-left: 10px;
+    transition: transform 0.3s ease-in-out;
 }
 
-/* Indicador de hover en el enlace */
-.sidebar-list a::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 4px;
-    height: 100%;
-    background-color: transparent;
-    transition: background-color 0.3s ease;
+/* Animación de rotación para el ícono de flecha */
+.menu-item:hover h2 svg {
+    transform: rotate(90deg); /* Gira el ícono al pasar el mouse */
 }
 
-.sidebar-list a:hover::before {
-    background-color: #1abc9c;
+/* Contenido principal */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f4f4f9;
+    box-sizing: border-box;
+    transition: margin-left 0.3s ease-in-out;
 }
 
-/* Estilo responsive para pantallas más pequeñas */
+/* Ajusta el contenido principal según el ancho del sidebar */
+.container .sidebar + .main-content {
+    margin-left: 500px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
-        width: 250px;
+        width: 300px; /* Sidebar más estrecho en pantallas pequeñas */
+    }
+
+    .sidebar:hover {
+        width: 320px; /* Expansión en hover en pantallas pequeñas */
+    }
+
+    .container .sidebar + .main-content {
+        margin-left: 300px;
+    }
+
+    .sidebar.collapsed {
+        width: 80px; /* Sidebar colapsado */
+    }
+
+    .sidebar.collapsed h1,
+    .sidebar.collapsed .menu-item h2 {
+        display: none;
+    }
+
+    .sidebar.collapsed .menu-item ul {
+        display: none;
+    }
+
+    .container .sidebar.collapsed + .main-content {
+        margin-left: 80px;
     }
 }

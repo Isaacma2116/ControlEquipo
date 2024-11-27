@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+// Modelo SoftwareEquipos
 const SoftwareEquipos = sequelize.define('SoftwareEquipos', {
     id: {
         type: DataTypes.INTEGER,
@@ -12,7 +13,7 @@ const SoftwareEquipos = sequelize.define('SoftwareEquipos', {
         allowNull: false,
     },
     id_equipos: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING,  // Asegura que es STRING para aceptar valores como 'j71'
         allowNull: false,
     },
     fechaAsignacion: {

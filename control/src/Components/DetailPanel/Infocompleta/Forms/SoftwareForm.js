@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import stringSimilarity from 'string-similarity';
 import '../styles/SoftwareForm.css';
 
 const SoftwareForm = ({ onSave, onClose }) => {
     const [nombre, setNombre] = useState('');
     const [version, setVersion] = useState('');
-    const [fechaAdquisicion, setFechaAdquisicion] = useState(null);
-    const [fechaCaducidad, setFechaCaducidad] = useState(null);
+    const [fechaAdquisicion, setFechaAdquisicion] = useState('');
+    const [fechaCaducidad, setFechaCaducidad] = useState('');
     const [tipoLicencia, setTipoLicencia] = useState('mensual');
     const [estado, setEstado] = useState('sin uso');
     const [equipos, setEquipos] = useState([]);
@@ -22,35 +23,82 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [tooltip, setTooltip] = useState(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [existingSoftwareNames, setExistingSoftwareNames] = useState([]);
+    const [suggestedCorrection, setSuggestedCorrection] = useState('');
+    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
 
-    // Fetch equipos
     useEffect(() => {
-        const fetchEquipos = async () => {
+        const fetchEquiposAndSoftwareNames = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://localhost:3550/api/equipos');
-                setEquipos(response.data);
+                const [equiposResponse, softwareResponse] = await Promise.all([
+                    axios.get('http://localhost:3550/api/equipos'),
+                    axios.get('http://localhost:3550/api/software/names')
+                ]);
+                setEquipos(equiposResponse.data);
+                setExistingSoftwareNames(softwareResponse.data.map(software => software.toLowerCase()));
             } catch (error) {
-                setError('Hubo un problema al cargar los equipos.');
+                setError('Hubo un problema al cargar los equipos o nombres de software.');
             }
             setLoading(false);
         };
-        fetchEquipos();
+        fetchEquiposAndSoftwareNames();
     }, []);
 
-    // Actualizar el estado del software y contar licencias en uso y sin uso
+    const checkNameCorrection = (value) => {
+        if (existingSoftwareNames.length > 0) {
+            const bestMatch = stringSimilarity.findBestMatch(value.toLowerCase(), existingSoftwareNames);
+            if (bestMatch.bestMatch.rating > 0.8) { 
+                setSuggestedCorrection(bestMatch.bestMatch.target);
+            } else {
+                setSuggestedCorrection('');
+            }
+        }
+    };
+
+    const handleNombreChange = (e) => {
+        const value = e.target.value;
+        setNombre(value);
+        checkNameCorrection(value);
+
+        if (value) {
+            const filtered = existingSoftwareNames.filter(name =>
+                name.includes(value.toLowerCase())
+            );
+            setFilteredSuggestions(filtered);
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setNombre(suggestion);
+        setShowSuggestions(false);
+        setSuggestedCorrection('');
+    };
+
+    const handleApplySuggestion = () => {
+        setNombre(suggestedCorrection);
+        setSuggestedCorrection('');
+    };
+
     useEffect(() => {
-        const enUso = softwareLicencias.filter(licencia => licencia.id_equipos && licencia.id_equipos.length > 0).length;
-        const sinUso = Math.max(0, maxLicencias - enUso);
+        const enUso = softwareLicencias.filter(
+            licencia => licencia.compartida || (licencia.id_equipos && licencia.id_equipos.length > 0)
+        ).length;
+        
+        const sinUso = maxLicencias === 0 ? '∞' : Math.max(0, maxLicencias - enUso);
 
         setLicenciasEnUso(enUso);
         setLicenciasSinUso(sinUso);
 
-        // Actualizar el estado del software
         if (licenciaCaducada && enUso > 0) {
             setEstado('vencido con equipo');
         } else if (enUso > 0 && !licenciaCaducada) {
-            setEstado('en uso');
+            setEstado('activo');
         } else if (licenciaCaducada) {
             setEstado('vencido');
         } else {
@@ -58,9 +106,28 @@ const SoftwareForm = ({ onSave, onClose }) => {
         }
     }, [softwareLicencias, maxLicencias, licenciaCaducada]);
 
-    // Agregar una nueva licencia
+    useEffect(() => {
+        if (!fechaAdquisicion) {
+            setFechaCaducidad('');
+            return;
+        }
+
+        const fecha = new Date(fechaAdquisicion);
+        let nuevaFechaCaducidad = null;
+
+        if (tipoLicencia === 'mensual') {
+            nuevaFechaCaducidad = new Date(fecha.setMonth(fecha.getMonth() + 1));
+        } else if (tipoLicencia === 'anual') {
+            nuevaFechaCaducidad = new Date(fecha.setFullYear(fecha.getFullYear() + 1));
+        } else if (tipoLicencia === 'vitalicia') {
+            nuevaFechaCaducidad = null;
+        }
+
+        setFechaCaducidad(nuevaFechaCaducidad ? nuevaFechaCaducidad.toISOString().split('T')[0] : '');
+    }, [fechaAdquisicion, tipoLicencia]);
+
     const handleAddLicencia = () => {
-        if (softwareLicencias.length < maxLicencias) {
+        if (maxLicencias === 0 || softwareLicencias.length < maxLicencias) {
             setSoftwareLicencias([
                 ...softwareLicencias,
                 { claveLicencia: '', correoAsociado: '', contrasenaCorreo: '', id_equipos: [], compartida: false }
@@ -70,46 +137,43 @@ const SoftwareForm = ({ onSave, onClose }) => {
         }
     };
 
-    // Manejar cambios en las licencias
     const handleLicenciaChange = (index, field, value) => {
         const updatedLicencias = [...softwareLicencias];
         updatedLicencias[index][field] = value;
         setSoftwareLicencias(updatedLicencias);
     };
 
-    // Manejar selección de equipos cuando la licencia es compartida
     const handleEquiposCheckboxChange = (index, equipoId) => {
         const updatedLicencias = [...softwareLicencias];
         const selectedEquipos = updatedLicencias[index].id_equipos;
 
-        // Verificar si se alcanzó el número máximo de equipos
         if (selectedEquipos.includes(equipoId)) {
-            // Eliminar el equipo si ya estaba seleccionado
             updatedLicencias[index].id_equipos = selectedEquipos.filter(id => id !== equipoId);
-        } else if (selectedEquipos.length < maxLicencias) {
-            // Agregar el equipo si no se ha alcanzado el límite
-            updatedLicencias[index].id_equipos = [...selectedEquipos, equipoId];
         } else {
-            setError('Has alcanzado el número máximo de equipos permitidos para esta licencia.');
+            updatedLicencias[index].id_equipos = [...selectedEquipos, equipoId];
         }
+
         setSoftwareLicencias(updatedLicencias);
     };
 
-    // Manejar el cambio de estado de compartida
     const handleCompartidaChange = (index) => {
         const updatedLicencias = [...softwareLicencias];
         updatedLicencias[index].compartida = !updatedLicencias[index].compartida;
+
         if (!updatedLicencias[index].compartida) {
-            // Si se desmarca, aseguramos que solo un equipo esté seleccionado
             updatedLicencias[index].id_equipos = updatedLicencias[index].id_equipos.slice(0, 1);
         }
+
         setSoftwareLicencias(updatedLicencias);
     };
 
-    // Manejar el cambio del número máximo de licencias
     const handleMaxLicenciasChange = (e) => {
-        const value = parseInt(e.target.value, 10) || 0;
-        setMaxLicencias(value);
+        const value = parseInt(e.target.value, 10);
+        setMaxLicencias(value >= 0 ? value : 0);
+        
+        if (value > 0 && softwareLicencias.length > value) {
+            setSoftwareLicencias(softwareLicencias.slice(0, value));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -123,21 +187,45 @@ const SoftwareForm = ({ onSave, onClose }) => {
             tipoLicencia,
             estado,
             licenciaCaducada,
-            maxLicencias,
-            softwareLicencias, // Enviamos las licencias como un array
+            maxDispositivos: maxLicencias,
+            equipos_asociados: softwareLicencias.flatMap(licencia => licencia.id_equipos),
+            softwareLicencias: softwareLicencias.map(licencia => ({
+                ...licencia,
+                id_equipos: licencia.id_equipos.length > 0 ? licencia.id_equipos : null
+            })),
         };
 
         try {
             const response = await axios.post('http://localhost:3550/api/software', softwareData);
-            if (response.status === 201) {
-                onSave(response.data);
-                onClose();
-            } else {
-                setError('Error al guardar el software.');
-            }
+            onSave(response.data); 
         } catch (error) {
-            setError(error.response?.data.message || 'Error al enviar los datos.');
+            console.error("Error al guardar el software:", error);
+            setError('Ocurrió un error inesperado al guardar el software.');
+        } finally {
+            onClose();
         }
+    };
+
+    const handleClose = () => {
+        if (
+            nombre ||
+            version ||
+            fechaAdquisicion ||
+            softwareLicencias.some(licencia => licencia.claveLicencia || licencia.correoAsociado || licencia.contrasenaCorreo)
+        ) {
+            setShowConfirmation(true);
+        } else {
+            onClose();
+        }
+    };
+
+    const confirmClose = () => {
+        setShowConfirmation(false);
+        onClose();
+    };
+
+    const cancelClose = () => {
+        setShowConfirmation(false);
     };
 
     const toggleTooltip = (field) => {
@@ -147,7 +235,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
     return (
         <div className="software-form-modal">
             <div className="software-form-content">
-                <span className="close-button" onClick={onClose}>&times;</span>
+                <span className="close-button" onClick={handleClose}>&times;</span>
                 <form onSubmit={handleSubmit}>
                     <h2>Agregar Software</h2>
 
@@ -161,9 +249,29 @@ const SoftwareForm = ({ onSave, onClose }) => {
                     <input
                         type="text"
                         value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
+                        onChange={handleNombreChange}
+                        onFocus={() => setShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                         required
                     />
+                    {suggestedCorrection && (
+                        <p className="suggestion-message">
+                            ¿Quisiste decir <span onClick={handleApplySuggestion} className="suggestion">{suggestedCorrection}</span>?
+                        </p>
+                    )}
+                    {showSuggestions && filteredSuggestions.length > 0 && (
+                        <ul className="suggestions-list">
+                            {filteredSuggestions.map((suggestion, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    className="suggestion-item"
+                                >
+                                    {suggestion}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
 
                     <label>
                         Versión:
@@ -218,7 +326,7 @@ const SoftwareForm = ({ onSave, onClose }) => {
                     </div>
 
                     <label>
-                        Máximo de Licencias:
+                        Máximo de Licencias (0 para ilimitado):
                         <input
                             type="number"
                             min="0"
@@ -264,7 +372,6 @@ const SoftwareForm = ({ onSave, onClose }) => {
                                                 value={equipo.id_equipos}
                                                 checked={licencia.id_equipos.includes(equipo.id_equipos)}
                                                 onChange={() => handleEquiposCheckboxChange(index, equipo.id_equipos)}
-                                                disabled={licencia.id_equipos.length >= maxLicencias && !licencia.id_equipos.includes(equipo.id_equipos)}
                                             />
                                             {equipo.id_equipos} - {equipo.nombre}
                                         </label>
@@ -295,11 +402,11 @@ const SoftwareForm = ({ onSave, onClose }) => {
                         </div>
                     ))}
 
-                    {softwareLicencias.length < maxLicencias && (
+                    {softwareLicencias.length < maxLicencias || maxLicencias === 0 ? (
                         <button type="button" onClick={handleAddLicencia}>
                             Agregar Licencia
                         </button>
-                    )}
+                    ) : null}
 
                     <label>
                         Estado del Software:
@@ -307,6 +414,14 @@ const SoftwareForm = ({ onSave, onClose }) => {
                     </label>
 
                     <button className="button" type="submit">Guardar</button>
+
+                    {showConfirmation && (
+                        <div className="confirmation-modal">
+                            <p>¿Estás seguro de que deseas cerrar el formulario? Se perderán los datos no guardados.</p>
+                            <button onClick={confirmClose}>Sí, cerrar</button>
+                            <button onClick={cancelClose}>No, continuar</button>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

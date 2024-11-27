@@ -1,185 +1,295 @@
-/* Modal overlay que cubre toda la pantalla */
+/* Modal overlay covering the entire screen with blur effect */
 .software-form-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  /* Contenedor del formulario */
-  .software-form-content {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    width: 600px;
-    max-height: 80vh;
-    overflow-y: auto; /* Barra de desplazamiento si el contenido es largo */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    position: relative;
-  }
-  
-  /* Botón de cerrar en la esquina superior derecha */
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
-    color: #333;
-    cursor: pointer;
-  }
-  
-  /* Título del formulario */
-  h2 {
-    font-size: 1.8rem;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: 600;
-  }
-  
-  /* Estilo general de las etiquetas */
-  label {
-    font-weight: bold;
-    margin-bottom: 8px;
-    display: block;
-    color: #444;
-  }
-  
-  /* Estilo para los iconos de información */
-  .info-icon {
-    margin-left: 5px;
-    cursor: pointer;
-    color: #007bff;
-    font-size: 1.2rem;
-  }
-  
-  .info-icon:hover {
-    color: #0056b3;
-  }
-  
-  /* Input de texto y demás campos */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="date"],
-  select,
-  input[type="number"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    background-color: #f9f9f9;
-  }
-  
-  input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  /* Contenedor de la lista de equipos */
-  .equipos-list {
-    max-height: 150px;
-    overflow-y: auto; /* Barra de desplazamiento si hay muchos equipos */
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    margin-bottom: 15px;
-  }
-  
-  /* Estilo para cada opción de equipo */
-  .equipos-list label {
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-    font-weight: normal;
-    border-bottom: 1px solid #eee; /* Línea divisoria entre los equipos */
-    gap: 10px; /* Espacio entre el checkbox y el texto */
-  }
-  
-  /* Checkbox completamente alineado a la izquierda */
-  .equipos-list input[type="checkbox"] {
-    margin-right: 10px; /* Ajuste de espacio entre el checkbox y el texto */
-    transform: scale(1.2); /* Aumenta el tamaño del checkbox para mejor visibilidad */
-    margin-left: 0; /* Asegura que esté alineado a la izquierda */
-  }
-  
-  /* Texto del equipo */
-  .equipos-list span {
-    font-size: 1rem;
-    color: #333;
-    flex-grow: 1; /* Permite que el texto ocupe todo el espacio restante */
-    white-space: nowrap; /* Asegura que el texto no se desborde */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Si el texto es demasiado largo, añade "..." */
-  }
-  
-  /* Estilo del botón "Agregar nuevo equipo" */
-  button.add-equipo-button {
-    background-color: #28a745;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  button.add-equipo-button:hover {
-    background-color: #218838;
-  }
-  
-  /* Botón principal */
-  .button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Mensajes de error */
-  .error-message {
-    color: red;
-    margin-bottom: 15px;
-    font-weight: bold;
-  }
-  
-  /* Tooltip de ayuda */
-  .tooltip {
-    background-color: #333;
-    color: #fff;
-    border-radius: 5px;
-    padding: 8px 10px;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 0.9rem;
-    z-index: 100;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(6px); /* Enhanced blur for elegance */
+}
+
+/* Form container with smoother shadow and padding */
+.software-form-content {
+  background-color: #fff;
+  padding: 40px 35px;
+  border-radius: 12px;
+  width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+/* Close button with enhanced hover effect */
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.8rem;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+/* Form title with increased font weight */
+h2 {
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* Label styling */
+label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  color: #444;
+}
+
+/* Info icon with more defined size and color */
+.info-icon {
+  margin-left: 6px;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.info-icon:hover {
+  color: #0056b3;
+}
+
+/* Input fields with subtle shadow and smoother focus transition */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+select:focus,
+input[type="number"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Enhanced checkbox styling */
+input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Container for equipment list */
+.equipos-list {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: #fafafa;
+  margin-bottom: 20px;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Equipment item styling */
+.equipos-list label {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+}
+
+/* Enlarged checkbox styling for equipment items */
+.equipos-list input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Equipment item text with overflow handling */
+.equipos-list span {
+  font-size: 1rem;
+  color: #333;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Add new equipment button */
+button.add-equipo-button {
+  background-color: #28a745;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.add-equipo-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px); /* Lift effect */
+}
+
+/* Main action button with lift effect */
+.button {
+  width: 100%;
+  padding: 14px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Error message styling */
+.error-message {
+  color: #d9534f;
+  margin-bottom: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Tooltip styling */
+.tooltip {
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.9rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+/* Suggestion message */
+.suggestion-message {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.suggestion {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.suggestion:hover {
+  color: #0056b3;
+}
+
+/* Suggestions dropdown */
+.suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin-top: -5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 101;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f8ff;
+}
+
+/* Confirmation modal with refined button design */
+.confirmation-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  text-align: center;
+}
+
+.confirmation-modal button {
+  margin-top: 15px;
+  width: 45%;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.confirmation-modal button:nth-child(1) {
+  background-color: #d9534f;
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.confirmation-modal button:nth-child(1):hover {
+  background-color: #c9302c;
+}
+
+.confirmation-modal button:nth-child(2) {
+  background-color: #5bc0de;
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.confirmation-modal button:nth-child(2):hover {
+  background-color: #31b0d5;
+}

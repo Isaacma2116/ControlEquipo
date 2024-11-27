@@ -14,27 +14,33 @@ const Home = () => {
 
   const handleEquipoClick = (id) => {
     setSelectedId(id);
-    setSelectedType('equipo');
+    setSelectedType('equipo');  // Al hacer clic en un equipo, seteamos el tipo como 'equipo'
   };
 
   const handleSoftwareClick = () => {
-    setSelectedId(null);  // No necesitas un ID específico para listar todos los software
+    setSelectedId(null);
     setSelectedType('software');
   };
 
-  // Manejador para Equipo Analysis
   const handleEquipoAnalysisClick = () => {
-    setSelectedId(null);  // Si no necesitas un ID específico
-    setSelectedType('equipo-analysis');  // Cambia el tipo para mostrar el análisis
+    setSelectedId(null);
+    setSelectedType('equipo-analysis');
+  };
+
+  // Manejador para Historial
+  const handleHistorialClick = () => {
+    setSelectedId(null);
+    setSelectedType('historial');
   };
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <Sidebar
         onColaboradorClick={handleColaboradorClick}
-        onEquipoClick={handleEquipoClick}
+        onEquipoClick={handleEquipoClick}  // Asegúrate de pasar `handleEquipoClick` aquí
         onSoftwareClick={handleSoftwareClick}
-        onEquipoAnalysisClick={handleEquipoAnalysisClick}  // Asegúrate de pasar esta función al Sidebar
+        onEquipoAnalysisClick={handleEquipoAnalysisClick}
+        onHistorialClick={handleHistorialClick}
       />
       {selectedType && <DetailPanel id={selectedId} tipo={selectedType} />}
     </div>

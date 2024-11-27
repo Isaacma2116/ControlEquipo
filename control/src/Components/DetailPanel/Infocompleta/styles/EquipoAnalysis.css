@@ -1,97 +1,144 @@
 .equipo-analysis {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 0 auto;
+  padding: 20px;
+  font-family: 'Roboto', Arial, sans-serif;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  max-width: 1200px;
+  margin: 20px auto;
+  transition: all 0.3s ease-in-out;
+}
+
+.equipo-analysis h1, .equipo-analysis h2 {
+  color: #2c3e50;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.equipo-analysis h1 {
+  font-size: 2.5rem;
+}
+
+.equipo-analysis h2 {
+  font-size: 2rem;
+}
+
+.equipo-analysis select {
+  padding: 12px;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  width: 100%;
+  max-width: 400px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f7f7f7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.equipo-analysis select:hover {
+  border-color: #3498db;
+  background-color: #ffffff;
+}
+
+.equipo-analysis ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.equipo-analysis ul li {
+  padding: 15px;
+  margin: 10px 0;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.equipo-analysis ul li:hover {
+  transform: translateY(-3px);
+  background-color: #fefefe;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #3498db;
+  width: 60px;
+  height: 60px;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+  display: block;
+  margin: 20px auto;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(1px);
+  background-color: #1c5a84;
+}
+
+.equipo-analysis canvas {
+  margin-top: 20px;
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.chart-container canvas {
+  flex: 1;
+  max-width: 45%;
+}
+
+@media (max-width: 768px) {
+  .chart-container canvas {
+      max-width: 90%;
   }
-  
-  .equipo-analysis h1, .equipo-analysis h2 {
-    color: #333;
-    text-align: center;
-  }
-  
-  .equipo-analysis select {
-    padding: 10px;
-    margin: 20px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    width: 100%;
-    max-width: 400px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .equipo-analysis ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .equipo-analysis ul li {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .spinner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-  }
-  
-  .loader {
-    border: 8px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 8px solid #3498db;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  button {
-    background-color: #3498db;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    display: block;
-    margin: 20px auto;
-  }
-  
-  button:hover {
-    background-color: #2980b9;
-  }
-  
-  /* Estilos para las gráficas */
-  .equipo-analysis canvas {
-    margin-top: 20px;
-    max-width: 100%;
-  }
-  
-  .equipo-analysis h2 {
-    margin-top: 40px;
-  }
-  
-  /* Para el gráfico de barras (Bar) y gráfico circular (Pie) */
-  .chart-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 50px;
-  }
-  
+}

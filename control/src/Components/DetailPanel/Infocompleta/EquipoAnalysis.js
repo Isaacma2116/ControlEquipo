@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { Pie, Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
-import './styles/EquipoAnalysis.css'; // Asegúrate de tener este archivo CSS para los estilos
+import { Pie, Bar, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement } from 'chart.js';
+import './styles/EquipoAnalysis.css';
 
-// Registrar los componentes de ChartJS
-ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement);
 
 const EquipoAnalysis = () => {
   const [equipos, setEquipos] = useState([]);
@@ -65,15 +64,55 @@ const EquipoAnalysis = () => {
     return equipos.reduce(
       (contadores, equipo) => {
         if (equipo.tipoDispositivo) {
-          if (equipo.tipoDispositivo === 'Laptop') {
-            contadores.laptops++;
-          } else if (equipo.tipoDispositivo === 'PC') {
-            contadores.pcs++;
-          }
+          contadores[equipo.tipoDispositivo] = (contadores[equipo.tipoDispositivo] || 0) + 1;
         }
         return contadores;
       },
-      { laptops: 0, pcs: 0 }
+      {}
+    );
+  };
+
+  const contarEquiposPorFechaCompra = () => {
+    return equipos.reduce((contadores, equipo) => {
+      if (equipo.fechaCompra) {
+        const year = new Date(equipo.fechaCompra).getFullYear();
+        contadores[year] = (contadores[year] || 0) + 1;
+      }
+      return contadores;
+    }, {});
+  };
+
+  const contarEquiposPorEstadoGarantia = () => {
+    return equipos.reduce(
+      (contadores, equipo) => {
+        if (equipo.garantia) {
+          const today = new Date();
+          const garantiaDate = new Date(equipo.garantia);
+          if (garantiaDate > today) {
+            contadores.activos++;
+          } else {
+            contadores.vencidos++;
+          }
+        } else {
+          contadores.vencidos++;
+        }
+        return contadores;
+      },
+      { activos: 0, vencidos: 0 }
+    );
+  };
+
+  const contarEquiposAsignados = () => {
+    return equipos.reduce(
+      (contadores, equipo) => {
+        if (equipo.idColaborador) {
+          contadores.asignados++;
+        } else {
+          contadores.noAsignados++;
+        }
+        return contadores;
+      },
+      { asignados: 0, noAsignados: 0 }
     );
   };
 
@@ -106,11 +145,13 @@ const EquipoAnalysis = () => {
     );
   }
 
-  const totalEquipos = equipos.length;
   const equiposPorEstado = contarEquiposPorEstado();
   const equiposPorTipo = contarEquiposPorTipo();
+  const equiposPorFechaCompra = contarEquiposPorFechaCompra();
+  const equiposPorGarantia = contarEquiposPorEstadoGarantia();
+  const equiposPorAsignacion = contarEquiposAsignados();
 
-  // Datos para la gráfica de estado físico (Pie Chart)
+  // Datos para gráficas
   const estadoData = {
     labels: ['Excelente', 'Bueno', 'Regular', 'Malo', 'Urgente'],
     datasets: [{
@@ -123,26 +164,40 @@ const EquipoAnalysis = () => {
         equiposPorEstado.urgente,
       ],
       backgroundColor: ['#4CAF50', '#FFC107', '#FF9800', '#F44336', '#E91E63'],
-      borderWidth: 1,
     }]
   };
 
-  // Datos para la gráfica de tipo de dispositivo (Bar Chart)
-  const tipoData = {
-    labels: ['Laptops', 'PCs'],
+  const fechaCompraData = {
+    labels: Object.keys(equiposPorFechaCompra),
     datasets: [{
-      label: 'Tipo de Dispositivo',
-      data: [equiposPorTipo.laptops, equiposPorTipo.pcs],
-      backgroundColor: ['#3498db', '#9b59b6'],
-      borderWidth: 1,
+      label: 'Equipos por Año de Compra',
+      data: Object.values(equiposPorFechaCompra),
+      backgroundColor: ['#3498db', '#9b59b6', '#2ecc71', '#f39c12', '#e74c3c'],
+    }]
+  };
+
+  const garantiaData = {
+    labels: ['Garantía Activa', 'Garantía Vencida'],
+    datasets: [{
+      label: 'Estado de Garantía',
+      data: [equiposPorGarantia.activos, equiposPorGarantia.vencidos],
+      backgroundColor: ['#2ecc71', '#e74c3c'],
+    }]
+  };
+
+  const asignacionData = {
+    labels: ['Asignados', 'No Asignados'],
+    datasets: [{
+      label: 'Estado de Asignación',
+      data: [equiposPorAsignacion.asignados, equiposPorAsignacion.noAsignados],
+      backgroundColor: ['#3498db', '#e74c3c'],
     }]
   };
 
   return (
     <div className="equipo-analysis">
       <h1>Análisis del Inventario de Equipos</h1>
-      
-      {/* Filtro por estado físico */}
+
       <div>
         <label>Filtrar por estado físico:</label>
         <select value={filtroEstado} onChange={(e) => handleFilterChange(e.target.value)}>
@@ -155,21 +210,26 @@ const EquipoAnalysis = () => {
         </select>
       </div>
 
-      {/* Mostrar equipos filtrados */}
       <h2>Equipos Filtrados</h2>
       <ul>
         {equiposFiltrados.map(equipo => (
-          <li key={equipo.id}>{equipo.tipoDispositivo} - {equipo.estadoFisico}</li>
+          <li key={equipo.id_equipos}>
+            {equipo.tipoDispositivo} ({equipo.marca}) - {equipo.estadoFisico}
+          </li>
         ))}
       </ul>
 
-      {/* Gráfica de Estado Físico */}
       <h2>Estado Físico de los Equipos</h2>
       <Pie data={estadoData} />
 
-      {/* Gráfica de Tipo de Dispositivo */}
-      <h2>Equipos por Tipo de Dispositivo</h2>
-      <Bar data={tipoData} />
+      <h2>Distribución por Año de Compra</h2>
+      <Bar data={fechaCompraData} />
+
+      <h2>Estado de Garantía</h2>
+      <Pie data={garantiaData} />
+
+      <h2>Estado de Asignación</h2>
+      <Pie data={asignacionData} />
     </div>
   );
 };

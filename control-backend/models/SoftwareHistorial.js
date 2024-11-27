@@ -1,11 +1,15 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Software = sequelize.define('Software', {
+const SoftwareHistorial = sequelize.define('SoftwareHistorial', {
+    id_historial: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     id_software: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+        allowNull: false,
     },
     nombre: {
         type: DataTypes.STRING,
@@ -26,24 +30,32 @@ const Software = sequelize.define('Software', {
     tipoLicencia: {
         type: DataTypes.ENUM('mensual', 'anual', 'vitalicia'),
         allowNull: false,
-        defaultValue: 'mensual',
     },
     estado: {
         type: DataTypes.ENUM('activo', 'sin uso', 'vencido', 'vencido con equipo'),
         allowNull: false,
     },
     licenciaCaducada: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: false,
     },
     maxDispositivos: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    accion: {
+        type: DataTypes.ENUM('insertar', 'editar', 'eliminar'),
+        allowNull: false,
+    },
+    fecha_operacion: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
-    tableName: 'software',
+    tableName: 'software_historial',
     timestamps: false,
 });
 
-module.exports = Software;
+module.exports = SoftwareHistorial;
