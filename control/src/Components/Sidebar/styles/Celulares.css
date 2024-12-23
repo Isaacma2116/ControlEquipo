@@ -1,5 +1,5 @@
 /* Contenedor del sidebar */
-.colaboradores-sidebar-menu {
+.celulares-sidebar-menu {
     width: 100%;
     padding: 20px;
     color: #ecf0f1;
@@ -9,11 +9,11 @@
     overflow-x: hidden;
     background-color: #2c3e50; /* Fondo azul oscuro */
     border-radius: 15px; /* Bordes más redondeados */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra más definida para destacar */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra más definida */
 }
 
 /* Contenedor del buscador */
-.colaboradores-sidebar-menu .search-container {
+.celulares-sidebar-menu .search-container {
     position: relative;
     display: flex;
     align-items: center;
@@ -28,7 +28,7 @@
     top: 50%;
     transform: translateY(-50%);
     color: #7f8c8d;
-    font-size: 20px; /* Tamaño de icono más grande */
+    font-size: 20px; /* Tamaño del icono */
 }
 
 /* Campo de entrada del buscador */
@@ -41,7 +41,7 @@
     color: #2c3e50;
     box-sizing: border-box;
     height: 50px; /* Altura del campo de búsqueda */
-    font-size: 16px; /* Tamaño de fuente más grande */
+    font-size: 16px; /* Tamaño de fuente */
     transition: background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
 }
 
@@ -54,7 +54,7 @@
 
 /* Botón del filtro */
 .filter-button {
-    background-color: #3498db; /* Color azul claro */
+    background-color: #3498db; /* Azul claro */
     color: #fff;
     border: none;
     border-radius: 50%;
@@ -82,7 +82,7 @@
 /* Menú emergente de filtros */
 .filter-menu {
     position: absolute;
-    top: 60px; /* Ajustado para colocarlo debajo del botón de filtro */
+    top: 60px; /* Colocado debajo del botón de filtro */
     right: 0;
     background-color: #ecf0f1; /* Fondo claro */
     border: 1px solid #ccc;
@@ -131,8 +131,8 @@
     }
 }
 
-/* Lista de colaboradores */
-.colaboradores-sidebar-menu ul {
+/* Lista de celulares */
+.celulares-sidebar-menu ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -145,7 +145,7 @@
     padding: 10px;
 }
 
-.colaboradores-sidebar-menu ul li {
+.celulares-sidebar-menu ul li {
     padding: 15px;
     margin-bottom: 10px;
     background-color: #2c3e50;
@@ -155,29 +155,29 @@
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.colaboradores-sidebar-menu ul li:hover {
+.celulares-sidebar-menu ul li:hover {
     background-color: #1abc9c;
     transform: translateX(7px);
     color: #fff;
     box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Scrollbar personalizado para la lista de colaboradores */
-.colaboradores-sidebar-menu ul::-webkit-scrollbar {
+/* Scrollbar personalizado para la lista de celulares */
+.celulares-sidebar-menu ul::-webkit-scrollbar {
     width: 10px; /* Ancho de la barra de desplazamiento */
 }
 
-.colaboradores-sidebar-menu ul::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3); /* Color suave para la barra */
+.celulares-sidebar-menu ul::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3); /* Color suave */
     border-radius: 5px; /* Bordes redondeados */
 }
 
-.colaboradores-sidebar-menu ul::-webkit-scrollbar-thumb:hover {
+.celulares-sidebar-menu ul::-webkit-scrollbar-thumb:hover {
     background-color: rgba(255, 255, 255, 0.6); /* Más visible al hacer hover */
 }
 
-/* Botón agregar colaborador */
-.add-colaborador-button {
+/* Botón agregar celular */
+.add-celular-button {
     background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
     color: white;
     border: none;
@@ -196,12 +196,12 @@
     margin-top: 30px;
 }
 
-.add-colaborador-button:hover {
+.add-celular-button:hover {
     background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 
-.add-colaborador-button:active {
+.add-celular-button:active {
     transform: translateY(1px);
 }

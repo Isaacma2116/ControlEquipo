@@ -1,0 +1,128 @@
+/* Estilo principal del contenedor */
+.detail-panel {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  background-color: #ffffff; /* Fondo blanco */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  font-family: 'Roboto', sans-serif;
+}
+
+.detail-panel h1 {
+  font-size: 28px;
+  color: #2c3e50; /* Color azul oscuro */
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+/* Listas dentro del panel */
+.detail-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-panel ul li {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.detail-panel ul li:hover {
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-panel ul li.active {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Navegación superior */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px); /* Elevación en hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:active {
+  transform: translateY(1px); /* Efecto de presión */
+}
+
+/* Placeholder cuando no hay elementos seleccionados */
+.detail-panel p {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 18px;
+  font-style: italic;
+}
+
+/* Botones de acción adicionales */
+.detail-panel .action-button {
+  padding: 10px 15px;
+  background-color: #16a085;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.detail-panel .action-button:hover {
+  background-color: #1abc9c;
+  transform: translateY(-3px);
+}
+
+.detail-panel .action-button:active {
+  transform: translateY(1px);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .detail-panel {
+      padding: 15px;
+  }
+
+  .nav-button {
+      font-size: 14px;
+      padding: 8px 15px;
+  }
+
+  .detail-panel ul li {
+      font-size: 14px;
+      padding: 10px;
+  }
+}

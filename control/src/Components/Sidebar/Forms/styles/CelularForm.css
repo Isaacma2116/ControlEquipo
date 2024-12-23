@@ -1,0 +1,32 @@
+/* Ya incluido en Celulares.css si usas estilos compartidos */
+/* Si deseas estilos específicos, agrégalos aquí */
+
+.modal-content form div {
+    margin-bottom: 15px;
+}
+
+.modal-content form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-content form input,
+.modal-content form select,
+.modal-content form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.error-text {
+    color: red;
+    font-size: 12px;
+}
+
+.form-error {
+    color: red;
+    margin-bottom: 10px;
+    text-align: center;
+}

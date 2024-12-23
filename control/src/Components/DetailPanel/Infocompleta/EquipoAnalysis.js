@@ -1,16 +1,29 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { Pie, Bar, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement } from 'chart.js';
+import { Pie, Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Title } from 'chart.js';
 import './styles/EquipoAnalysis.css';
 
-ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement);
+ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Title);
 
 const EquipoAnalysis = () => {
   const [equipos, setEquipos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filtroEstado, setFiltroEstado] = useState("todos");
+  const [filtroTipo, setFiltroTipo] = useState("todos");
+  const [filtroGarantia, setFiltroGarantia] = useState("todos");
+
+  const [showEstadoFisico, setShowEstadoFisico] = useState(true);
+  const [showFechaCompra, setShowFechaCompra] = useState(true);
+  const [showGarantia, setShowGarantia] = useState(true);
+  const [showAsignacion, setShowAsignacion] = useState(true);
+
+  // Refs para las gráficas
+  const estadoRef = useRef(null);
+  const fechaCompraRef = useRef(null);
+  const garantiaRef = useRef(null);
+  const asignacionRef = useRef(null);
 
   useEffect(() => {
     const fetchEquipos = async () => {
@@ -26,50 +39,43 @@ const EquipoAnalysis = () => {
         setLoading(false);
       }
     };
-
     fetchEquipos();
   }, []);
 
   const contarEquiposPorEstado = () => {
-    return equipos.reduce(
-      (contadores, equipo) => {
-        if (equipo.estadoFisico) {
-          switch (equipo.estadoFisico) {
-            case 'Excelente (nuevo) y garantía':
-              contadores.excelente++;
-              break;
-            case 'Bueno (Pérdida de garantía y raspones)':
-              contadores.bueno++;
-              break;
-            case 'Regular (Golpes, Rayones grandes)':
-              contadores.regular++;
-              break;
-            case 'Malo (Cambio de piezas y pérdidas)':
-              contadores.malo++;
-              break;
-            case 'Urgente (No funciona correctamente)':
-              contadores.urgente++;
-              break;
-            default:
-              break;
-          }
+    return equipos.reduce((contadores, equipo) => {
+      if (equipo.estadoFisico) {
+        switch (equipo.estadoFisico) {
+          case 'Excelente (nuevo) y garantía':
+            contadores.excelente++;
+            break;
+          case 'Bueno (Pérdida de garantía y raspones)':
+            contadores.bueno++;
+            break;
+          case 'Regular (Golpes, Rayones grandes)':
+            contadores.regular++;
+            break;
+          case 'Malo (Cambio de piezas y pérdidas)':
+            contadores.malo++;
+            break;
+          case 'Urgente (No funciona correctamente)':
+            contadores.urgente++;
+            break;
+          default:
+            break;
         }
-        return contadores;
-      },
-      { excelente: 0, bueno: 0, regular: 0, malo: 0, urgente: 0 }
-    );
+      }
+      return contadores;
+    }, { excelente: 0, bueno: 0, regular: 0, malo: 0, urgente: 0 });
   };
 
   const contarEquiposPorTipo = () => {
-    return equipos.reduce(
-      (contadores, equipo) => {
-        if (equipo.tipoDispositivo) {
-          contadores[equipo.tipoDispositivo] = (contadores[equipo.tipoDispositivo] || 0) + 1;
-        }
-        return contadores;
-      },
-      {}
-    );
+    return equipos.reduce((contadores, equipo) => {
+      if (equipo.tipoDispositivo) {
+        contadores[equipo.tipoDispositivo] = (contadores[equipo.tipoDispositivo] || 0) + 1;
+      }
+      return contadores;
+    }, {});
   };
 
   const contarEquiposPorFechaCompra = () => {
@@ -83,49 +89,60 @@ const EquipoAnalysis = () => {
   };
 
   const contarEquiposPorEstadoGarantia = () => {
-    return equipos.reduce(
-      (contadores, equipo) => {
-        if (equipo.garantia) {
-          const today = new Date();
-          const garantiaDate = new Date(equipo.garantia);
-          if (garantiaDate > today) {
-            contadores.activos++;
-          } else {
-            contadores.vencidos++;
-          }
+    return equipos.reduce((contadores, equipo) => {
+      if (equipo.garantia) {
+        const today = new Date();
+        const garantiaDate = new Date(equipo.garantia);
+        if (garantiaDate > today) {
+          contadores.activos++;
         } else {
           contadores.vencidos++;
         }
-        return contadores;
-      },
-      { activos: 0, vencidos: 0 }
-    );
+      } else {
+        contadores.vencidos++;
+      }
+      return contadores;
+    }, { activos: 0, vencidos: 0 });
   };
 
   const contarEquiposAsignados = () => {
-    return equipos.reduce(
-      (contadores, equipo) => {
-        if (equipo.idColaborador) {
-          contadores.asignados++;
-        } else {
-          contadores.noAsignados++;
-        }
-        return contadores;
-      },
-      { asignados: 0, noAsignados: 0 }
-    );
-  };
-
-  const handleFilterChange = (estado) => {
-    setFiltroEstado(estado);
+    return equipos.reduce((contadores, equipo) => {
+      if (equipo.idColaborador) {
+        contadores.asignados++;
+      } else {
+        contadores.noAsignados++;
+      }
+      return contadores;
+    }, { asignados: 0, noAsignados: 0 });
   };
 
   const equiposFiltrados = useMemo(() => {
     return equipos.filter(equipo => {
-      if (filtroEstado === "todos") return true;
-      return equipo.estadoFisico === filtroEstado;
+      const estadoMatch = filtroEstado === "todos" || equipo.estadoFisico === filtroEstado;
+      const tipoMatch = filtroTipo === "todos" || equipo.tipoDispositivo === filtroTipo;
+      const garantiaMatch = filtroGarantia === "todos" ||
+        (filtroGarantia === "activos" && new Date(equipo.garantia) > new Date()) ||
+        (filtroGarantia === "vencidos" && new Date(equipo.garantia) <= new Date());
+
+      return estadoMatch && tipoMatch && garantiaMatch;
     });
-  }, [equipos, filtroEstado]);
+  }, [equipos, filtroEstado, filtroTipo, filtroGarantia]);
+
+  const handleFilterChange = (filtro, valor) => {
+    switch (filtro) {
+      case 'estado':
+        setFiltroEstado(valor);
+        break;
+      case 'tipo':
+        setFiltroTipo(valor);
+        break;
+      case 'garantia':
+        setFiltroGarantia(valor);
+        break;
+      default:
+        break;
+    }
+  };
 
   if (loading) {
     return (
@@ -138,7 +155,7 @@ const EquipoAnalysis = () => {
 
   if (error) {
     return (
-      <div>
+      <div className="error-container">
         <p>{error}</p>
         <button onClick={() => window.location.reload()}>Reintentar</button>
       </div>
@@ -151,7 +168,6 @@ const EquipoAnalysis = () => {
   const equiposPorGarantia = contarEquiposPorEstadoGarantia();
   const equiposPorAsignacion = contarEquiposAsignados();
 
-  // Datos para gráficas
   const estadoData = {
     labels: ['Excelente', 'Bueno', 'Regular', 'Malo', 'Urgente'],
     datasets: [{
@@ -164,6 +180,7 @@ const EquipoAnalysis = () => {
         equiposPorEstado.urgente,
       ],
       backgroundColor: ['#4CAF50', '#FFC107', '#FF9800', '#F44336', '#E91E63'],
+      hoverOffset: 10,
     }]
   };
 
@@ -173,6 +190,7 @@ const EquipoAnalysis = () => {
       label: 'Equipos por Año de Compra',
       data: Object.values(equiposPorFechaCompra),
       backgroundColor: ['#3498db', '#9b59b6', '#2ecc71', '#f39c12', '#e74c3c'],
+      borderWidth: 1,
     }]
   };
 
@@ -182,6 +200,7 @@ const EquipoAnalysis = () => {
       label: 'Estado de Garantía',
       data: [equiposPorGarantia.activos, equiposPorGarantia.vencidos],
       backgroundColor: ['#2ecc71', '#e74c3c'],
+      hoverOffset: 10,
     }]
   };
 
@@ -191,45 +210,181 @@ const EquipoAnalysis = () => {
       label: 'Estado de Asignación',
       data: [equiposPorAsignacion.asignados, equiposPorAsignacion.noAsignados],
       backgroundColor: ['#3498db', '#e74c3c'],
+      hoverOffset: 10,
     }]
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: {
+            size: 14,
+          },
+        },
+      },
+      title: {
+        display: false
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            return `${label}: ${value}`;
+          }
+        }
+      },
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeOutQuart',
+    },
+  };
+
+  const exportChart = (chartRef, filename) => {
+    const link = document.createElement('a');
+    link.href = chartRef.current.toBase64Image();
+    link.download = `${filename}.png`;
+    link.click();
   };
 
   return (
     <div className="equipo-analysis">
       <h1>Análisis del Inventario de Equipos</h1>
 
-      <div>
-        <label>Filtrar por estado físico:</label>
-        <select value={filtroEstado} onChange={(e) => handleFilterChange(e.target.value)}>
-          <option value="todos">Todos</option>
-          <option value="Excelente (nuevo) y garantía">Excelente</option>
-          <option value="Bueno (Pérdida de garantía y raspones)">Bueno</option>
-          <option value="Regular (Golpes, Rayones grandes)">Regular</option>
-          <option value="Malo (Cambio de piezas y pérdidas)">Malo</option>
-          <option value="Urgente (No funciona correctamente)">Urgente</option>
-        </select>
+      <div className="filters">
+        <div className="filter-group">
+          <label>Filtrar por estado físico:</label>
+          <select value={filtroEstado} onChange={(e) => handleFilterChange('estado', e.target.value)}>
+            <option value="todos">Todos</option>
+            <option value="Excelente (nuevo) y garantía">Excelente</option>
+            <option value="Bueno (Pérdida de garantía y raspones)">Bueno</option>
+            <option value="Regular (Golpes, Rayones grandes)">Regular</option>
+            <option value="Malo (Cambio de piezas y pérdidas)">Malo</option>
+            <option value="Urgente (No funciona correctamente)">Urgente</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Filtrar por tipo de dispositivo:</label>
+          <select value={filtroTipo} onChange={(e) => handleFilterChange('tipo', e.target.value)}>
+            <option value="todos">Todos</option>
+            {Object.keys(equiposPorTipo).map(tipo => (
+              <option key={tipo} value={tipo}>{tipo}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Filtrar por estado de garantía:</label>
+          <select value={filtroGarantia} onChange={(e) => handleFilterChange('garantia', e.target.value)}>
+            <option value="todos">Todos</option>
+            <option value="activos">Garantía Activa</option>
+            <option value="vencidos">Garantía Vencida</option>
+          </select>
+        </div>
       </div>
 
-      <h2>Equipos Filtrados</h2>
-      <ul>
-        {equiposFiltrados.map(equipo => (
-          <li key={equipo.id_equipos}>
-            {equipo.tipoDispositivo} ({equipo.marca}) - {equipo.estadoFisico}
-          </li>
-        ))}
-      </ul>
+      <div className="charts-grid">
+        <div className="chart-item">
+          <div className="chart-header">
+            <h2>Estado Físico de los Equipos</h2>
+            <button onClick={() => setShowEstadoFisico(!showEstadoFisico)}>
+              {showEstadoFisico ? 'Ocultar' : 'Mostrar'}
+            </button>
+            <button onClick={() => exportChart(estadoRef, 'Estado_Fisico')} className="export-btn">
+              Exportar
+            </button>
+          </div>
+          {showEstadoFisico && (
+            <div className="chart-container">
+              <Pie data={estadoData} options={options} ref={estadoRef} />
+            </div>
+          )}
+        </div>
 
-      <h2>Estado Físico de los Equipos</h2>
-      <Pie data={estadoData} />
+        <div className="chart-item">
+          <div className="chart-header">
+            <h2>Distribución por Año de Compra</h2>
+            <button onClick={() => setShowFechaCompra(!showFechaCompra)}>
+              {showFechaCompra ? 'Ocultar' : 'Mostrar'}
+            </button>
+            <button onClick={() => exportChart(fechaCompraRef, 'Año_Compra')} className="export-btn">
+              Exportar
+            </button>
+          </div>
+          {showFechaCompra && (
+            <div className="chart-container">
+              <Bar data={fechaCompraData} options={options} ref={fechaCompraRef} />
+            </div>
+          )}
+        </div>
 
-      <h2>Distribución por Año de Compra</h2>
-      <Bar data={fechaCompraData} />
+        <div className="chart-item">
+          <div className="chart-header">
+            <h2>Estado de Garantía</h2>
+            <button onClick={() => setShowGarantia(!showGarantia)}>
+              {showGarantia ? 'Ocultar' : 'Mostrar'}
+            </button>
+            <button onClick={() => exportChart(garantiaRef, 'Estado_Garantia')} className="export-btn">
+              Exportar
+            </button>
+          </div>
+          {showGarantia && (
+            <div className="chart-container">
+              <Pie data={garantiaData} options={options} ref={garantiaRef} />
+            </div>
+          )}
+        </div>
 
-      <h2>Estado de Garantía</h2>
-      <Pie data={garantiaData} />
+        <div className="chart-item">
+          <div className="chart-header">
+            <h2>Estado de Asignación</h2>
+            <button onClick={() => setShowAsignacion(!showAsignacion)}>
+              {showAsignacion ? 'Ocultar' : 'Mostrar'}
+            </button>
+            <button onClick={() => exportChart(asignacionRef, 'Estado_Asignacion')} className="export-btn">
+              Exportar
+            </button>
+          </div>
+          {showAsignacion && (
+            <div className="chart-container">
+              <Pie data={asignacionData} options={options} ref={asignacionRef} />
+            </div>
+          )}
+        </div>
+      </div>
 
-      <h2>Estado de Asignación</h2>
-      <Pie data={asignacionData} />
+      <div className="data-table">
+        <h2>Detalle de Equipos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tipo</th>
+              <th>Estado Físico</th>
+              <th>Fecha de Compra</th>
+              <th>Garantía</th>
+              <th>Asignado a</th>
+            </tr>
+          </thead>
+          <tbody>
+            {equiposFiltrados.map(equipo => (
+              <tr key={equipo.id}>
+                <td>{equipo.id}</td>
+                <td>{equipo.tipoDispositivo}</td>
+                <td>{equipo.estadoFisico}</td>
+                <td>{new Date(equipo.fechaCompra).toLocaleDateString()}</td>
+                <td>{equipo.garantia ? new Date(equipo.garantia).toLocaleDateString() : 'Sin Garantía'}</td>
+                <td>{equipo.idColaborador ? equipo.idColaborador : 'No Asignado'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

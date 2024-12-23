@@ -1,0 +1,92 @@
+/* Contenedor principal */
+.home-container {
+    display: flex; /* Flexbox para organizar los elementos en una fila */
+    flex-direction: row; /* Coloca el Sidebar y DetailPanel uno al lado del otro */
+    width: 100%;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    overflow: hidden; /* Evita desbordamientos */
+    background-color: #f4f7fa; /* Fondo general */
+}
+
+/* Sidebar */
+.home-container > .sidebar {
+    width: 400px; /* Ancho inicial del Sidebar */
+    background-color: #34495e; /* Azul oscuro */
+    color: #ecf0f1; /* Texto claro */
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    overflow-y: auto; /* Permite desplazamiento interno si el contenido excede */
+    position: fixed; /* Sidebar fijo */
+    left: 0; /* Anclado al borde izquierdo */
+    top: 0; /* Anclado al borde superior */
+    border-right: 2px solid #1abc9c; /* Línea de separación */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra para separación visual */
+    z-index: 10; /* Asegura que esté encima del contenido principal */
+    transition: width 0.3s ease-in-out; /* Suaviza la transición al expandirse */
+    gap: 25px; /* Separación uniforme entre elementos internos */
+}
+
+/* Expansión del Sidebar al pasar el mouse */
+.home-container > .sidebar:hover {
+    width: 420px; /* Expande ligeramente */
+}
+
+/* DetailPanel */
+.home-container > .detail-panel {
+    margin-left: 425px; /* Ajusta el margen izquierdo al ancho inicial del Sidebar */
+    flex: 1; /* Ocupa todo el espacio restante */
+    overflow-y: auto; /* Permite desplazamiento vertical */
+    padding: 20px; /* Espaciado interno */
+    background-color: white; /* Fondo claro */
+    border-left: 1px solid #ddd; /* Línea divisoria */
+    z-index: 1; /* Detrás del Sidebar */
+    transition: margin-left 0.3s ease-in-out; /* Suaviza el ajuste al expandir el Sidebar */
+}
+
+/* Ajuste del DetailPanel cuando el Sidebar se expande */
+.home-container > .sidebar:hover ~ .detail-panel {
+    margin-left: 445px; /* Ajusta el margen izquierdo al nuevo ancho del Sidebar */
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .home-container {
+        flex-direction: column; /* Apila el Sidebar y el DetailPanel */
+    }
+
+    .home-container > .sidebar {
+        width: 100%; /* El Sidebar ocupa todo el ancho */
+        height: auto; /* Ajusta su altura automáticamente */
+        position: relative; /* Permite apilar con el DetailPanel */
+        box-shadow: none; /* Elimina la sombra en diseño apilado */
+    }
+
+    .home-container > .detail-panel {
+        margin-left: 0; /* Elimina margen izquierdo */
+        flex: none; /* Desactiva flexibilidad */
+        width: 100%; /* Ocupa todo el ancho */
+    }
+}
+
+/* Responsividad para pantallas medianas */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .home-container > .sidebar {
+        width: 300px; /* Ajusta el ancho del Sidebar */
+    }
+
+    .home-container > .detail-panel {
+        margin-left: 320px; /* Ajusta el margen izquierdo */
+    }
+}
+
+/* Responsividad para pantallas grandes */
+@media (min-width: 1025px) {
+    .home-container > .sidebar {
+        width: 400px; /* Ancho estándar del Sidebar */
+    }
+
+    .home-container > .detail-panel {
+        margin-left: 425px; /* Margen izquierdo estándar */
+    }
+}

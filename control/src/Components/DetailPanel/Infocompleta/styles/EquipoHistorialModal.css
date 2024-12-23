@@ -1,147 +1,200 @@
-/* EquipoHistorialModal.css */
+/* Modal container */
+.modal.historial-modal-expanded {
+  width: 98%;
+  max-width: 1300px;
+  height: auto;
+  max-height: 95%;
+  margin: auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease; /* Animación de entrada */
+}
 
-/* Estilos generales del modal */
-.modal.historial-modal {
-    background: #fff;
-    width: 80%;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden;
+/* Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-  
-  .overlay {
-    background-color: rgba(0, 0, 0, 0.6);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  /* Header del modal */
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
+}
+
+/* Overlay */
+.overlay {
+  background-color: rgba(0, 0, 0, 0.8); /* Más opacidad para el fondo */
+  animation: fadeInOverlay 0.5s ease;
+}
+
+/* Animación para el overlay */
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
   }
-  
-  .modal-header h2 {
-    margin: 0;
-    font-size: 24px;
-    color: #333;
+  to {
+    opacity: 1;
   }
-  
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #555;
-    cursor: pointer;
-    transition: color 0.3s ease;
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.modal-header h2 {
+  font-size: 1.8rem;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra para el texto */
+}
+
+.close-button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-button:hover {
+  color: #000;
+  transform: rotate(90deg); /* Animación al pasar el cursor */
+}
+
+/* Modal content */
+.modal-content-expanded {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 10px 0;
+  animation: slideIn 0.5s ease; /* Animación de entrada */
+}
+
+/* Animación de contenido */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .close-button:hover {
-    color: #e74c3c;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Contenido del modal */
-  .modal-content {
-    max-height: 60vh;
-    overflow-y: auto;
-  }
-  
-  .loading {
-    text-align: center;
-  }
-  
-  .spinner {
-    margin: 10px auto;
-    border: 4px solid rgba(0, 0, 0, 0.2);
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  .error {
-    text-align: center;
-    color: #e74c3c;
-    font-size: 16px;
-  }
-  
-  .retry-button {
-    background-color: #3498db;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .retry-button:hover {
-    background-color: #2980b9;
-  }
-  
-  /* Tabla de historial */
-  .historial-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-  }
-  
-  .historial-table thead tr {
-    background-color: #3498db;
-    color: white;
-    text-align: left;
-  }
-  
-  .historial-table th,
-  .historial-table td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-  }
-  
-  .historial-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .historial-table tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .historial-table td {
-    color: #555;
-  }
-  
-  /* Mensaje cuando no hay registros */
-  .modal-content p {
-    font-size: 16px;
-    color: #888;
-    text-align: center;
-    margin: 20px 0;
-  }
-  
+}
+
+/* Table container */
+.table-container-expanded {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 70vh;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Table styling */
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.historial-table th,
+.historial-table td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: left;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.historial-table th {
+  background-color: #1abc9c; /* Color del encabezado */
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 10px 12px;
+  text-align: left;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para el encabezado */
+}
+
+.historial-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.historial-table tbody tr:hover {
+  background-color: #e8f0fe; /* Resaltado en hover */
+  color: #000;
+  transform: scale(1.02); /* Efecto de escala al pasar el cursor */
+}
+
+/* Animación de resalte */
+.historial-table tbody tr:hover td {
+  background-color: #c8f7f0;
+}
+
+/* Animación de transición */
+.historial-table tbody td {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbars styling */
+.table-container-expanded::-webkit-scrollbar {
+  height: 10px;
+  width: 8px;
+}
+
+.table-container-expanded::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.table-container-expanded::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
+
+/* Loading and error messages */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 20px;
+}
+
+.error {
+  text-align: center;
+  font-size: 1rem;
+  color: red;
+  margin-top: 20px;
+}
+
+.retry-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.retry-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.1); /* Ampliar ligeramente el botón al pasar el cursor */
+}

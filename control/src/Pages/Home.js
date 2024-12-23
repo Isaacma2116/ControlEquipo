@@ -1,48 +1,85 @@
+// src/Pages/Home.js
+
 import React, { useState } from 'react';
-import Sidebar from '../Components/Sidebar/Sidebar';
-import DetailPanel from '../Components/DetailPanel/DetailPanel';
+import Sidebar from '../Components/Sidebar/Sidebar'; // Importa el Sidebar para la navegación
+import DetailPanel from '../Components/DetailPanel/DetailPanel'; // Importa el DetailPanel para mostrar detalles
+import './styles/Home.css';
 
 const Home = () => {
+  // Estado para almacenar el ID y tipo seleccionado
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState('colaborador-list'); // Valor inicial predeterminado
 
-  // Manejadores para los diferentes tipos de selección
+  // Manejadores para cambiar el tipo de vista y el ID de acuerdo a lo que se selecciona en la barra lateral
   const handleColaboradorClick = (id) => {
-    setSelectedId(id);
-    setSelectedType('colaborador');
+    setSelectedId(id); // Establece el ID del colaborador seleccionado
+    setSelectedType('colaborador'); // Establece el tipo de vista como 'colaborador'
   };
 
   const handleEquipoClick = (id) => {
-    setSelectedId(id);
-    setSelectedType('equipo');  // Al hacer clic en un equipo, seteamos el tipo como 'equipo'
+    setSelectedId(id); // Establece el ID del equipo seleccionado
+    setSelectedType('equipo'); // Establece el tipo de vista como 'equipo'
+  };
+
+  const handleColaboradorListClick = () => {
+    setSelectedId(null); // Resetea el ID seleccionado
+    setSelectedType('colaborador-list'); // Cambia la vista a la lista de colaboradores
+  };
+
+  const handleCelularClick = (id) => {
+    setSelectedId(id); // Establece el ID del celular seleccionado
+    setSelectedType('celular'); // Establece el tipo de vista como 'celular'
+  };
+
+  const handleCelularListClick = () => {
+    setSelectedId(null); // Resetea el ID seleccionado
+    setSelectedType('celular-list'); // Cambia la vista a la lista de celulares
   };
 
   const handleSoftwareClick = () => {
-    setSelectedId(null);
-    setSelectedType('software');
+    setSelectedId(null); // Resetea el ID seleccionado
+    setSelectedType('software'); // Cambia la vista a la lista de software
   };
 
   const handleEquipoAnalysisClick = () => {
-    setSelectedId(null);
-    setSelectedType('equipo-analysis');
+    setSelectedId(null); // Resetea el ID seleccionado
+    setSelectedType('equipo-analysis'); // Cambia la vista a análisis de equipos
   };
 
-  // Manejador para Historial
   const handleHistorialClick = () => {
-    setSelectedId(null);
-    setSelectedType('historial');
+    setSelectedId(null); // Resetea el ID seleccionado
+    setSelectedType('historial'); // Cambia la vista a historial
+  };
+
+  const handleEquiposAsociadosClick = () => {
+    setSelectedId(null); // No es necesario un ID específico para esta vista
+    setSelectedType('equipos-asociados'); // Cambia la vista a los equipos asociados
+  };
+
+  const handleAuxiliaresClick = () => {
+    setSelectedId(null); // Resetea el ID seleccionado
+    setSelectedType('auxiliares'); // Cambia la vista a Auxiliares
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div className="home-container">
       <Sidebar
         onColaboradorClick={handleColaboradorClick}
-        onEquipoClick={handleEquipoClick}  // Asegúrate de pasar `handleEquipoClick` aquí
+        onColaboradorListClick={handleColaboradorListClick}
+        onEquipoClick={handleEquipoClick} // Asegúrate de pasar la función aquí
+        onCelularClick={handleCelularClick}
+        onCelularListClick={handleCelularListClick}
         onSoftwareClick={handleSoftwareClick}
         onEquipoAnalysisClick={handleEquipoAnalysisClick}
         onHistorialClick={handleHistorialClick}
+        onEquiposAsociadosClick={handleEquiposAsociadosClick}
+        onAuxiliaresClick={handleAuxiliaresClick} // Nuevo manejador
       />
-      {selectedType && <DetailPanel id={selectedId} tipo={selectedType} />}
+      <DetailPanel
+        id={selectedId}
+        tipo={selectedType}
+        onShowHistorial={handleHistorialClick} // Opcional, dependiendo de tu implementación
+      />
     </div>
   );
 };

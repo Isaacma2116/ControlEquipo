@@ -1,0 +1,228 @@
+/* Estilo principal para la lista de colaboradores */
+.colaboradorList {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffffff, #f4f6f9);
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  animation: fadeIn 0.5s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.colaboradorList:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.colaboradorList h2 {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor del buscador */
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 15px;
+  background: linear-gradient(135deg, #f9fafa, #e9ecef);
+  border-radius: 10px;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.searchIcon {
+  font-size: 20px;
+  color: #95a5a6;
+  position: absolute;
+  left: 20px;
+  transition: color 0.3s ease;
+}
+
+.searchContainer:hover .searchIcon {
+  color: #3498db;
+}
+
+.searchBar {
+  flex: 1;
+  padding: 12px 20px 12px 50px;
+  border-radius: 30px;
+  border: 1px solid #ccd1d9;
+  background-color: #ffffff;
+  font-size: 15px;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.searchBar:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.filterButton {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filterButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.filterMenu {
+  position: absolute;
+  top: 100%;
+  right: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 10;
+  animation: fadeIn 0.3s ease;
+}
+
+.filterMenu p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.filterMenu button {
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #3498db;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-align: left;
+}
+
+.filterMenu button:hover {
+  background: #3498db;
+  color: white;
+}
+
+/* Lista de colaboradores */
+.colaboradoresList {
+  list-style: none;
+  padding: 20px;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  background: #f7f9fc;
+  border-radius: 12px;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.colaboradoresList li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #ffffff, #eef2f6);
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.colaboradoresList li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.colaboradoresList li img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border: 3px solid #3498db;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.colaboradoresList li:hover img {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.colaboradoresList li p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #34495e;
+}
+
+.colaboradoresList li p strong {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .colaboradoresList {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .searchContainer {
+      flex-direction: column;
+      gap: 10px;
+  }
+
+  .colaboradoresList li img {
+      width: 70px;
+      height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .colaboradoresList {
+      grid-template-columns: 1fr;
+  }
+
+  .colaboradoresList li img {
+      width: 60px;
+      height: 60px;
+  }
+
+  .searchBar {
+      font-size: 14px;
+  }
+}

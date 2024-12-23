@@ -1,73 +1,43 @@
-/* Contenedor principal para las notificaciones de expiración */
+/* Contenedor principal de notificaciones */
 .expiry-notifications {
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fdfdfd; /* Fondo claro */
+  border: 1px solid #ddd; /* Borde suave */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  max-width: 400px; /* Ancho máximo */
+  margin: 20px auto; /* Centrado automático */
+  font-family: Arial, sans-serif; /* Fuente base */
+  font-size: 14px; /* Tamaño de texto */
+}
+
+/* Estilo de las notificaciones individuales */
+.expiry-notifications p {
+  background-color: #ffecec; /* Fondo de alerta */
+  color: #e74c3c; /* Color de texto rojo */
+  border: 1px solid #e74c3c; /* Borde rojo */
+  border-radius: 6px; /* Bordes redondeados */
+  padding: 10px; /* Espaciado interno */
+  margin: 10px 0; /* Espaciado entre notificaciones */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  display: flex; /* Alineación interna */
+  align-items: center;
+  gap: 10px; /* Espacio entre íconos y texto */
+}
+
+/* Animación para entrada de notificaciones */
+.expiry-notifications p {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animación de desvanecimiento */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
   }
-  
-  /* Estilo para cada sección de notificación */
-  .notification {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  to {
+      opacity: 1;
+      transform: translateY(0);
   }
-  
-  /* Títulos de las notificaciones */
-  .notification h3 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  /* Estilo para software caducado */
-  .notification.expired {
-    background-color: #ffe5e5;
-    border-left: 5px solid #dc3545;
-  }
-  
-  .notification.expired h3 {
-    color: #c82333;
-  }
-  
-  /* Estilo para software próximo a caducar */
-  .notification.expiring-soon {
-    background-color: #fff9e6;
-    border-left: 5px solid #ffc107;
-  }
-  
-  .notification.expiring-soon h3 {
-    color: #e0a800;
-  }
-  
-  /* Estilo de texto para la lista de software */
-  .notification p {
-    font-size: 1em;
-    color: #555;
-    margin: 5px 0;
-  }
-  
-  /* Hover para resaltar cada software en la lista */
-  .notification p:hover {
-    color: #333;
-    font-weight: 500;
-  }
-  
-  /* Responsive: Espaciado adicional en pantallas pequeñas */
-  @media (max-width: 768px) {
-    .expiry-notifications {
-      padding: 15px;
-    }
-  
-    .notification h3 {
-      font-size: 1.1em;
-    }
-  
-    .notification p {
-      font-size: 0.95em;
-    }
-  }
-  
+}

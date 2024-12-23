@@ -22,7 +22,6 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
       return;
     }
 
-    console.log(`Obteniendo historial para idEquipo: ${idEquipo}`);
     setLoading(true);
 
     try {
@@ -39,14 +38,7 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
       }
     } catch (err) {
       console.error('Error al obtener el historial del equipo:', err);
-
-      if (err.message.includes('Network Error')) {
-        setError('No se pudo conectar al servidor. Por favor, verifica tu conexión.');
-      } else if (err.response && err.response.status === 404) {
-        setError('No se encontraron registros en el historial para este equipo.');
-      } else {
-        setError('Error inesperado al obtener el historial del equipo.');
-      }
+      setError('Error al obtener el historial del equipo.');
     } finally {
       setLoading(false);
     }
@@ -64,16 +56,18 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Historial del Equipo"
-      className="modal historial-modal"
+      className="modal historial-modal-expanded" // Modal ampliado
       overlayClassName="overlay"
     >
       <div className="modal-header">
-        <h2><FontAwesomeIcon icon={faHistory} /> Historial del Equipo</h2>
+        <h2>
+          <FontAwesomeIcon icon={faHistory} /> Historial del Equipo
+        </h2>
         <button className="close-button" onClick={onClose}>
-          <FontAwesomeIcon icon={faTimes} /> Cerrar
+          <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>
-      <div className="modal-content">
+      <div className="modal-content-expanded">
         {loading ? (
           <div className="loading">
             <p>Cargando historial...</p>
@@ -82,62 +76,86 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
         ) : error ? (
           <div className="error">
             <p>{error}</p>
-            <button onClick={fetchHistorial} className="retry-button">Reintentar</button>
+            <button onClick={fetchHistorial} className="retry-button">
+              Reintentar
+            </button>
           </div>
         ) : historial.length > 0 ? (
-          <table className="historial-table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Operación</th>
-                <th>Detalles</th>
-              </tr>
-            </thead>
-            <tbody>
-              {historial.map((registro, index) => (
-                <tr key={index}>
-                  <td>{new Date(registro.fecha_operacion).toLocaleDateString()}</td>
-                  <td>{new Date(registro.fecha_operacion).toLocaleTimeString()}</td>
-                  <td>{registro.operacion}</td>
-                  <td>
-                    <details>
-                      <summary>Ver detalles</summary>
-                      <div>
-                        <p><strong>ID Equipo:</strong> {registro.id_equipos}</p>
-                        <p><strong>Tipo de Dispositivo:</strong> {registro.tipoDispositivo}</p>
-                        <p><strong>Marca:</strong> {registro.marca}</p>
-                        <p><strong>Modelo:</strong> {registro.modelo}</p>
-                        <p><strong>Número de Serie:</strong> {registro.numeroSerie}</p>
-                        <p><strong>Contraseña del Equipo:</strong> {registro.contrasenaEquipo}</p>
-                        <p><strong>RAM:</strong> {registro.ram}</p>
-                        <p><strong>Disco Duro:</strong> {registro.discoDuro}</p>
-                        <p><strong>Tarjeta Madre:</strong> {registro.tarjetaMadre}</p>
-                        <p><strong>Tarjeta Gráfica:</strong> {registro.tarjetaGrafica}</p>
-                        <p><strong>Procesador:</strong> {registro.procesador}</p>
-                        <p><strong>Componentes Adicionales:</strong> {registro.componentesAdicionales}</p>
-                        <p><strong>Estado Físico:</strong> {registro.estadoFisico}</p>
-                        <p><strong>Detalles de Incidentes:</strong> {registro.detallesIncidentes}</p>
-                        <p><strong>Garantía:</strong> {registro.garantia}</p>
-                        <p><strong>Fecha de Compra:</strong> {registro.fechaCompra}</p>
-                        <p><strong>Activo:</strong> {registro.activo}</p>
-                        <p><strong>Sistema Operativo:</strong> {registro.sistemaOperativo}</p>
-                        <p><strong>MAC:</strong> {registro.mac}</p>
-                        <p><strong>Hostname:</strong> {registro.hostname}</p>
-                        <p><strong>ID Colaborador:</strong> {registro.idColaborador}</p>
-                        <p><strong>Imagen:</strong> {registro.imagen ? <a href={registro.imagen} target="_blank" rel="noopener noreferrer">Ver imagen</a> : 'No disponible'}</p>
-                      </div>
-                    </details>
-                  </td>
+          <div className="table-container-expanded">
+            <table className="historial-table">
+              <thead>
+                <tr>
+                  <th>Fecha de Operación</th>
+                  <th>ID Equipo</th>
+                  <th>Tipo de Dispositivo</th>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Número de Serie</th>
+                  <th>Contraseña</th>
+                  <th>RAM</th>
+                  <th>Disco Duro</th>
+                  <th>Tarjeta Madre</th>
+                  <th>Tarjeta Gráfica</th>
+                  <th>Procesador</th>
+                  <th>Componentes Adicionales</th>
+                  <th>Estado Físico</th>
+                  <th>Detalles de Incidentes</th>
+                  <th>Garantía</th>
+                  <th>Fecha de Compra</th>
+                  <th>Activo</th>
+                  <th>Sistema Operativo</th>
+                  <th>MAC</th>
+                  <th>Hostname</th>
+                  <th>ID Colaborador</th>
+                  <th>Operación</th>
+
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {historial.map((registro, index) => (
+                  <tr key={index}>
+                    <td>
+                      {registro.fecha_operacion
+                        ? new Date(registro.fecha_operacion).toLocaleString()
+                        : "No disponible"}
+                    </td>
+                    <td>{registro.id_equipos || "No disponible"}</td>
+                    <td>{registro.tipoDispositivo || "No disponible"}</td>
+                    <td>{registro.marca || "No disponible"}</td>
+                    <td>{registro.modelo || "No disponible"}</td>
+                    <td>{registro.numeroSerie || "No disponible"}</td>
+                    <td>{registro.contrasenaEquipo || "No disponible"}</td>
+                    <td>{registro.ram || "No disponible"}</td>
+                    <td>{registro.discoDuro || "No disponible"}</td>
+                    <td>{registro.tarjetaMadre || "No disponible"}</td>
+                    <td>{registro.tarjetaGrafica || "No disponible"}</td>
+                    <td>{registro.procesador || "No disponible"}</td>
+                    <td>
+                      {registro.componentesAdicionales
+                        ? JSON.stringify(registro.componentesAdicionales, null, 2)
+                        : "No disponible"}
+                    </td>
+                    <td>{registro.estadoFisico || "No disponible"}</td>
+                    <td>{registro.detallesIncidentes || "No disponible"}</td>
+                    <td>{registro.garantia || "No disponible"}</td>
+                    <td>{registro.fechaCompra || "No disponible"}</td>
+                    <td>{registro.activo || "No disponible"}</td>
+                    <td>{registro.sistemaOperativo || "No disponible"}</td>
+                    <td>{registro.mac || "No disponible"}</td>
+                    <td>{registro.hostname || "No disponible"}</td>
+                    <td>{registro.idColaborador || "No disponible"}</td>
+                    <td>{registro.operacion || "No disponible"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p>No se encontraron registros en el historial del equipo.</p>
         )}
       </div>
     </Modal>
+
   );
 };
 

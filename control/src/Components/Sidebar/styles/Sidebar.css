@@ -1,4 +1,4 @@
-/* Contenedor principal para el sidebar y el contenido */
+/* Contenedor principal para el sidebar */
 .container {
     display: flex;
     height: 100vh; /* Ocupa toda la altura de la ventana */
@@ -7,22 +7,26 @@
 
 /* Estilos generales para el sidebar */
 .sidebar {
-    width: 500px; /* Ancho del sidebar */
-    background-color: #34495e; /* Azul más oscuro */
+    width: 280px; /* Ancho del sidebar */
+    background-color: #1f2937; /* Azul oscuro elegante */
     color: #ecf0f1;
     padding: 20px;
     box-sizing: border-box;
-    height: 100vh;
-    overflow-y: auto;
-    transition: all 0.3s ease-in-out;
-    flex-shrink: 0; /* Evita que el sidebar se reduzca */
-    border-right: 2px solid #1abc9c; /* Línea de separación */
-    position: relative;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    overflow-y: auto; /* Desplazamiento interno */
+    position: fixed; /* Fija el sidebar */
+    left: 0;
+    top: 0;
+    border-right: 2px solid #38bdf8; /* Línea de separación */
+    z-index: 10; /* Asegura que el sidebar esté encima del contenido */
+    transition: width 0.4s ease-in-out, background-color 0.3s ease-in-out;
 }
 
-/* Hover del sidebar para hacer colapsable */
+/* Expande ligeramente al pasar el mouse */
 .sidebar:hover {
-    width: 520px; /* Expande ligeramente al pasar el mouse */
+    width: 320px;
+    background-color: #111827; /* Fondo más oscuro */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Sombra envolvente */
 }
 
 /* Contenedor del logo */
@@ -31,168 +35,153 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 30px; /* Espacio debajo del logo */
-    padding: 30px;
-    background: linear-gradient(145deg, #2c3e50, #3c4d62); /* Fondo con degradado */
-    border-radius: 20px; /* Bordes redondeados */
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4); /* Sombra prominente */
-    border: 2px solid rgba(26, 188, 156, 0.5); /* Borde decorativo */
-    position: relative; /* Necesario para posicionar elementos internos */
-    overflow: hidden; /* Oculta elementos que se salen del contenedor */
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(145deg, #1f2937, #374151); /* Fondo degradado */
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4); /* Sombra envolvente */
+    position: relative;
+    overflow: hidden;
 }
 
-/* Imagen del logo con animación interactiva */
 .logo {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%; /* Convierte en un círculo */
-    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.3); /* Sombra atractiva */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transiciones suaves */
-    pointer-events: none; /* Evita interferencia del cursor en la animación */
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Animación dinámica */
 .logo-container:hover .logo {
-    transform: scale(1.2); /* Aumenta el tamaño */
-    box-shadow: 0px 20px 40px rgba(26, 188, 156, 0.6); /* Resplandor dinámico */
+    transform: scale(1.2);
+    box-shadow: 0px 15px 25px rgba(56, 189, 248, 0.6); /* Resplandor dinámico */
 }
 
-/* Resplandor interactivo cuando el cursor está cerca */
-.logo-container:hover {
-    box-shadow: 0px 15px 30px rgba(26, 188, 156, 0.7); /* Más luz en el contenedor */
-}
-
-/* Título del logo debajo de la imagen */
 .logo-title {
-    font-size: 24px; /* Tamaño más grande */
-    color: #1abc9c;
+    font-size: 22px;
+    color: #38bdf8;
     font-weight: bold;
+    margin-top: 15px;
     text-transform: uppercase;
-    letter-spacing: 2px; /* Espaciado entre letras */
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Sombra ligera en el texto */
+    letter-spacing: 2px;
+    text-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+    text-align: center;
 }
 
-/* Estilos para el título principal */
+/* Título del menú */
 .sidebar h1 {
-    font-size: 26px; /* Ajusta el tamaño del título */
+    font-size: 22px;
     font-weight: bold;
-    margin-bottom: 30px; /* Espacio adicional debajo del título */
+    margin-bottom: 30px;
+    color: #38bdf8;
     text-align: center;
-    color: #1abc9c;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Icono junto al título */
 .menu-title .menu-icon {
     margin-right: 10px;
 }
 
-/* Estilos para los elementos del menú */
+/* Estilo de los elementos del menú */
 .menu-item {
-    display: flex; /* Asegura la alineación horizontal */
-    align-items: center; /* Centra los iconos verticalmente */
-    margin-bottom: 30px; /* Espacio entre ítems */
-    padding: 15px 20px; /* Espaciado interno uniforme */
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 20px;
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea sutil debajo */
-    border-radius: 8px; /* Bordes redondeados */
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Alineación precisa de iconos y texto */
+.menu-item:hover {
+    background-color: rgba(56, 189, 248, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0px 5px 10px rgba(56, 189, 248, 0.3);
+}
+
 .menu-item h2 {
-    margin: 0; /* Elimina márgenes adicionales */
-    font-size: 20px;
+    margin: 0;
+    font-size: 18px;
     color: #ecf0f1;
-    flex-grow: 1; /* Asegura que el texto ocupe el espacio correcto */
+    flex-grow: 1;
     display: flex;
-    justify-content: space-between; /* Alinea texto e iconos de flecha */
+    justify-content: space-between;
     align-items: center;
     transition: color 0.3s ease;
 }
 
-/* Asegura que todos los iconos queden alineados */
 .menu-icon {
-    font-size: 18px; /* Tamaño uniforme */
-    color: #1abc9c;
-    margin-right: 15px; /* Espaciado entre icono y texto */
+    font-size: 20px;
+    color: #38bdf8;
+    margin-right: 10px;
 }
 
-/* Cambiar color al hacer hover en el texto */
-.menu-item:hover h2 {
-    color: #1abc9c;
-}
-
-/* Hover para el ítem completo */
-.menu-item:hover {
-    background-color: rgba(26, 188, 156, 0.2); /* Fondo verde agua tenue */
-    transform: translateY(-2px); /* Efecto de elevación */
-}
-
-/* Estilo para el ítem activo */
-.menu-item.active {
-    background-color: rgba(26, 188, 156, 0.3); /* Fondo verde agua */
-    color: #1abc9c; /* Color de texto activo */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para el activo */
-}
-
-/* Ajusta el espacio del ícono de flecha derecha */
+/* Rotación del ícono al pasar el mouse */
 .menu-item h2 svg {
     margin-left: 10px;
     transition: transform 0.3s ease-in-out;
 }
 
-/* Animación de rotación para el ícono de flecha */
+.menu-item:hover h2 {
+    color: #38bdf8;
+}
+
 .menu-item:hover h2 svg {
-    transform: rotate(90deg); /* Gira el ícono al pasar el mouse */
+    transform: rotate(90deg);
+}
+
+.menu-item.active {
+    background-color: rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Contenido principal */
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    overflow-y: auto;
-    background-color: #f4f4f9;
+    background-color: #f8fafc;
     box-sizing: border-box;
-    transition: margin-left 0.3s ease-in-out;
+    margin-left: 320px;
+    transition: margin-left 0.4s ease-in-out;
 }
 
-/* Ajusta el contenido principal según el ancho del sidebar */
-.container .sidebar + .main-content {
-    margin-left: 500px;
+/* Barras de desplazamiento personalizadas */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
 }
 
-/* Responsive Design */
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Responsividad */
 @media (max-width: 768px) {
     .sidebar {
-        width: 300px; /* Sidebar más estrecho en pantallas pequeñas */
+        width: 250px;
     }
 
     .sidebar:hover {
-        width: 320px; /* Expansión en hover en pantallas pequeñas */
+        width: 280px;
     }
 
-    .container .sidebar + .main-content {
-        margin-left: 300px;
-    }
-
-    .sidebar.collapsed {
-        width: 80px; /* Sidebar colapsado */
-    }
-
-    .sidebar.collapsed h1,
-    .sidebar.collapsed .menu-item h2 {
-        display: none;
-    }
-
-    .sidebar.collapsed .menu-item ul {
-        display: none;
-    }
-
-    .container .sidebar.collapsed + .main-content {
-        margin-left: 80px;
+    .main-content {
+        margin-left: 280px;
     }
 }

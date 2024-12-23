@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus, faFilter } from '@fortawesome/free-solid-svg-icons';
-import './styles/Colaboradores.css';
-import ColaboradorForm from './Forms/ColaboradorForm'; // Ajusta la ruta de importación si es necesario
+import styles from './styles/Colaboradores.module.css';
+import ColaboradorForm from './Forms/ColaboradorForm'; // Ajusta la ruta si es necesario
 
 const Colaboradores = ({ onColaboradorClick }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,6 +47,10 @@ const Colaboradores = ({ onColaboradorClick }) => {
     };
 
     const sortedColaboradores = () => {
+        if (!Array.isArray(colaboradores)) {
+            return []; // Asegúrate de que siempre devuelve un arreglo
+        }
+
         if (sortOrder === 'name-asc') {
             return [...colaboradores].sort((a, b) => a.nombre.localeCompare(b.nombre));
         } else if (sortOrder === 'name-desc') {
@@ -56,26 +60,27 @@ const Colaboradores = ({ onColaboradorClick }) => {
         } else if (sortOrder === 'date-desc') {
             return [...colaboradores].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
         }
+
         return colaboradores;
     };
 
     return (
-        <div className="colaboradores-sidebar-menu">
-            <div className="search-container">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
+        <div className={styles.colaboradoresSidebarMenu}>
+            <div className={styles.searchContainer}>
+                
                 <input
                     type="text"
-                    placeholder=""
+                    placeholder="Buscar colaboradores..."
                     value={searchTerm}
                     onChange={handleChange}
-                    className="search-bar"
+                    className={styles.searchBar}
                 />
-                <button className="filter-button" onClick={toggleFilterMenu}>
+                <button className={styles.filterButton} onClick={toggleFilterMenu}>
                     <FontAwesomeIcon icon={faFilter} />
                 </button>
 
                 {filterOpen && (
-                    <div className="filter-menu">
+                    <div className={styles.filterMenu}>
                         <p>Ordenar por:</p>
                         <button onClick={() => handleSortChange('name-asc')}>Nombre A-Z</button>
                         <button onClick={() => handleSortChange('name-desc')}>Nombre Z-A</button>
@@ -85,9 +90,9 @@ const Colaboradores = ({ onColaboradorClick }) => {
                 )}
             </div>
 
-            <ul>
+            <ul className={styles.colaboradoresList}>
                 {sortedColaboradores()
-                    .filter(colaborador =>
+                    .filter((colaborador) =>
                         colaborador.nombre.toLowerCase().includes(searchTerm.toLowerCase())
                     )
                     .map((colaborador) => (
@@ -97,13 +102,17 @@ const Colaboradores = ({ onColaboradorClick }) => {
                     ))}
             </ul>
 
-            {showForm && (
-                <ColaboradorForm show={showForm} handleClose={handleFormClose} />
-            )}
-
-            <button onClick={handleAddClick} className="add-colaborador-button">
+            <button onClick={handleAddClick} className={styles.addColaboradorButton}>
                 <FontAwesomeIcon icon={faPlus} /> Agregar Colaborador
             </button>
+
+            {/* Renderiza el formulario si `showForm` es verdadero */}
+            {showForm && (
+                <ColaboradorForm
+                    show={showForm}
+                    handleClose={handleFormClose}
+                />
+            )}
         </div>
     );
 };

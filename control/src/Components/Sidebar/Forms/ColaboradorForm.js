@@ -13,12 +13,13 @@ const ColaboradorForm = ({ show, handleClose }) => {
     correoPersonal: '',
     telefonoPersonal: '',
     correoSmex: '',
+    telefonoSmex: '', // Nuevo campo agregado
     fotografia: null,
   });
 
   const [errors, setErrors] = useState({});
   const [isModified, setIsModified] = useState(false);
-  const [loading, setLoading] = useState(false); // Agrega estado de carga
+  const [loading, setLoading] = useState(false);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -49,6 +50,9 @@ const ColaboradorForm = ({ show, handleClose }) => {
     if (formData.correoSmex && !formData.correoSmex.endsWith('@shonanmexico.com.mx')) {
       formErrors.correoSmex = 'El correo SMex debe pertenecer al dominio @shonanmexico.com.mx.';
     }
+    if (formData.telefonoSmex && !/^\d{10}$/.test(formData.telefonoSmex)) {
+      formErrors.telefonoSmex = 'El teléfono SMex debe tener 10 dígitos.';
+    }
 
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
@@ -63,6 +67,7 @@ const ColaboradorForm = ({ show, handleClose }) => {
       correoPersonal: '',
       telefonoPersonal: '',
       correoSmex: '',
+      telefonoSmex: '', // Resetea el nuevo campo
       fotografia: null,
     });
     setErrors({});
@@ -83,7 +88,7 @@ const ColaboradorForm = ({ show, handleClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setLoading(true); // Muestra el estado de carga
+      setLoading(true);
       const formDataToSend = new FormData();
       formDataToSend.append('id_empleado', formData.idEmpleado);
       formDataToSend.append('nombre', formData.nombreEmpleado);
@@ -92,6 +97,7 @@ const ColaboradorForm = ({ show, handleClose }) => {
       formDataToSend.append('correo', formData.correoPersonal);
       formDataToSend.append('telefono_personal', formData.telefonoPersonal);
       formDataToSend.append('correo_smex', formData.correoSmex);
+      formDataToSend.append('telefono_smex', formData.telefonoSmex); // Agrega el nuevo campo
       formDataToSend.append('fotografia', formData.fotografia);
 
       try {
@@ -104,14 +110,14 @@ const ColaboradorForm = ({ show, handleClose }) => {
           console.log('Datos enviados:', response.data);
           resetForm();
           handleClose();
-          window.location.reload(); // Esto refresca la página
+          window.location.reload(); // Refresca la página
         } else {
           console.error('Error: La respuesta no contiene datos.');
         }
       } catch (error) {
         console.error('Error al enviar los datos:', error.response ? error.response.data : error.message);
       } finally {
-        setLoading(false); // Oculta el estado de carga
+        setLoading(false);
       }
     }
   };
@@ -131,6 +137,7 @@ const ColaboradorForm = ({ show, handleClose }) => {
           {renderInputField('correoPersonal', 'Correo:', faEnvelope, 'email', formData.correoPersonal, errors.correoPersonal, handleChange)}
           {renderInputField('telefonoPersonal', 'Teléfono Personal:', faPhone, 'text', formData.telefonoPersonal, errors.telefonoPersonal, handleChange)}
           {renderInputField('correoSmex', 'Correo SMex (opcional):', faEnvelope, 'email', formData.correoSmex, errors.correoSmex, handleChange)}
+          {renderInputField('telefonoSmex', 'Teléfono SMex (opcional):', faPhone, 'text', formData.telefonoSmex, errors.telefonoSmex, handleChange)}
           <div className="form-group">
             <label><FontAwesomeIcon icon={faFileImage} /> Fotografía:</label>
             <input type="file" name="fotografia" onChange={handleFileChange} />

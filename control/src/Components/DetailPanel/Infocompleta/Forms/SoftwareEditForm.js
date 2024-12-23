@@ -1,293 +1,438 @@
+// SoftwareEditForm.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import '../styles/SoftwareForm.css';
+import './styles/SoftwareEditForm.css';
+import { v4 as uuidv4 } from 'uuid'; // Para generar UUIDs únicos
 
-const SoftwareEditForm = ({ idSoftware, onSave, onClose }) => {
-  const [nombre, setNombre] = useState('');
-  const [version, setVersion] = useState('');
-  const [fechaAdquisicion, setFechaAdquisicion] = useState('');
-  const [fechaCaducidad, setFechaCaducidad] = useState('');
-  const [tipoLicencia, setTipoLicencia] = useState('mensual');
-  const [estado, setEstado] = useState('sin uso');
-  const [licenciaCaducada, setLicenciaCaducada] = useState(false);
-  const [maxLicencias, setMaxLicencias] = useState(0);
-  const [softwareLicencias, setSoftwareLicencias] = useState([]);
-  const [equipos, setEquipos] = useState([]);
-  const [loading, setLoading] = useState(true);
+const SoftwareEditForm = ({ idSoftware, onSave = () => { }, onClose }) => {
+  const [software, setSoftware] = useState({
+    nombre: '',
+    version: '',
+    fechaAdquisicion: '',
+    fechaCaducidad: '',
+    tipoLicencia: '',
+    estado: '',
+    licenciaCaducada: false,
+    maxDispositivos: 1,
+  }); // Datos completos del software
+  const [licenses, setLicenses] = useState([]); // Licencias del software
+  const [allEquipments, setAllEquipments] = useState([]); // Todos los equipos disponibles
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerms, setSearchTerms] = useState({}); // Estado para términos de búsqueda por licencia
+
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3550/api';
 
   useEffect(() => {
-    const fetchSoftwareData = async () => {
+    const fetchDetails = async () => {
       try {
-        // Cargar los datos del software
-        const response = await axios.get(`http://localhost:3550/api/software/${idSoftware}`);
-        const softwareData = response.data;
-        setNombre(softwareData.nombre);
-        setVersion(softwareData.version);
-        setFechaAdquisicion(softwareData.fecha_adquisicion);
-        setFechaCaducidad(softwareData.fecha_caducidad);
-        setTipoLicencia(softwareData.tipoLicencia);
-        setEstado(softwareData.estado);
-        setLicenciaCaducada(softwareData.licenciaCaducada);
-        setMaxLicencias(softwareData.maxDispositivos);
-        setSoftwareLicencias(softwareData.licencias || []);  // Cargar las licencias existentes
+        const [softwareResponse, equipmentsResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/software/${idSoftware}`),
+          axios.get(`${API_BASE_URL}/equipos`)
+        ]);
 
-        // Cargar equipos
-        const equiposResponse = await axios.get('http://localhost:3550/api/equipos');
-        setEquipos(equiposResponse.data);
+        const softwareData = softwareResponse.data;
+
+        // Mapear las fechas a camelCase
+        const mappedSoftwareData = {
+          ...softwareData,
+          fechaAdquisicion: softwareData.fecha_adquisicion,
+          fechaCaducidad: softwareData.fecha_caducidad,
+        };
+
+        // Inicializar licencias con un campo sinUso y equiposSeleccionados
+        const initializedLicenses = (mappedSoftwareData.licencias || []).map(license => ({
+          ...license,
+          sinUso: false, // Indica si la licencia está marcada como "Sin Uso"
+          equiposSeleccionados: mappedSoftwareData.equiposAsociados
+            ? mappedSoftwareData.equiposAsociados
+              .filter(eq => eq.id_licencia === license.id_licencia)
+              .map(eq => eq.id_equipos)
+            : []
+        }));
+
+        setSoftware(mappedSoftwareData);
+        setLicenses(initializedLicenses);
+        setAllEquipments(equipmentsResponse.data || []);
       } catch (error) {
-        setError('Hubo un problema al cargar los datos del software.');
+        setError('Error al cargar los datos del software.');
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
+    };
+    fetchDetails();
+  }, [API_BASE_URL, idSoftware]);
+
+  // Manejar cambios en los campos del software
+  const handleSoftwareChange = (field, value) => {
+    setSoftware({
+      ...software,
+      [field]: value,
+    });
+  };
+
+  // Manejar cambios en los campos de las licencias
+  const handleLicenseChange = (index, field, value) => {
+    const updatedLicenses = [...licenses];
+    updatedLicenses[index][field] = value;
+    setLicenses(updatedLicenses);
+  };
+
+  // Manejar la selección/deselección de un equipo en una licencia
+  const handleEquipmentSelection = (licenseIndex, equipmentId) => {
+    const updatedLicenses = [...licenses];
+    const selectedEquipments = updatedLicenses[licenseIndex].equiposSeleccionados;
+
+    if (selectedEquipments.includes(equipmentId)) {
+      // Si ya está seleccionado, deseleccionarlo
+      updatedLicenses[licenseIndex].equiposSeleccionados = selectedEquipments.filter(id => id !== equipmentId);
+    } else {
+      // Si no está seleccionado, agregarlo
+      updatedLicenses[licenseIndex].equiposSeleccionados = [...selectedEquipments, equipmentId];
+    }
+
+    setLicenses(updatedLicenses);
+  };
+
+  // Manejar la selección/deselección de "Sin Uso" en una licencia
+  const handleSinUsoToggle = (licenseIndex) => {
+    const updatedLicenses = [...licenses];
+    const currentSinUso = updatedLicenses[licenseIndex].sinUso;
+
+    updatedLicenses[licenseIndex].sinUso = !currentSinUso;
+
+    // Si se marca como "Sin Uso", limpiar las selecciones de equipos
+    if (!currentSinUso) {
+      updatedLicenses[licenseIndex].equiposSeleccionados = [];
+    }
+
+    setLicenses(updatedLicenses);
+  };
+
+  // Añadir una nueva licencia
+  const handleAddLicense = () => {
+    const newLicense = {
+      id_licencia: uuidv4(), // Generar un UUID único
+      claveLicencia: '',
+      correoAsociado: '',
+      contrasenaCorreo: '',
+      compartida: false,
+      sinUso: false,
+      equiposSeleccionados: []
     };
 
-    fetchSoftwareData();
-  }, [idSoftware]);
-
-  const handleNombreChange = (e) => setNombre(e.target.value);
-
-  // Agregar nueva licencia si no se ha alcanzado el máximo
-  const handleAddLicencia = () => {
-    if (maxLicencias === 0 || softwareLicencias.length < maxLicencias) {
-      setSoftwareLicencias([
-        ...softwareLicencias,
-        { claveLicencia: '', correoAsociado: '', contrasenaCorreo: '', id_equipos: [], compartida: false },
-      ]);
-    } else {
-      setError('No se pueden agregar más licencias. Has alcanzado el número máximo de licencias.');
-    }
+    setLicenses([...licenses, newLicense]);
   };
 
-  const handleLicenciaChange = (index, field, value) => {
-    const updatedLicencias = [...softwareLicencias];
-    if (updatedLicencias[index]) {
-      updatedLicencias[index][field] = value;
-      setSoftwareLicencias(updatedLicencias);
-    }
+  // Eliminar una licencia
+  const handleRemoveLicense = (licenseIndex) => {
+    const updatedLicenses = licenses.filter((_, index) => index !== licenseIndex);
+    setLicenses(updatedLicenses);
+
+    // También eliminar el término de búsqueda asociado
+    const updatedSearchTerms = { ...searchTerms };
+    delete updatedSearchTerms[licenseIndex];
+    setSearchTerms(updatedSearchTerms);
   };
 
-  const handleEquiposCheckboxChange = (index, equipoId) => {
-    const updatedLicencias = [...softwareLicencias];
-    const selectedEquipos = updatedLicencias[index].id_equipos || [];  // Aseguramos que id_equipos sea un array
+  // Función para verificar si hay equipos duplicados
+  const hasDuplicateEquipments = () => {
+    const equipmentIds = licenses
+      .filter(license => !license.sinUso)
+      .flatMap(license => license.equiposSeleccionados)
+      .filter(id => id); // Excluir valores vacíos
 
-    if (selectedEquipos.includes(equipoId)) {
-      updatedLicencias[index].id_equipos = selectedEquipos.filter((id) => id !== equipoId);
-    } else {
-      updatedLicencias[index].id_equipos = [...selectedEquipos, equipoId];
-    }
-
-    setSoftwareLicencias(updatedLicencias);
+    const uniqueIds = new Set(equipmentIds);
+    return uniqueIds.size !== equipmentIds.length;
   };
 
-  const handleCompartidaChange = (index) => {
-    const updatedLicencias = [...softwareLicencias];
-    updatedLicencias[index].compartida = !updatedLicencias[index].compartida;
-
-    if (!updatedLicencias[index].compartida) {
-      updatedLicencias[index].id_equipos = updatedLicencias[index].id_equipos.slice(0, 1);
-    }
-
-    setSoftwareLicencias(updatedLicencias);
-  };
-
+  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const softwareData = {
-      nombre,
-      version,
-      fechaAdquisicion: fechaAdquisicion || null,
-      fechaCaducidad: tipoLicencia === 'vitalicia' ? null : fechaCaducidad,
-      tipoLicencia,
-      estado,
-      licenciaCaducada,
-      maxDispositivos: maxLicencias,
-      softwareLicencias,
+    // Limpiar errores previos
+    setError(null);
+
+    // Validar duplicados
+    if (hasDuplicateEquipments()) {
+      setError('Has seleccionado el mismo equipo en múltiples licencias. Por favor, cambia las selecciones.');
+      return;
+    }
+
+    // Validar que todas las licencias que no están en "Sin Uso" tengan al menos un equipo seleccionado
+    for (let i = 0; i < licenses.length; i++) {
+      const license = licenses[i];
+      if (!license.sinUso && license.equiposSeleccionados.length === 0) {
+        setError(`La licencia ${i + 1} debe tener al menos un equipo seleccionado o marcarse como "Sin Uso".`);
+        return;
+      }
+    }
+
+    // Estructurar softwareLicencias con equipos_asociados como arrays de IDs
+    const softwareLicencias = licenses.map((license) => ({
+      claveLicencia: license.claveLicencia,
+      correoAsociado: license.correoAsociado,
+      contrasenaCorreo: license.contrasenaCorreo,
+      compartida: license.compartida,
+      equipos_asociados: license.sinUso ? [] : license.equiposSeleccionados
+    }));
+
+    const payload = {
+      nombre: software.nombre,
+      version: software.version,
+      fechaAdquisicion: software.fechaAdquisicion || null, // CamelCase
+      fechaCaducidad: software.fechaCaducidad || null,    // CamelCase
+      tipoLicencia: software.tipoLicencia,
+      estado: software.estado,
+      licenciaCaducada: software.licenciaCaducada,
+      maxDispositivos: software.maxDispositivos,
+      softwareLicencias: softwareLicencias,
     };
 
+    // Verificar el payload antes de enviarlo
+    console.log('Payload a enviar:', payload);
+
     try {
-      await axios.put(`http://localhost:3550/api/software/${idSoftware}`, softwareData);
-
-      // Llamar a la función onSave para actualizar la lista
+      await axios.put(`${API_BASE_URL}/software/${idSoftware}`, payload);
       onSave();
-
-      // Cerrar el modal después de guardar
       onClose();
     } catch (error) {
-      setError('Ocurrió un error al guardar el software.');
+      setError(error.response?.data?.message || 'Error al guardar los cambios.');
+      console.error('Error al actualizar el software:', error.response?.data || error);
     }
-  };
-
-  const handleClose = () => {
-    onClose();
   };
 
   if (loading) {
     return <div>Cargando datos...</div>;
   }
 
+  if (!software) {
+    return <div>No se encontró el software.</div>;
+  }
+
   return (
     <div className="software-form-modal">
       <div className="software-form-content">
-        <span className="close-button" onClick={handleClose}>&times;</span>
+        <span className="close-button" onClick={onClose}>
+          &times;
+        </span>
         <form onSubmit={handleSubmit}>
           <h2>Editar Software</h2>
-
           {error && <p className="error-message">{error}</p>}
 
-          <label>
-            Nombre del Software:
-            <FontAwesomeIcon icon={faInfoCircle} className="info-icon" />
-          </label>
-          <input
-            type="text"
-            value={nombre}
-            onChange={handleNombreChange}
-            required
-          />
-
-          <label>
-            Versión:
-          </label>
-          <input
-            type="text"
-            value={version}
-            onChange={(e) => setVersion(e.target.value)}
-          />
-
-          <label>
-            Fecha de Adquisición:
-            <input
-              type="date"
-              value={fechaAdquisicion || ''}
-              onChange={(e) => setFechaAdquisicion(e.target.value)}
-            />
-          </label>
-
-          <label>
-            Fecha de Caducidad:
-            <input
-              type="date"
-              value={fechaCaducidad || ''}
-              readOnly
-            />
-          </label>
-
-          <label>
-            Tipo de Licencia:
-          </label>
-          <select
-            value={tipoLicencia}
-            onChange={(e) => setTipoLicencia(e.target.value)}
-          >
-            <option value="mensual">Mensual</option>
-            <option value="anual">Anual</option>
-            <option value="vitalicia">Vitalicia</option>
-          </select>
-
-          <div>
+          {/* Campos Editables del Software */}
+          <div className="software-details">
             <label>
+              Nombre:
               <input
-                type="checkbox"
-                checked={licenciaCaducada}
-                onChange={(e) => setLicenciaCaducada(e.target.checked)}
+                type="text"
+                value={software.nombre || ''}
+                onChange={(e) => handleSoftwareChange('nombre', e.target.value)}
+                required
               />
-              Licencia ya caducada
+            </label>
+            <label>
+              Versión:
+              <input
+                type="text"
+                value={software.version || ''}
+                onChange={(e) => handleSoftwareChange('version', e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Fecha de Adquisición:
+              <input
+                type="date"
+                value={software.fechaAdquisicion ? software.fechaAdquisicion.substring(0, 10) : ''}
+                onChange={(e) => handleSoftwareChange('fechaAdquisicion', e.target.value)} // CamelCase
+              />
+            </label>
+            <label>
+              Fecha de Caducidad:
+              <input
+                type="date"
+                value={software.fechaCaducidad ? software.fechaCaducidad.substring(0, 10) : ''}
+                onChange={(e) => handleSoftwareChange('fechaCaducidad', e.target.value)} // CamelCase
+              />
+            </label>
+            <label>
+              Tipo de Licencia:
+              <select
+                value={software.tipoLicencia || ''}
+                onChange={(e) => handleSoftwareChange('tipoLicencia', e.target.value)}
+                required
+              >
+                <option value="" disabled>Selecciona un tipo de licencia</option>
+                <option value="mensual">Mensual</option>
+                <option value="anual">Anual</option>
+                <option value="vitalicia">Vitalicia</option>
+              </select>
+            </label>
+            <label>
+              Estado:
+              <select
+                value={software.estado || ''}
+                onChange={(e) => handleSoftwareChange('estado', e.target.value)}
+                required
+              >
+                <option value="" disabled>Selecciona un estado</option>
+                <option value="activo">Activo</option>
+                <option value="sin uso">Sin Uso</option>
+                <option value="vencido">Vencido</option>
+                <option value="vencido con equipo">Vencido con Equipo</option>
+              </select>
+            </label>
+            <label>
+              Licencia Caducada:
+              <select
+                value={software.licenciaCaducada ? 'Sí' : 'No'}
+                onChange={(e) => handleSoftwareChange('licenciaCaducada', e.target.value === 'Sí')}
+              >
+                <option value="No">No</option>
+                <option value="Sí">Sí</option>
+              </select>
+            </label>
+            <label>
+              Máximo de Dispositivos:
+              <input
+                type="number"
+                min="1"
+                value={software.maxDispositivos || 1}
+                onChange={(e) => handleSoftwareChange('maxDispositivos', parseInt(e.target.value) || 1)}
+                required
+              />
             </label>
           </div>
 
-          <label>
-            Máximo de Licencias (0 para ilimitado):
-            <input
-              type="number"
-              min="0"
-              value={maxLicencias}
-              onChange={(e) => setMaxLicencias(parseInt(e.target.value, 10))}
-              required
-            />
-          </label>
+          <h3>Licencias</h3>
+          {licenses.map((license, licenseIndex) => {
+            // Obtener el término de búsqueda específico para esta licencia
+            const searchTerm = searchTerms[licenseIndex] || '';
 
-          <h3>Licencias Específicas</h3>
-          {softwareLicencias && softwareLicencias.length > 0 ? (
-            softwareLicencias.map((licencia, index) => (
-              <div key={index} className="licencia-section">
-                <label>Clave de Licencia:</label>
-                <input
-                  type="text"
-                  value={licencia.claveLicencia}
-                  onChange={(e) => handleLicenciaChange(index, 'claveLicencia', e.target.value)}
-                />
+            // Filtrar equipos según el término de búsqueda
+            const filteredEquipments = allEquipments.filter((eq) =>
+              (eq.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+              (eq.id_equipos?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+            );
 
-                <label>Correo Asociado:</label>
-                <input
-                  type="email"
-                  value={licencia.correoAsociado}
-                  onChange={(e) => handleLicenciaChange(index, 'correoAsociado', e.target.value)}
-                />
-
-                <label>Contraseña del Correo:</label>
-                <input
-                  type="password"
-                  value={licencia.contrasenaCorreo}
-                  onChange={(e) => handleLicenciaChange(index, 'contrasenaCorreo', e.target.value)}
-                />
-
-                <label>IDs de Equipos:</label>
-                {licencia.compartida ? (
-                  <div className="equipos-checkbox-list">
-                    {equipos && equipos.length > 0 ? (
-                      equipos.map((equipo) => (
-                        <label key={equipo.id_equipos}>
+            return (
+              <div key={license.id_licencia} className="license-section">
+                <h4>Licencia {licenseIndex + 1}</h4>
+                <label>
+                  Clave de Licencia:
+                  <input
+                    type="text"
+                    value={license.claveLicencia}
+                    onChange={(e) =>
+                      handleLicenseChange(
+                        licenseIndex,
+                        'claveLicencia',
+                        e.target.value
+                      )
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Correo Asociado:
+                  <input
+                    type="email"
+                    value={license.correoAsociado}
+                    onChange={(e) =>
+                      handleLicenseChange(
+                        licenseIndex,
+                        'correoAsociado',
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
+                <label>
+                  Contraseña del Correo:
+                  <input
+                    type="password"
+                    value={license.contrasenaCorreo}
+                    onChange={(e) =>
+                      handleLicenseChange(
+                        licenseIndex,
+                        'contrasenaCorreo',
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
+                <div className="sin-uso-section">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={license.sinUso}
+                      onChange={() => handleSinUsoToggle(licenseIndex)}
+                    />
+                    Sin Uso
+                  </label>
+                </div>
+                {!license.sinUso && (
+                  <div className="equipments-selection">
+                    <p>Selecciona Equipos Asociados:</p>
+                    <input
+                      type="text"
+                      placeholder="Buscar equipos..."
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerms({
+                          ...searchTerms,
+                          [licenseIndex]: e.target.value
+                        });
+                      }}
+                      className="equipment-search-input"
+                    />
+                    {filteredEquipments.length > 0 ? (
+                      filteredEquipments.map((eq) => (
+                        <label key={eq.id_equipos} className="equipment-checkbox">
                           <input
                             type="checkbox"
-                            value={equipo.id_equipos}
-                            checked={licencia.id_equipos && licencia.id_equipos.includes(equipo.id_equipos)}
-                            onChange={() => handleEquiposCheckboxChange(index, equipo.id_equipos)}
+                            checked={license.equiposSeleccionados.includes(eq.id_equipos)}
+                            onChange={() => handleEquipmentSelection(licenseIndex, eq.id_equipos)}
                           />
-                          {equipo.id_equipos} - {equipo.nombre}
+                          {eq.id_equipos} - {eq.nombre}
                         </label>
                       ))
                     ) : (
-                      <p>No hay equipos disponibles.</p>
+                      <p>No se encontraron equipos que coincidan con la búsqueda.</p>
                     )}
                   </div>
-                ) : (
-                  <select
-                    value={licencia.id_equipos && licencia.id_equipos[0] || ''}
-                    onChange={(e) => handleLicenciaChange(index, 'id_equipos', [e.target.value])}
-                  >
-                    <option value="">Seleccionar un equipo</option>
-                    {equipos && equipos.length > 0 ? (
-                      equipos.map((equipo) => (
-                        <option key={equipo.id_equipos} value={equipo.id_equipos}>
-                          {equipo.id_equipos} - {equipo.nombre}
-                        </option>
-                      ))
-                    ) : (
-                      <option>No hay equipos disponibles</option>
-                    )}
-                  </select>
                 )}
-
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={licencia.compartida}
-                    onChange={() => handleCompartidaChange(index)}
-                  />
-                  Usar esta licencia en múltiples equipos
-                </label>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveLicense(licenseIndex)}
+                  className="remove-license-button"
+                >
+                  Eliminar Licencia
+                </button>
               </div>
-            ))
-          ) : (
-            <p>No hay licencias registradas.</p>
+            );
+          })}
+
+          {/* Botón para Añadir Licencia */}
+          {licenses.length < software.maxDispositivos && (
+            <button
+              type="button"
+              onClick={handleAddLicense}
+              className="add-license-button"
+            >
+              Añadir Licencia
+            </button>
+          )}
+          {licenses.length >= software.maxDispositivos && (
+            <p className="limit-message">
+              Has alcanzado el número máximo de licencias: {software.maxDispositivos}.
+            </p>
           )}
 
-          <button type="button" onClick={handleAddLicencia}>Agregar Licencia</button>
-
-          <button className="button" type="submit">Actualizar Software</button>
+          <button type="submit" className="save-button">Guardar Cambios</button>
         </form>
       </div>
     </div>

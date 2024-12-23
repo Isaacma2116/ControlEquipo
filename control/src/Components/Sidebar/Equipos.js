@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus, faFilter } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
 import './styles/Equipos.css';
 import EquipoForm from './Forms/EquipoForm'; // Asegúrate de tener la ruta correcta a tu formulario
 
-const Equipos = ({ onEquipoClick }) => {
+const Equipos = ({ onEquipoClick, hasUnsavedChanges, onCancelChanges }) => {
     const [searchTerm, setSearchTerm] = useState(''); // Estado para la barra de búsqueda
     const [equipos, setEquipos] = useState([]);       // Estado para la lista de equipos
     const [showForm, setShowForm] = useState(false);  // Estado para manejar la visibilidad del formulario
@@ -13,18 +14,36 @@ const Equipos = ({ onEquipoClick }) => {
     const [sortOrder, setSortOrder] = useState('');   // Estado para el criterio de ordenación
     const [error, setError] = useState(null);         // Estado para manejo de errores
 
-    // Cargar los equipos desde la API
+    const [colaboradores, setColaboradores] = useState([]); // Estado para la lista de colaboradores
+    const [loadingColaboradores, setLoadingColaboradores] = useState(true); // Estado de carga para colaboradores
+    const [errorColaboradores, setErrorColaboradores] = useState(null); // Estado de error para colaboradores
+
+    // Cargar los equipos y colaboradores desde la API
     useEffect(() => {
         const fetchEquipos = async () => {
             try {
                 const response = await axios.get('http://localhost:3550/api/equipos');
                 setEquipos(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching equipos:', error);
                 setError('Hubo un problema al cargar los equipos. Intenta nuevamente más tarde.');
             }
         };
+
+        const fetchColaboradores = async () => {
+            try {
+                const response = await axios.get('http://localhost:3550/api/colaboradores');
+                setColaboradores(response.data);
+            } catch (error) {
+                console.error('Error fetching colaboradores:', error);
+                setErrorColaboradores('Hubo un problema al cargar los colaboradores.');
+            } finally {
+                setLoadingColaboradores(false);
+            }
+        };
+
         fetchEquipos();
+        fetchColaboradores();
     }, []);
 
     // Manejador de búsqueda
@@ -73,6 +92,30 @@ const Equipos = ({ onEquipoClick }) => {
         equipo.id_equipos.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // Manejador de selección de equipo con confirmación
+    const handleEquipoClick = (idEquipo) => {
+        if (hasUnsavedChanges) {
+            // Mostrar el mensaje de confirmación con botones personalizados
+            Swal.fire({
+                title: 'Hay cambios sin guardar',
+                text: '¿Estás seguro de que quieres cambiar al equipo seleccionado?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, cambiar',
+                cancelButtonText: 'No, cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    onCancelChanges(); // Revertir cambios pendientes
+                    onEquipoClick(idEquipo); // Cambiar al equipo seleccionado
+                }
+                // Si el usuario cancela, no hacemos nada
+            });
+        } else {
+            // Si no hay cambios pendientes, cambiar directamente
+            onEquipoClick(idEquipo);
+        }
+    };
+        
     return (
         <div className="equipos-sidebar-menu">
             {/* Barra de búsqueda */}
@@ -103,15 +146,28 @@ const Equipos = ({ onEquipoClick }) => {
 
             {/* Lista de equipos */}
             <ul>
-                {error ? (
-                    <p className="error-message">{error}</p>
+                {error || errorColaboradores ? (
+                    <p className="error-message">{error || errorColaboradores}</p>
+                ) : loadingColaboradores ? (
+                    <p>Cargando colaboradores...</p>
                 ) : (
                     filteredEquipos.length > 0 ? (
-                        filteredEquipos.map((equipo, index) => (
-                            <li key={index} onClick={() => onEquipoClick(equipo.id_equipos)}>
-                                {equipo.id_equipos} {/* Mostrar el id_equipos */}
-                            </li>
-                        ))
+                        filteredEquipos.map((equipo) => {
+                            // Encontrar el colaborador asignado al equipo
+                            const colaboradorAsignado = colaboradores.find(col => col.id === equipo.idColaborador);
+
+                            return (
+                                <li key={equipo.id_equipos} onClick={() => handleEquipoClick(equipo.id_equipos)}>
+                                    <div className="equipo-item">
+                                        <span className="equipo-id">ID: {equipo.id_equipos}</span>
+                                        <span className="separator"> - </span> {/* Guion añadido */}
+                                        <span className="colaborador-nombre">
+                                            {colaboradorAsignado ? colaboradorAsignado.nombre : '-'}
+                                        </span>
+                                    </div>
+                                </li>
+                            );
+                        })
                     ) : (
                         <p>No se encontraron equipos.</p>
                     )
