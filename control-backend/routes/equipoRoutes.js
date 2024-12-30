@@ -24,11 +24,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Rutas para la gestión de equipos
-router.get('/', equipoController.getEquipos); // Obtener todos los equipos (incluyendo auxiliares)
-router.get('/:id_equipos', equipoController.getEquipoById); // Obtener un equipo por id_equipos (incluyendo auxiliares)
+router.get('/', equipoController.getEquipos); // Obtener todos los equipos activos (incluyendo auxiliares)
+router.get('/:id_equipos', equipoController.getEquipoById); // Obtener un equipo activo por id_equipos (incluyendo auxiliares)
 router.post('/', upload.single('imagen'), equipoController.createEquipo); // Crear un nuevo equipo (con auxiliares y una imagen)
 router.put('/:id_equipos', upload.single('imagen'), equipoController.updateEquipo); // Actualizar un equipo (con auxiliares y una nueva imagen)
-router.delete('/:id_equipos', equipoController.deleteEquipo); // Eliminar un equipo (y sus auxiliares)
-router.get('/:idEquipo/historial', equipoController.getEquipoHistorial);
+router.delete('/:id_equipos', equipoController.deleteEquipo); // Eliminar (desactivar) un equipo
+router.get('/:idEquipo/historial', equipoController.getEquipoHistorial); // Obtener el historial de un equipo
+router.put('/:id_equipos/auxiliares', equipoController.updateAuxiliares); // Actualizar o reasignar auxiliares de un equipo
+router.put('/:id_equipos/imagen', upload.single('imagen'), equipoController.updateEquipoImagen); // Actualizar la imagen de un equipo
 
 module.exports = router;

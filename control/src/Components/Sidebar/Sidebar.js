@@ -52,11 +52,6 @@ const Sidebar = ({
         <img src="/logo.png" alt="SysLink Logo" className="logo" />
       </div>
 
-      {/* Menú */}
-      <h1 className="menu-title">
-        <FontAwesomeIcon icon={faBars} className="menu-icon" /> Menú
-      </h1>
-
       {/* Colaboradores */}
       <div
         className="menu-item"

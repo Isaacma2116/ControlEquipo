@@ -1,256 +1,834 @@
-/* General Styles */
-body {
-  font-family: 'Roboto', Arial, sans-serif;
+/* EquipoCompleto.css */
+
+/* ----------------------- */
+/*         VARIABLES       */
+/* ----------------------- */
+:root {
+  /* Colores */
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --secondary-color: #17a2b8;
+  --secondary-hover: #138496;
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+  --success-color: #28a745;
+  --success-hover: #218838;
+  --warning-color: #ffc107;
+  --warning-hover: #e0a800;
+  
+  /* Colores adicionales */
+  --background-color: #f4f6f8;
+  --card-background: #ffffff;
+  --text-color: #333;
+  --light-text-color: #555;
+  --border-color: #e1e5ea;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Tipografía */
+  --font-family: "Roboto", Arial, sans-serif;
+  --font-size-base: 1rem; /* 16px */
+  --font-size-large: 1.125rem; /* 18px */
+  --font-size-title: 1.75rem; /* 28px */
+  --font-size-subtitle: 1.25rem; /* 20px */
+  
+  /* Espaciados */
+  --spacing-xs: 0.3125rem; /* 5px */
+  --spacing-sm: 0.625rem; /* 10px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.25rem; /* 20px */
+  --spacing-xl: 2rem; /* 32px */
+  
+  /* Bordes y sombras */
+  --border-radius: 0.5rem; /* 8px */
+  --card-border-radius: 1.5rem; /* 24px */
+  --box-shadow: 0 2px 8px var(--shadow-color);
+  --card-shadow: 0 4px 16px var(--shadow-color);
+  
+  /* Line-height */
+  --line-height-base: 1.6;
+  --line-height-heading: 1.2;
+  
+  /* Color de enfoque para inputs */
+  --input-focus-color: rgba(0, 123, 255, 0.5);
+}
+
+/* ----------------------- */
+/*      RESET & BASE       */
+/* ----------------------- */
+
+/* Reset de Margen y Padding */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
-  background-color: #f5f6fa;
-  color: #2f3640;
-  line-height: 1.6;
+  box-sizing: border-box;
 }
 
+/* Estilos Generales del Cuerpo */
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+/* ----------------------- */
+/*     CONTENEDORES PRINCIPALES */
+/* ----------------------- */
+
+/* Contenedor Principal */
 .equipo-detalles {
-  max-width: 1200px;
-  margin: 20px auto;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding: var(--spacing-xl);
 }
 
-h1, h2 {
-  font-weight: 700;
-  color: #273c75;
-  margin-bottom: 20px;
-  text-align: center;
+/* Sección de Encabezado */
+.header-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xl);
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  background-color: var(--card-background);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-h2 {
-  border-bottom: 2px solid #dcdde1;
-  padding-bottom: 10px;
+.header-section:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-0.125rem); /* Efecto hover */
+}
+
+/* Contenedor de Imagen */
+.equipo-imagen-container {
+  flex: 1 1 25%; /* Ocupa el 25% del ancho disponible */
+  max-width: 350px; /* Limita el ancho máximo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Imagen del Equipo */
-.equipo-imagen-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
 .equipo-imagen {
-  width: 220px;
-  height: 220px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #dcdde1;
-  margin-bottom: 15px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%; /* Asegura que la imagen se ajuste al contenedor */
+  height: auto; /* Mantiene las proporciones de la imagen */
+  border-radius: var(--card-border-radius);
+  border: 3px solid var(--primary-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
 .equipo-imagen:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
 }
 
+/* Contenedor para Subir Imagen */
 .image-upload-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-top: var(--spacing-sm);
 }
 
 .image-upload-label {
-  background-color: #007bff;
-  color: #ffffff;
-  padding: 10px 15px;
-  border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
-  font-weight: 500;
-  transition: background-color 0.3s;
+  color: var(--primary-color);
+  font-size: 0.875rem; /* 14px */
+  margin-top: var(--spacing-xs);
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .image-upload-label:hover {
-  background-color: #0056b3;
+  text-decoration: underline;
 }
 
 .image-upload-input {
   display: none;
 }
 
-/* Menu Desplegable */
-.actions-menu {
-  position: relative;
-  margin-bottom: 20px;
-  text-align: right;
+/* Sección de Información */
+.informacion-section {
+  flex: 2 1 70%; /* Ocupa el 70% del ancho disponible */
+  display: flex;
+  flex-direction: column;
 }
 
-.menu-button {
-  background: none;
+/* Título del Modelo */
+.modelo-titulo {
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  line-height: var(--line-height-heading);
+}
+
+/* Contenedor de Información en Dos Columnas */
+.informacion-contenido {
+  display: flex; /* Flexbox para dos columnas */
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+  gap: var(--spacing-xl); /* Espaciado entre las columnas */
+}
+
+/* Información del Equipo y Colaborador */
+.informacion-equipo,
+.informacion-colaborador {
+  flex: 1 1 45%; /* Ocupa aproximadamente la mitad del ancho disponible, con espacio para gap */
+  background-color: var(--card-background);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--box-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.informacion-equipo:hover,
+.informacion-colaborador:hover {
+  transform: translateY(-0.3125rem); /* Efecto hover */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.informacion-equipo p,
+.informacion-colaborador p {
+  margin: var(--spacing-sm) 0;
+  font-size: 1rem;
+  color: var(--light-text-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.informacion-equipo strong,
+.informacion-colaborador strong {
+  font-weight: bold;
+  color: #222;
+}
+
+.informacion-colaborador h3 {
+  font-size: var(--font-size-subtitle);
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  line-height: var(--line-height-heading);
+}
+
+/* ----------------------- */
+/*      FORMULARIO COLABORADOR  */
+/* ----------------------- */
+
+.colaborador-edit label {
+  font-size: 0.875rem; /* 14px */
+  font-weight: bold;
+  margin-bottom: var(--spacing-xs);
+  display: block;
+}
+
+.colaborador-edit select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.colaborador-edit select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--input-focus-color);
+}
+
+.colaborador-info p {
+  font-size: 1rem;
+  color: var(--light-text-color);
+  line-height: 1.6;
+}
+
+/* ----------------------- */
+/*      BOTONES DE ACCIÓN    */
+/* ----------------------- */
+
+/* Contenedor de Acciones */
+.info-actions-container {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+  flex-wrap: wrap;
+  justify-content: center; /* Centra los botones en dispositivos pequeños */
+}
+
+/* Contenedor de Botones */
+.actions-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: #f9f9f9;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 350px;
+  box-sizing: border-box;
+  width: 100%; /* Asegura que ocupe todo el ancho disponible en contenedores pequeños */
+}
+
+/* Estilos de Botones */
+.action-button {
+  width: 100%;
+  padding: 0.75rem 1.125rem; /* 12px 18px */
+  margin-bottom: var(--spacing-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
   border: none;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 20px;
-  color: #2f3640;
-  transition: color 0.3s;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
 }
 
-.menu-button:hover {
-  color: #007bff;
+.action-button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 1px;
 }
 
-.dropdown-menu {
-  position: absolute;
-  top: 45px;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #dcdde1;
-  border-radius: 8px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  overflow: hidden;
-  min-width: 200px;
+.action-button:active {
+  transform: scale(0.98);
 }
 
-.dropdown-item {
-  padding: 12px 20px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-  color: #2f3640;
+/* Botones por Tipo */
+.save-button {
+  background-color: var(--success-color);
+  color: #ffffff;
 }
 
-.dropdown-item:hover {
-  background-color: #f0f3f5;
+.save-button:hover {
+  background-color: var(--success-hover);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.cancel-button {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+
+.cancel-button:hover {
+  background-color: var(--danger-hover);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.edit-button {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.edit-button:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+.add-button {
+  background-color: var(--secondary-color);
+  color: #ffffff;
+}
+
+.add-button:hover {
+  background-color: var(--secondary-hover);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+}
+
+.history-button {
+  background-color: var(--warning-color);
+  color: #ffffff;
+}
+
+.history-button:hover {
+  background-color: var(--warning-hover);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
 }
 
 .delete-button {
-  color: #e74c3c;
+  background-color: var(--danger-color);
+  color: #ffffff;
 }
 
 .delete-button:hover {
-  background-color: rgba(231, 76, 60, 0.1);
+  background-color: var(--danger-hover);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
 }
 
-/* Contenedores */
-.informacion-basica, .detalles-tecnicos, .colaborador-asignado, .auxiliares-asociados, .softwares-asociados {
-  margin-bottom: 30px;
-  padding: 25px;
-  border: 1px solid #dcdde1;
-  border-radius: 10px;
-  background-color: #f9f9fa;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+/* ----------------------- */
+/*   DETALLES TÉCNICOS Y ASIGNACIONES */
+/* ----------------------- */
+
+/* Detalles Técnicos */
+.detalles-tecnicos {
+  flex: 2 1 600px;
+  background-color: var(--card-background);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--box-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.detalles-tecnicos:hover {
+  transform: translateY(-0.3125rem); /* 5px */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.detalles-tecnicos h2 {
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: var(--line-height-heading);
+}
+
+/* Grid de Información Técnica */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-xl);
 }
 
-.auxiliar-item, .software-item {
-  padding: 20px;
-  border: 1px solid #dcdde1;
-  border-radius: 10px;
-  background-color: #ffffff;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s, box-shadow 0.3s;
+.info-grid p {
+  font-size: 1rem;
+  color: var(--light-text-color);
+  display: block; /* Cambiado de flex a block para evitar empalmes */
+  margin: var(--spacing-sm) 0;
+  overflow-wrap: break-word; /* Divide palabras largas */
+  word-break: break-word; /* Soporte adicional */
 }
 
-.auxiliar-item:hover, .software-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.info-grid strong {
+  font-weight: bold;
+  color: #222;
 }
 
-/* Botones */
-button {
-  background-color: #0097e6;
-  color: white;
+.info-grid textarea,
+.info-grid input[type="text"],
+.info-grid input[type="date"] {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  resize: vertical; /* Permite ajustar verticalmente solo */
+  max-height: 150px; /* Limita la altura máxima */
+  overflow: auto; /* Agrega scroll si excede la altura */
+}
+
+.info-grid textarea:focus,
+.info-grid input[type="text"]:focus,
+.info-grid input[type="date"]:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--input-focus-color);
+}
+
+.info-grid pre {
+  background-color: #f4f4f4;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 0.875rem;
+  color: #333;
+  line-height: 1.6;
+  max-height: 200px; /* Limita la altura máxima */
+  overflow-y: auto; /* Agrega scroll vertical si excede */
+}
+
+/* ----------------------- */
+/*     AUXILIARES ASOCIADOS */
+/* ----------------------- */
+
+/* Contenedor principal de Auxiliares Asociados */
+.auxiliares-asociados {
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-lg);
+  border: 1px solid #ddd;
+  border-radius: 0.5rem; /* 8px */
+  background-color: #fff;
+}
+
+.auxiliares-asociados h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+  color: #333;
+}
+
+/* Grid para organizar Auxiliares */
+.auxiliares-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Aumentado el minmax a 300px */
+  gap: 0.5rem; /* Reducido el gap a 0.5rem para menos separación */
+  justify-items: center;
+}
+
+/* Cada Auxiliar individual */
+.auxiliar-item {
+  width: 100%;
+  max-width: 500px; /* Aumentado el max-width a 500px */
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auxiliar-item:hover {
+  transform: translateY(-0.125rem); /* 2px */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para textos dentro de los Auxiliares */
+.auxiliar-item p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #555;
+  overflow-wrap: break-word; /* Asegura que las palabras largas se dividan */
+  word-break: break-word; /* Soporte adicional */
+}
+
+.auxiliar-item strong {
+  font-weight: bold;
+  color: #222;
+}
+
+/* Inputs y selects en modo edición dentro de Auxiliares */
+.auxiliar-item input,
+.auxiliar-item select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auxiliar-item input:focus,
+.auxiliar-item select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--input-focus-color);
+}
+
+/* Botones para remover Auxiliares */
+.remove-auxiliar-button {
+  margin-top: var(--spacing-sm);
+  padding: 0.5rem 1rem;
+  background-color: #ff4d4d;
+  color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 12px 20px;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #007bbf;
-  transform: translateY(-2px);
+.remove-auxiliar-button:hover {
+  background-color: #ff1a1a;
 }
 
-button:active {
-  transform: translateY(0);
+/* Botones globales para Auxiliares */
+.add-auxiliar-button,
+.save-auxiliar-button,
+.cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0.5rem;
+  font-size: 1rem;
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-button.cancel-button {
-  background-color: #e74c3c;
+.add-auxiliar-button {
+  background-color: #28a745;
 }
 
-button.cancel-button:hover {
-  background-color: #c0392b;
-}
-
-.add-auxiliar-button, .edit-auxiliar-button, .remove-auxiliar-button {
-  margin-top: 15px;
-  background-color: #27ae60;
-}
-
-.add-auxiliar-button:hover, .edit-auxiliar-button:hover, .remove-auxiliar-button:hover {
-  background-color: #218c4f;
+.add-auxiliar-button:hover {
+  background-color: #218838;
 }
 
 .save-auxiliar-button {
-  background-color: #0097e6;
+  background-color: #007bff;
 }
 
 .save-auxiliar-button:hover {
-  background-color: #007bbf;
+  background-color: #0056b3;
 }
 
-.loading {
+.cancel-button {
+  background-color: #6c757d;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
+}
+
+/* ----------------------- */
+/*    SOFTWARES ASOCIADOS   */
+/* ----------------------- */
+
+/* Contenedor principal de Softwares Asociados */
+.softwares-asociados {
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-lg);
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background-color: #fff;
+}
+
+.softwares-asociados h2 {
   text-align: center;
-  font-size: 20px;
-  color: #0097e6;
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+  color: #333;
+}
+
+/* Grid para organizar Softwares */
+.software-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Aumentado el minmax a 300px */
+  gap: 0.5rem; /* Reducido el gap a 0.5rem para menos separación */
+  justify-items: center;
+}
+
+/* Cada Software individual */
+.software-item {
+  width: 100%;
+  max-width: 500px; /* Aumentado el max-width a 500px */
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.software-item:hover {
+  transform: translateY(-0.125rem); /* 2px */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para textos dentro de los Softwares */
+.software-item p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #555;
+  overflow-wrap: break-word; /* Asegura que las palabras largas se dividan */
+  word-break: break-word; /* Soporte adicional */
+}
+
+.software-item strong {
   font-weight: bold;
-  padding: 20px;
+  color: #222;
 }
 
-.error-message {
-  text-align: center;
-  color: #e74c3c;
-  font-weight: bold;
-  margin-bottom: 25px;
-  font-size: 18px;
-}
+/* ----------------------- */
+/*          MODALES         */
+/* ----------------------- */
 
-.no-data {
-  text-align: center;
-  font-size: 18px;
-  color: #7f8c8d;
-  font-style: italic;
-}
-
-/* Modal */
+/* Modal Estilos */
 .modal {
-  max-width: 650px;
-  margin: 50px auto;
-  background: white;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background-color: var(--card-background);
+  padding: var(--spacing-lg);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.6);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
+}
+
+/* ----------------------- */
+/*        RESPONSIVIDAD    */
+/* ----------------------- */
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 1440px) {
+  /* Opcional: Ajustes específicos para pantallas grandes */
+}
+
+@media (max-width: 1200px) {
+  .informacion-contenido {
+    gap: var(--spacing-lg);
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .actions-container {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header-section {
+    gap: var(--spacing-md);
+  }
+
+  .informacion-equipo,
+  .informacion-colaborador {
+    flex: 1 1 45%;
+  }
+
+  .detalles-tecnicos .info-grid,
+  .auxiliares-asociados .auxiliares-grid,
+  .softwares-asociados .software-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  /* Ajustes para tablets en orientación horizontal */
+  .informacion-contenido {
+    flex-direction: row;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+    align-items: center; /* Centra los elementos */
+    padding: var(--spacing-md);
+  }
+
+  .equipo-imagen-container {
+    flex: 1 1 100%; /* Ocupa el ancho completo */
+    max-width: 100%;
+  }
+
+  .informacion-section {
+    flex: 1 1 100%; /* Ocupa el ancho completo */
+  }
+
+  .informacion-contenido {
+    flex-direction: column; /* Una columna para cada sección */
+    gap: var(--spacing-md);
+  }
+
+  .informacion-equipo,
+  .informacion-colaborador {
+    flex: 1 1 100%; /* Ocupan el ancho completo */
+  }
+
+  .info-grid,
+  .auxiliares-grid,
+  .software-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    gap: var(--spacing-sm);
+  }
+
+  .actions-container,
+  .detalles-tecnicos,
+  .softwares-asociados,
+  .auxiliares-asociados {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 576px) {
+  /* Ajustes para teléfonos móviles */
+  .modelo-titulo {
+    font-size: 1.5rem;
+  }
+
+  .action-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .actions-container {
+    max-width: 100%;
+    padding: var(--spacing-sm);
+  }
+
+  .informacion-equipo,
+  .informacion-colaborador,
+  .detalles-tecnicos,
+  .auxiliares-asociados,
+  .softwares-asociados {
+    padding: var(--spacing-sm);
+  }
+
+  .informacion-contenido {
+    gap: var(--spacing-sm);
+  }
+
+  .info-actions-container {
+    gap: var(--spacing-sm);
+  }
+
+  .auxiliar-item,
+  .software-item {
+    padding: var(--spacing-md);
+  }
+
+  .modal {
+    padding: var(--spacing-md);
+    max-width: 90%;
+  }
+}
+
+/* ----------------------- */
+/*    MEJORAS DE INTERACCIÓN */
+/* ----------------------- */
+
+/* Transiciones en Botones */
+.action-button:hover {
+  transform: translateY(-0.0625rem); /* 1px */
+}
+
+/* Efectos Hover en Tarjetas */
+.auxiliar-item:hover,
+.software-item:hover,
+.detalles-tecnicos:hover,
+.auxiliares-asociados:hover,
+.softwares-asociados:hover {
+  transform: translateY(-0.125rem); /* 2px */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }

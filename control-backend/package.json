@@ -1,12 +1,15 @@
 {
   "name": "control-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Backend para la gestión de control",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["backend", "express", "sequelize", "mysql", "socket.io"],
+  "author": "Tu Nombre",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -21,5 +24,7 @@
     "sequelize": "^6.37.5",
     "socket.io": "^4.8.1"
   },
-  "description": ""
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
 }

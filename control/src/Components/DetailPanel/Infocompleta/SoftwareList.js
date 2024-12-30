@@ -1,5 +1,4 @@
-// src/Components/DetailPanel/Infocompleta/SoftwareList.js
-
+// src/Components/SoftwareList.js
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './styles/SoftwareList.css';
@@ -7,6 +6,7 @@ import Modal from 'react-modal';
 import SoftwareEditForm from './Forms/SoftwareEditForm';
 import SoftwareForm from './Forms/SoftwareForm';
 import SoftwareHistory from './Forms/SoftwareHistory';
+import SoftwareAnalysis from './Forms/SoftwareAnalysis'; // Ruta ajustada
 import ExpiryNotifications from './ExpiryNotifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,7 +16,6 @@ import {
   faSortDown,
   faFilter,
   faPlus,
-  faSearch,
   faTimes,
   faCertificate,
   faTools,
@@ -58,7 +57,7 @@ const SoftwareList = ({ onChangeTipo }) => {
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
 
   // Ordenamiento
   const [sortConfig, setSortConfig] = useState({
@@ -66,6 +65,10 @@ const SoftwareList = ({ onChangeTipo }) => {
     direction: 'asc',
     menuOpen: false,
   });
+
+  // Estados para el nuevo modal de Análisis
+  const [analysisModalIsOpen, setAnalysisModalIsOpen] = useState(false);
+  const [selectedSoftwareIdForAnalysis, setSelectedSoftwareIdForAnalysis] = useState(null);
 
   // Efecto para cargar datos iniciales
   useEffect(() => {
@@ -236,6 +239,22 @@ const SoftwareList = ({ onChangeTipo }) => {
     setCurrentPage(pageNumber);
   };
 
+  // **10. MANEJADORES DEL MODAL DE ANÁLISIS**
+  const handleViewAnalysis = (id) => {
+    setSelectedSoftwareIdForAnalysis(id);
+    setAnalysisModalIsOpen(true);
+  };
+
+  const handleCloseAnalysisModal = () => {
+    setAnalysisModalIsOpen(false);
+    setSelectedSoftwareIdForAnalysis(null);
+  };
+
+  // **Verificación de Importaciones**
+  useEffect(() => {
+    console.log('SoftwareAnalysis:', SoftwareAnalysis);
+  }, []);
+
   return (
     <div className="software-list-container">
       <h1>Lista de Software</h1>
@@ -385,17 +404,15 @@ const SoftwareList = ({ onChangeTipo }) => {
                             <button onClick={() => handleEditClick(software)} className="dropdown-item">
                               Editar
                             </button>
-                            <button
-                              onClick={() => handleDeleteClick(software.id_software)}
-                              className="dropdown-item"
-                            >
+                            <button onClick={() => handleDeleteClick(software.id_software)} className="dropdown-item">
                               Eliminar
                             </button>
-                            <button
-                              onClick={() => handleViewHistory(software.id_software)}
-                              className="dropdown-item"
-                            >
+                            <button onClick={() => handleViewHistory(software.id_software)} className="dropdown-item">
                               Historial
+                            </button>
+                            {/* Nueva opción para Análisis */}
+                            <button onClick={() => handleViewAnalysis(software.id_software)} className="dropdown-item">
+                              Análisis
                             </button>
                           </div>
                         )}
@@ -566,18 +583,22 @@ const SoftwareList = ({ onChangeTipo }) => {
         isOpen={modalIsOpen}
         onRequestClose={handleCloseEditModal}
         contentLabel="Formulario de Edición de Software"
-        className="modal"
-        overlayClassName="overlay"
+        className="softwareModal-content"
+        overlayClassName="softwareModal-overlay"
       >
-        <SoftwareEditForm idSoftware={editSoftwareId} onClose={handleCloseEditModal} onSave={fetchSoftware} />
+        <SoftwareEditForm
+          idSoftware={editSoftwareId}
+          onClose={handleCloseEditModal}
+          onSave={fetchSoftware}
+        />
       </Modal>
 
       <Modal
         isOpen={addSoftwareModalIsOpen}
         onRequestClose={handleCloseAddSoftwareModal}
         contentLabel="Agregar Nuevo Software"
-        className="modal"
-        overlayClassName="overlay"
+        className="softwareModal-content"
+        overlayClassName="softwareModal-overlay"
       >
         <SoftwareForm onClose={handleCloseAddSoftwareModal} />
       </Modal>
@@ -586,13 +607,28 @@ const SoftwareList = ({ onChangeTipo }) => {
         isOpen={historyModalIsOpen}
         onRequestClose={handleCloseHistoryModal}
         contentLabel="Historial de Software"
-        className="modal"
-        overlayClassName="overlay"
+        className="softwareModal-content"
+        overlayClassName="softwareModal-overlay"
       >
         <SoftwareHistory
           isOpen={historyModalIsOpen}
           onClose={handleCloseHistoryModal}
           idSoftware={selectedSoftwareId}
+        />
+      </Modal>
+
+      {/* Nuevo Modal para Análisis */}
+      <Modal
+        isOpen={analysisModalIsOpen}
+        onRequestClose={handleCloseAnalysisModal}
+        contentLabel="Análisis de Software"
+        className="softwareModal-content"
+        overlayClassName="softwareModal-overlay"
+      >
+        <SoftwareAnalysis
+          idSoftware={selectedSoftwareIdForAnalysis}
+          softwareList={softwareList}
+          onClose={handleCloseAnalysisModal}
         />
       </Modal>
 

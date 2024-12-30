@@ -1,295 +1,460 @@
-/* Modal overlay covering the entire screen with blur effect */
+/* src/Components/DetailPanel/Infocompleta/styles/SoftwareForm.css */
+
+/* ---------------------------------------------------
+   Contenedor Principal del Formulario
+---------------------------------------------------- */
 .software-form-modal {
   position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(6px); /* Enhanced blur for elegance */
 }
 
-/* Form container with smoother shadow and padding */
 .software-form-content {
-  background-color: #fff;
-  padding: 40px 35px;
-  border-radius: 12px;
-  width: 600px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
   position: relative;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Close button with enhanced hover effect */
-.close-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 1.8rem;
-  color: #666;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.close-button:hover {
-  color: #000;
-}
-
-/* Form title with increased font weight */
-h2 {
-  font-size: 1.8rem;
-  color: #333;
-  text-align: center;
+.software-form-content h2 {
   margin-bottom: 25px;
+  color: #333333;
+  font-size: 1.8rem;
+  text-align: center;
   font-weight: 700;
 }
 
-/* Label styling */
-label {
-  font-weight: 600;
-  margin-bottom: 8px;
-  display: block;
-  color: #444;
+/* Botón de Cierre */
+.software-form-content .software-form-close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #888888;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-/* Info icon with more defined size and color */
-.info-icon {
-  margin-left: 6px;
+.software-form-content .software-form-close-button:hover {
+  color: #333333;
+}
+
+/* ---------------------------------------------------
+   Estilos del Formulario
+---------------------------------------------------- */
+.software-form-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.software-form-content .software-form-label {
+  font-size: 1rem;
+  color: #333333;
+  margin-bottom: 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.software-form-content .software-form-info-icon {
+  margin-left: 8px;
+  color: #17a2b8;
   cursor: pointer;
-  color: #007bff;
   font-size: 1.2rem;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
-.info-icon:hover {
-  color: #0056b3;
+.software-form-content .software-form-info-icon:hover {
+  color: #138496;
 }
 
-/* Input fields with subtle shadow and smoother focus transition */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="date"],
-select,
-input[type="number"] {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 1rem;
-  background-color: #f9f9f9;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="date"]:focus,
-select:focus,
-input[type="number"]:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-}
-
-/* Enhanced checkbox styling */
-input[type="checkbox"] {
-  margin-right: 10px;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-/* Container for equipment list */
-.equipos-list {
-  max-height: 180px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 12px;
-  border-radius: 10px;
-  background-color: #fafafa;
-  margin-bottom: 20px;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Equipment item styling */
-.equipos-list label {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  gap: 10px;
-}
-
-/* Enlarged checkbox styling for equipment items */
-.equipos-list input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-/* Equipment item text with overflow handling */
-.equipos-list span {
-  font-size: 1rem;
-  color: #333;
-  flex-grow: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Add new equipment button */
-button.add-equipo-button {
-  background-color: #28a745;
-  color: white;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 10px;
-  transition: background-color 0.3s, transform 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-button.add-equipo-button:hover {
-  background-color: #218838;
-  transform: translateY(-2px); /* Lift effect */
-}
-
-/* Main action button with lift effect */
-.button {
-  width: 100%;
-  padding: 14px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  margin-top: 25px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-/* Error message styling */
-.error-message {
-  color: #d9534f;
-  margin-bottom: 15px;
-  font-weight: 600;
-  text-align: center;
-}
-
-/* Tooltip styling */
-.tooltip {
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  padding: 8px 12px;
+.software-form-content .software-form-tooltip {
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
+  left: 0;
+  background-color: #17a2b8;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 0.9rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+  margin-top: 5px;
+  white-space: nowrap;
+  z-index: 10;
 }
 
-/* Suggestion message */
-.suggestion-message {
+.software-form-content .software-form-input,
+.software-form-content .software-form-select {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.software-form-content .software-form-input:focus,
+.software-form-content .software-form-select:focus {
+  border-color: #17a2b8;
+  box-shadow: 0 2px 5px rgba(23, 162, 184, 0.2);
+  outline: none;
+}
+
+.software-form-content .software-form-checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.software-form-content .software-form-checkbox-label {
   font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: 500;
+  color: #555555;
+  display: flex;
+  align-items: center;
 }
 
-.suggestion {
-  color: #007bff;
+.software-form-content .software-form-checkbox {
+  margin-right: 10px;
   cursor: pointer;
+}
+
+.software-form-content .readonly-input {
+  background-color: #f1f1f1;
+  cursor: not-allowed;
+}
+
+.software-form-content .software-form-licencias-info {
+  font-size: 0.95rem;
+  color: #555555;
+  margin-bottom: 10px;
+}
+
+/* ---------------------------------------------------
+   Botones del Formulario
+---------------------------------------------------- */
+.software-form-content .software-form-add-licencia-button,
+.software-form-content .software-form-remove-licencia-button {
+  background-color: #28a745; /* Verde */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
   font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.software-form-content .software-form-add-licencia-button:hover,
+.software-form-content .software-form-remove-licencia-button:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+.software-form-content .software-form-add-licencia-button svg,
+.software-form-content .software-form-remove-licencia-button svg {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+/* Botón Guardar */
+.software-form-content .software-form-submit-button {
+  background-color: #17a2b8; /* Azul Claro */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.software-form-content .software-form-submit-button:hover {
+  background-color: #138496;
+  transform: scale(1.02);
+}
+
+/* ---------------------------------------------------
+   Secciones de Licencias y Equipos
+---------------------------------------------------- */
+.software-form-content .software-form-licencia-section {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.software-form-content .software-form-licencia-section h3 {
+  font-size: 1.2rem;
+  color: #333333;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.software-form-content .software-form-licencia-section h3 svg {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.software-form-content .software-form-remove-licencia-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #dc3545; /* Rojo */
+}
+
+.software-form-content .software-form-remove-licencia-button:hover {
+  background-color: #c82333;
+}
+
+/* ---------------------------------------------------
+   Lista de Equipos con Checkboxes
+---------------------------------------------------- */
+.software-form-content .software-form-equipos-checkbox-list label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.software-form-content .software-form-equipos-checkbox-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.software-form-content .software-form-equipos-checkbox-list input[type="checkbox"],
+.software-form-content .software-form-checkbox {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------
+   Selección de Equipo para Licencias No Compartidas
+---------------------------------------------------- */
+.software-form-content .software-form-equipo-select-container select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.software-form-content .software-form-equipo-select-container select:focus {
+  border-color: #17a2b8;
+  box-shadow: 0 2px 5px rgba(23, 162, 184, 0.2);
+  outline: none;
+}
+
+/* ---------------------------------------------------
+   Mensajes de Sugerencia y Error
+---------------------------------------------------- */
+.software-form-content .software-form-suggestion-message {
+  font-size: 0.95rem;
+  color: #ffc107; /* Amarillo */
+  margin-bottom: 10px;
+}
+
+.software-form-content .software-form-suggestion {
+  color: #17a2b8;
+  cursor: pointer;
   text-decoration: underline;
 }
 
-.suggestion:hover {
-  color: #0056b3;
+.software-form-content .software-form-suggestion:hover {
+  color: #138496;
 }
 
-/* Suggestions dropdown */
-.suggestions-list {
-  list-style: none;
-  padding: 0;
-  margin-top: -5px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  max-height: 150px;
-  overflow-y: auto;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 101;
-}
-
-.suggestion-item {
-  padding: 10px 12px;
+.software-form-content .software-form-error-message {
+  color: #dc3545; /* Rojo */
   font-size: 0.95rem;
-  cursor: pointer;
-  color: #333;
-  transition: background-color 0.3s;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-.suggestion-item:hover {
-  background-color: #f0f8ff;
-}
-
-/* Confirmation modal with refined button design */
-.confirmation-modal {
+/* ---------------------------------------------------
+   Modal de Confirmación al Cerrar
+---------------------------------------------------- */
+.software-form-content .software-form-confirmation-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
+  background-color: #ffffff;
+  padding: 25px;
   border-radius: 8px;
-  padding: 30px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  z-index: 1001;
   text-align: center;
 }
 
-.confirmation-modal button {
-  margin-top: 15px;
-  width: 45%;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
+.software-form-content .software-form-confirmation-modal p {
   font-size: 1rem;
+  color: #333333;
+  margin-bottom: 20px;
 }
 
-.confirmation-modal button:nth-child(1) {
-  background-color: #d9534f;
-  color: #fff;
+.software-form-content .software-form-confirm-button {
+  background-color: #28a745; /* Verde */
+  color: #ffffff;
   border: none;
-  transition: background-color 0.3s;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.confirmation-modal button:nth-child(1):hover {
-  background-color: #c9302c;
+.software-form-content .software-form-confirm-button:hover {
+  background-color: #218838;
+  transform: scale(1.02);
 }
 
-.confirmation-modal button:nth-child(2) {
-  background-color: #5bc0de;
-  color: #fff;
+.software-form-content .software-form-cancel-button {
+  background-color: #dc3545; /* Rojo */
+  color: #ffffff;
   border: none;
-  transition: background-color 0.3s;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.confirmation-modal button:nth-child(2):hover {
-  background-color: #31b0d5;
+.software-form-content .software-form-cancel-button:hover {
+  background-color: #c82333;
+  transform: scale(1.02);
+}
+
+/* ---------------------------------------------------
+   Sugerencias de Nombres de Software
+---------------------------------------------------- */
+.software-form-content .software-form-suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
+
+.software-form-content .software-form-suggestions-list .software-form-suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.software-form-content .software-form-suggestions-list .software-form-suggestion-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* ---------------------------------------------------
+   Responsividad Mejorada
+---------------------------------------------------- */
+@media (max-width: 768px) {
+  .software-form-content {
+    padding: 20px;
+  }
+
+  .software-form-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .software-form-content .software-form-submit-button {
+    padding: 10px 16px;
+  }
+
+  .software-form-content .software-form-add-licencia-button,
+  .software-form-content .software-form-remove-licencia-button {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  .software-form-content .software-form-confirmation-modal {
+    padding: 20px;
+  }
+
+  .software-form-content .software-form-confirm-button,
+  .software-form-content .software-form-cancel-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .software-form-content {
+    padding: 15px;
+  }
+
+  .software-form-content .software-form-label {
+    font-size: 0.95rem;
+  }
+
+  .software-form-content .software-form-input,
+  .software-form-content .software-form-select {
+    font-size: 0.9rem;
+  }
+
+  .software-form-content .software-form-info-icon {
+    font-size: 1rem;
+  }
+
+  .software-form-content .software-form-tooltip {
+    font-size: 0.85rem;
+  }
+
+  .software-form-content .software-form-suggestion-message {
+    font-size: 0.9rem;
+  }
+}
+
+/* ---------------------------------------------------
+   Estilos de Carga
+---------------------------------------------------- */
+.software-form-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #555555;
 }

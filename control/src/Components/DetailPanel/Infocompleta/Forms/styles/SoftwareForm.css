@@ -1,0 +1,308 @@
+/* src/Components/DetailPanel/Infocompleta/Forms/SoftwareForm.css */
+
+/* Modal del Formulario */
+.software-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Contenido del Formulario */
+.software-form-content {
+  background-color: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de Cerrar */
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-button:hover {
+  color: #ff0000;
+}
+
+/* Títulos */
+.software-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.software-form-section-title {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #555;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+}
+
+/* Etiquetas y Campos */
+.software-form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  position: relative;
+}
+
+.software-form-input,
+.software-form-select,
+.equipment-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+  font-size: 16px;
+}
+
+.software-form-input:focus,
+.software-form-select:focus,
+.equipment-search-input:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+.readonly-input {
+  background-color: #f9f9f9;
+  cursor: not-allowed;
+}
+
+/* Iconos de Información */
+.info-icon {
+  margin-left: 8px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.info-icon:hover {
+  color: #555;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0.9;
+}
+
+/* Mensajes de Error */
+.error-message {
+  color: #ff0000;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Información de Licencias */
+.software-form-licencias-info {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Sección de Licencias */
+.licencia-section {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  background-color: #fdfdfd;
+}
+
+/* Lista de Equipos con Checkboxes */
+.equipos-checkbox-list,
+.equipos-checkbox-list label,
+.equipment-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.equipos-checkbox-list label,
+.equipment-checkbox label {
+  margin-right: 10px;
+}
+
+.equipos-checkbox-list input,
+.equipment-checkbox input {
+  margin-right: 6px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Botones */
+.software-form-add-licencia-button,
+.software-form-remove-licencia-button,
+.software-form-submit-button,
+.button {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.software-form-add-licencia-button:hover,
+.software-form-remove-licencia-button:hover,
+.software-form-submit-button:hover,
+.button:hover {
+  background-color: #0056b3;
+}
+
+.software-form-remove-licencia-button {
+  background-color: #dc3545;
+  margin-top: 15px;
+}
+
+.software-form-remove-licencia-button:hover {
+  background-color: #c82333;
+}
+
+/* Botón de Agregar Licencia */
+.software-form-add-licencia-button {
+  background-color: #28a745;
+}
+
+.software-form-add-licencia-button:hover {
+  background-color: #218838;
+}
+
+/* Botón de Envío */
+.software-form-submit-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  font-size: 18px;
+}
+
+/* Modal de Confirmación */
+.software-form-confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.software-form-confirmation-modal p {
+  background-color: #fff;
+  padding: 20px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+  max-width: 400px;
+}
+
+.software-form-confirm-button,
+.software-form-cancel-button {
+  margin: 10px;
+  padding: 8px 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.software-form-confirm-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.software-form-confirm-button:hover {
+  background-color: #218838;
+}
+
+.software-form-cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.software-form-cancel-button:hover {
+  background-color: #c82333;
+}
+
+/* Búsqueda y Selección de Equipos */
+.equipments-selection {
+  margin-top: 10px;
+}
+
+.equipment-search-input {
+  margin-bottom: 10px;
+}
+
+.equipments-selection p {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .software-form-content {
+      padding: 15px 20px;
+  }
+
+  .software-form-input,
+  .software-form-select,
+  .equipment-search-input {
+      font-size: 14px;
+  }
+
+  .software-form-add-licencia-button,
+  .software-form-remove-licencia-button,
+  .software-form-submit-button,
+  .button {
+      font-size: 14px;
+      padding: 8px 12px;
+  }
+
+  .software-form-submit-button {
+      font-size: 16px;
+  }
+}

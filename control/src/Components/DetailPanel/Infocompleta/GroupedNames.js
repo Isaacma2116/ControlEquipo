@@ -9,7 +9,6 @@ import SoftwareEditForm from './Forms/SoftwareEditForm';
 import SoftwareForm from './Forms/SoftwareForm';
 import SoftwareHistory from './Forms/SoftwareHistory';
 import GroupedNamesAnalysis from './Forms/GroupedNamesAnalysis';
-import './styles/SoftwareList.css';
 import './styles/GroupedNames.css';
 
 const GroupedNames = ({ onChangeTipo = () => {} }) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus, faFilter, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/Colaboradores.module.css';
 import ColaboradorForm from './Forms/ColaboradorForm'; // Ajusta la ruta si es necesario
 
@@ -67,7 +67,6 @@ const Colaboradores = ({ onColaboradorClick }) => {
     return (
         <div className={styles.colaboradoresSidebarMenu}>
             <div className={styles.searchContainer}>
-                
                 <input
                     type="text"
                     placeholder="Buscar colaboradores..."
@@ -96,8 +95,9 @@ const Colaboradores = ({ onColaboradorClick }) => {
                         colaborador.nombre.toLowerCase().includes(searchTerm.toLowerCase())
                     )
                     .map((colaborador) => (
-                        <li key={colaborador.id} onClick={() => onColaboradorClick(colaborador.id)}>
-                            {colaborador.nombre}
+                        <li key={colaborador.id} onClick={() => onColaboradorClick(colaborador.id)} className={styles.colaboradorItem}>
+                            <FontAwesomeIcon icon={faUser} className={styles.colaboradorIcon} />
+                            <span className={styles.colaboradorNombre}>{colaborador.nombre}</span>
                         </li>
                     ))}
             </ul>

@@ -32,6 +32,13 @@ const Colaborador = sequelize.define(
         is: /^\d{10}$/, // Validación para un número de 10 dígitos
       },
     },
+    telefono_smex: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        is: /^\d{10}$/, // Validación para un número de 10 dígitos
+      },
+    },
     correo_smex: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -47,6 +54,11 @@ const Colaborador = sequelize.define(
     },
     fotografia: {
       type: DataTypes.STRING,
+    },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true, // Por defecto, los colaboradores están activos
     },
   },
   {

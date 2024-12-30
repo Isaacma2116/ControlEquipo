@@ -125,8 +125,8 @@ const EquipoForm = ({ show, handleClose }) => {
         const equipos = equiposResponse.data;
         const nextId = equipos.length
           ? `EQUIPO-${String(
-              Math.max(...equipos.map((e) => parseInt(e.id_equipos.split('-')[1], 10))) + 1
-            ).padStart(3, '0')}`
+            Math.max(...equipos.map((e) => parseInt(e.id_equipos.split('-')[1], 10))) + 1
+          ).padStart(3, '0')}`
           : 'EQUIPO-001';
         setFormData((prevData) => ({ ...prevData, id_equipos: nextId }));
       } catch (error) {
@@ -314,20 +314,25 @@ const EquipoForm = ({ show, handleClose }) => {
           />
 
           {/* Campo para Tipo de Dispositivo */}
-          <FormField
-            label="Tipo de Dispositivo"
-            icon={faTag}
-            name="tipoDispositivo"
-            value={formData.tipoDispositivo}
-            onChange={handleChange}
-            list="tipoDispositivoList"
-            required
-          >
-            <datalist id="tipoDispositivoList">
-              <option value="Laptop" />
-              <option value="PC" />
-            </datalist>
-          </FormField>
+          <div className="form-group">
+  <label htmlFor="tipoDispositivo">
+    <FontAwesomeIcon icon={faTag} /> Tipo de Dispositivo
+  </label>
+  <select
+    id="tipoDispositivo"
+    name="tipoDispositivo"
+    value={formData.tipoDispositivo}
+    onChange={handleChange}
+    required
+  >
+    <option value="" disabled>
+      Seleccione un tipo de dispositivo
+    </option>
+    <option value="Laptop">Laptop</option>
+    <option value="PC">PC</option>
+  </select>
+</div>
+
 
           {/* Campos para Marca y Modelo */}
           <FormRow>
@@ -442,23 +447,21 @@ const EquipoForm = ({ show, handleClose }) => {
           />
 
           {/* Estado Físico */}
-          <FormField
-            label="Estado Físico"
-            icon={faHdd}
+          <label htmlFor="estadoFisico">Estado Físico:</label>
+          <select
+            id="estadoFisico"
             name="estadoFisico"
             value={formData.estadoFisico}
             onChange={handleChange}
-            list="estadoFisicoList"
             required
           >
-            <datalist id="estadoFisicoList">
-              <option value="Excelente (nuevo) y garantía" />
-              <option value="Bueno (Pérdida de garantía y raspones)" />
-              <option value="Regular (Golpes, Rayones grandes)" />
-              <option value="Malo (Cambio de piezas y pérdidas)" />
-              <option value="Urgente (No funciona correctamente)" />
-            </datalist>
-          </FormField>
+            <option value="">Seleccione un estado físico</option>
+            <option value="Excelente (nuevo) y garantía">Excelente (nuevo) y garantía</option>
+            <option value="Bueno (Pérdida de garantía y raspones)">Bueno (Pérdida de garantía y raspones</option>
+            <option value="Regular (Golpes, Rayones grandes)">Regular (Golpes, Rayones grandes)</option>
+            <option value="Malo (Cambio de piezas y pérdidas)">Malo (Cambio de piezas y pérdidas)</option>
+            <option value="Urgente (No funciona correctamente)">Urgente (No funciona correctamente)</option>
+          </select>
 
           {/* Garantía y Fecha de Compra */}
           <FormRow>
@@ -518,38 +521,59 @@ const EquipoForm = ({ show, handleClose }) => {
           {/* Auxiliares/Periféricos */}
           {formData.auxiliares.map((auxiliar, index) => (
             <FormRow key={index}>
-              <FormField
-                label={`Nombre Periférico ${index + 1}`}
-                icon={faTv}
-                name="nombre_auxiliar"
-                value={auxiliar.nombre_auxiliar}
-                onChange={(e) => handleAuxiliarChange(index, e)}
-                list={`peripheralList-${index}`}
+            <label htmlFor={`nombre_auxiliar-${index}`}>
+              Auxiliar {index + 1}:
+            </label>
+            <input
+  type="text"
+  id={`nombre_auxiliar-${index}`}
+  name="nombre_auxiliar"
+  value={auxiliar.nombre_auxiliar}
+  onChange={(e) => handleAuxiliarChange(index, e)}
+  placeholder="Seleccione o escriba un periférico"
+  list={`peripheralList-${index}`}
+  required
+/>
+<datalist id={`peripheralList-${index}`}>
+  <option value="Teclado" />
+  <option value="Mouse" />
+  <option value="Impresora" />
+  <option value="Escáner" />
+  <option value="Monitor" />
+  <option value="Parlantes" />
+  <option value="Cámara Web" />
+  <option value="Micrófono" />
+  <option value="Pantalla" />
+</datalist>
+
+          
+            <label htmlFor={`numero_serie_aux-${index}`} style={{ marginTop: "16px" }}>
+              Número de Serie Periférico:
+            </label>
+            <input
+              type="text"
+              id={`numero_serie_aux-${index}`}
+              name="numero_serie_aux"
+              value={auxiliar.numero_serie_aux}
+              onChange={(e) => handleAuxiliarChange(index, e)}
+              placeholder="Ingrese el número de serie"
+              required
+            />
+          
+            {formData.auxiliares.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeAuxiliar(index)}
+                className="remove-button"
+                aria-label={`Eliminar Periférico ${index + 1}`}
+                style={{ marginTop: "16px" }}
               >
-                <datalist id={`peripheralList-${index}`}>
-                  {peripheralsList.map((peripheral, idx) => (
-                    <option key={idx} value={peripheral} />
-                  ))}
-                </datalist>
-              </FormField>
-              <FormField
-                label="Número de Serie Periférico"
-                icon={faTv}
-                name="numero_serie_aux"
-                value={auxiliar.numero_serie_aux}
-                onChange={(e) => handleAuxiliarChange(index, e)}
-              />
-              {formData.auxiliares.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeAuxiliar(index)}
-                  className="remove-button"
-                  aria-label={`Eliminar Periférico ${index + 1}`}
-                >
-                  <FontAwesomeIcon icon={faMinus} />
-                </button>
-              )}
-            </FormRow>
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+            )}
+          </FormRow>
+          
+            
           ))}
           <button type="button" onClick={addAuxiliar} className="add-button">
             <FontAwesomeIcon icon={faPlus} /> Agregar Periférico

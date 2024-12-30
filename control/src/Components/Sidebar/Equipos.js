@@ -120,7 +120,6 @@ const Equipos = ({ onEquipoClick, hasUnsavedChanges, onCancelChanges }) => {
         <div className="equipos-sidebar-menu">
             {/* Barra de búsqueda */}
             <div className="search-container">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
                 <input
                     type="text"
                     placeholder="Buscar por ID de equipo..."

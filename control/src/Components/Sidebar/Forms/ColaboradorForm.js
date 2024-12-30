@@ -53,6 +53,9 @@ const ColaboradorForm = ({ show, handleClose }) => {
     if (formData.telefonoSmex && !/^\d{10}$/.test(formData.telefonoSmex)) {
       formErrors.telefonoSmex = 'El teléfono SMex debe tener 10 dígitos.';
     }
+    if (!formData.fotografia) {
+      formErrors.fotografia = 'La fotografía es obligatoria.';
+    }
 
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
@@ -140,7 +143,8 @@ const ColaboradorForm = ({ show, handleClose }) => {
           {renderInputField('telefonoSmex', 'Teléfono SMex (opcional):', faPhone, 'text', formData.telefonoSmex, errors.telefonoSmex, handleChange)}
           <div className="form-group">
             <label><FontAwesomeIcon icon={faFileImage} /> Fotografía:</label>
-            <input type="file" name="fotografia" onChange={handleFileChange} />
+            <input type="file" name="fotografia" onChange={handleFileChange} className={errors.fotografia ? 'input-error' : ''} />
+            {errors.fotografia && <p className="error-text">{errors.fotografia}</p>}
           </div>
           <div className="button-group">
             <button 

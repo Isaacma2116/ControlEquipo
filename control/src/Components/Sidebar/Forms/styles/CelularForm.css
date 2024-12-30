@@ -1,32 +1,97 @@
-/* Ya incluido en Celulares.css si usas estilos compartidos */
-/* Si deseas estilos específicos, agrégalos aquí */
+/* CelularForm.css */
 
-.modal-content form div {
-    margin-bottom: 15px;
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
-.modal-content form label {
+.modal-container {
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-container h2 {
+    margin: 0;
+    padding: 16px;
+    background: #007bff;
+    color: #fff;
+    text-align: center;
+}
+
+.modal-container .celular-form {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.modal-container .form-group {
+    margin-bottom: 16px;
+}
+
+.modal-container .form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: bold;
 }
 
-.modal-content form input,
-.modal-content form select,
-.modal-content form textarea {
+.modal-container .form-group input,
+.modal-container .form-group select,
+.modal-container .form-group textarea {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modal-container .form-group textarea {
+    resize: vertical;
+}
+
+.modal-container .form-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: #f9f9f9;
+    border-top: 1px solid #ddd;
+}
+
+.modal-container .form-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal-container .form-actions button[type="submit"] {
+    background: #007bff;
+    color: #fff;
+}
+
+.modal-container .form-actions button.btn-close {
+    background: #6c757d;
+    color: #fff;
 }
 
 .error-text {
     color: red;
     font-size: 12px;
-}
-
-.form-error {
-    color: red;
-    margin-bottom: 10px;
-    text-align: center;
+    margin-top: 4px;
 }

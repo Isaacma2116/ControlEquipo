@@ -1,518 +1,296 @@
-/* src/Components/DetailPanel/Infocompleta/styles/SoftwareList.css */
+:root {
+    /* Colores */
+    --color-primario: #1f5581; /* Azul */
+    --color-secundario: #FFC107; /* Ámbar */
+    --color-fondo: #F5F5F5; /* Gris Claro */
+    --color-texto: #000000; /* Negro */
+    --color-borde: #DDDDDD; /* Gris Claro */
+    --color-sombra: rgba(0, 0, 0, 0.1);
+    --color-sombra-hover: rgba(0, 0, 0, 0.15);
+    --color-fondo-card: #FFFFFF; /* Blanco */
+    --color-fondo-hover: #E3F2FD; /* Azul Muy Claro */
+    --color-boton-hover: #1976D2; /* Azul Oscuro */
+    --color-paginacion-activa: #1565C0; /* Azul Más Oscuro */
+    --color-paginacion-hover: #42A5F5; /* Azul Medio */
+}
 
-/* General Styles */
+/* Contenedor Principal */
 .software-list-container {
-  max-width: 1200px;
-  margin: 20px auto;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  padding: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: var(--color-fondo);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px var(--color-sombra);
 }
 
-h1 {
-  font-size: 28px;
-  margin-bottom: 20px;
-  text-align: center;
-  color: #00796b;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.software-list-container h1 {
+    font-size: 2rem;
+    color: var(--color-texto);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
 }
 
-/* Button Group */
+/* Botón Agrupado */
 .button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
-.add-software-button {
-  background-color: #00796b;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin: 5px;
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.button-group button {
+    flex: 1 1 18%;
+    min-width: 150px;
+    padding: 12px 20px;
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 2px 4px var(--color-sombra);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.add-software-button:hover {
-  background-color: #004d40;
-  transform: scale(1.05);
+.button-group button:hover {
+    background-color: var(--color-boton-hover);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px var(--color-sombra-hover);
 }
 
-.add-software-button svg {
-  margin-right: 5px;
+.button-group button svg {
+    margin-right: 8px;
 }
 
-/* Search Bar */
+/* Buscador */
 .search-container {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.search-bar-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
 }
 
 .search-input {
-  width: 100%;
-  padding: 10px 40px 10px 40px;
-  border: 2px solid #c8e6c9;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 40px 10px 15px; /* Ajuste para el botón de limpiar */
+    font-size: 1rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px var(--color-sombra);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    color: var(--color-texto);
+    background-color: #fff; /* Asegura que el fondo del input sea blanco */
+}
+
+.search-input::placeholder {
+    color: #888888; /* Color del placeholder más claro para contraste */
 }
 
 .search-input:focus {
-  border-color: #00796b;
-  outline: none;
-}
-
-.search-icon {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: #004d40;
+    border-color: var(--color-primario);
+    box-shadow: 0 2px 5px rgba(33, 150, 243, 0.2); /* Usando el color primario con opacidad */
+    outline: none;
 }
 
 .clear-button {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: #004d40;
+    background: none;
+    border: none;
+    color: var(--color-texto);
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: absolute;
+    right: 15px; /* Posicionamiento ajustado para mejor responsividad */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
 }
 
 .clear-button:hover {
-  color: #e57373;
+    color: var(--color-primario);
 }
 
-/* Sort Menu */
-.sort-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.sort-menu-button {
-  background-color: #81c784;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.sort-menu-button:hover {
-  background-color: #4caf50;
-  transform: scale(1.05);
-}
-
-.sort-dropdown {
-  position: absolute;
-  top: 45px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.sort-option {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #00796b;
-  font-size: 14px;
-  margin: 5px 0;
-  text-align: left;
-  padding: 5px;
-  transition: color 0.3s;
-  width: 100%;
-}
-
-.sort-option:hover {
-  color: #004d40;
-}
-
-/* Grid de Software */
+/* Cuadrícula de Software */
 .software-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .software-card {
-  background-color: #e8f5e9;
-  border: 2px solid #c8e6c9;
-  border-radius: 12px;
-  padding: 15px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  position: relative;
-}
-
-.software-card.expired {
-  border-color: #e57373;
-  background-color: #ffebee;
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+    background-color: var(--color-fondo-card);
+    padding: 20px;
+    box-shadow: 0 2px 4px var(--color-sombra);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .software-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px var(--color-sombra-hover);
 }
 
-.software-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+.software-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--color-texto);
+    text-transform: capitalize;
 }
 
-.menu-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: #00796b;
-  transition: color 0.3s;
+.software-card p {
+    margin: 10px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-texto);
 }
 
-.menu-button:hover {
-  color: #004d40;
+.software-card p strong {
+    color: var(--color-primario);
 }
 
-.dropdown-menu {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  position: absolute;
-  z-index: 100;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  top: 40px;
-  right: 10px;
-  animation: fadeIn 0.3s ease-in-out;
+/* Botones de Licencias y Equipos */
+.toggle-button {
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.dropdown-menu .dropdown-item {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #00796b;
-  font-size: 14px;
-  margin: 5px 0;
-  text-align: left;
-  padding: 5px;
-  transition: color 0.3s;
-  width: 100%;
+.toggle-button:hover {
+    background-color: var(--color-boton-hover);
+    transform: scale(1.05);
 }
 
-.dropdown-menu .dropdown-item:hover {
-  color: #004d40;
+.toggle-button svg {
+    margin-right: 8px;
 }
 
 /* Licencias y Equipos */
 .licenses,
 .equipments {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #f1f8e9;
-  border: 2px solid #c5e1a5;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
-  animation: slideDown 0.3s ease-in-out;
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+    background-color: var(--color-fondo);
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: 0 2px 4px var(--color-sombra);
 }
 
 .licenses h3,
 .equipments h3 {
-  grid-column: span 2;
-  font-size: 18px;
-  color: #33691e;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
 }
 
-.licenses .license-item,
-.equipments .equipment-item {
-  background-color: #ffffff;
-  border-left: 6px solid #81c784;
-  padding: 10px 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+.license-item,
+.equipment-item {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: var(--color-fondo-card);
+    transition: background-color 0.3s ease;
 }
 
-.equipments .equipment-item {
-  border-left-color: #4caf50;
+.license-item:hover,
+.equipment-item:hover {
+    background-color: var(--color-fondo-hover);
 }
 
-.licenses .license-item:hover,
-.equipments .equipment-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.licenses p,
-.equipments p {
-  font-size: 14px;
-  color: #33691e;
-  margin: 5px 0;
-  line-height: 1.4;
-}
-
-.licenses p strong,
-.equipments p strong {
-  color: #004d40;
-}
-
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Badges */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.badge.expired {
-  background-color: #e57373;
-  color: #ffffff;
-}
-
-.badge.active {
-  background-color: #81c784;
-  color: #ffffff;
-}
-
-.badge svg {
-  margin-right: 3px;
-}
-
-/* Toggle Buttons */
-.toggle-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background-color: #81c784;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.toggle-button:hover {
-  background-color: #4caf50;
-  transform: scale(1.05);
-}
-
-.toggle-button svg {
-  margin-right: 5px;
+.license-item p,
+.equipment-item p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: var(--color-texto);
 }
 
 /* Paginación */
 .pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.items-count {
-  font-size: 14px;
-  color: #00796b;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .pagination-button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  background-color: #00796b;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: var(--color-primario);
+    background-color: var(--color-fondo);
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .pagination-button:hover {
-  background-color: #004d40;
+    background-color: var(--color-primario);
+    color: #fff;
 }
 
 .pagination-button.active {
-  background-color: #004d40;
-  font-weight: bold;
-}
-
-.pagination-button:disabled {
-  background-color: #b2dfdb;
-  cursor: not-allowed;
-  color: #ffffff;
-}
-
-/* Modal Styles */
-.modal {
-  max-width: 700px;
-  margin: auto;
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s ease-in-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Skeleton Loading */
-.loading-skeleton {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-}
-
-.skeleton-card {
-  height: 200px;
-  background-color: #e0e0e0;
-  border-radius: 12px;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    background-color: #e0e0e0;
-  }
-  50% {
-    background-color: #f0f0f0;
-  }
-  100% {
-    background-color: #e0e0e0;
-  }
-}
-
-/* Mensajes */
-.error-message {
-  text-align: center;
-  color: #e57373;
-  font-size: 16px;
-  margin-top: 20px;
-}
-
-.no-records {
-  text-align: center;
-  color: #00796b;
-  font-size: 16px;
-  margin-top: 20px;
+    background-color: var(--color-paginacion-activa);
+    color: #fff;
 }
 
 /* Responsividad Mejorada */
 @media (max-width: 768px) {
-  h1 {
-    font-size: 24px;
-  }
-
-  .add-software-button {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-
-  .software-card {
-    padding: 10px;
-  }
-
-  .licenses,
-  .equipments {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+    .button-group button {
+        flex: 1 1 45%;
+    }
 }
 
 @media (max-width: 480px) {
-  .search-input {
-    font-size: 12px;
-    padding: 8px;
-  }
+    .button-group button {
+        flex: 1 1 100%;
+    }
 
-  .licenses,
-  .equipments {
-    grid-template-columns: 1fr;
-  }
+    .clear-button {
+        right: 10px;
+    }
 }
+
+
+/* Agrega estas definiciones al final de SoftwareList.css */
+
+/* Overlay del Modal */
+.softwareModal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  }
+  
+  /* Contenido del Modal */
+  .softwareModal-content {
+    position: relative;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  

@@ -1,4 +1,3 @@
-// ColaboradorDetail.jsx
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,9 +9,10 @@ import {
   faEdit,
   faSave,
   faTimes,
+  faImage,
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import './styles/ColaboradorDetail.css';
+import styles from './styles/ColaboradorDetail.module.css'; // Importar como módulo CSS
 
 const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
   const [colaborador, setColaborador] = useState(null);
@@ -21,34 +21,10 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({}); // Datos editables del colaborador
+  const [imageFile, setImageFile] = useState(null); // Archivo de imagen seleccionado
 
   // URL base desde variables de entorno
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3550';
-
-  // Función auxiliar para obtener la URL correcta de la imagen
-  const getImageUrl = (imagen) => {
-    if (!imagen) return '/default-equipo-image.jpg'; // Imagen por defecto
-
-    // Si 'imagen' es una cadena
-    if (typeof imagen === 'string') {
-      if (/^https?:\/\//i.test(imagen)) {
-        return imagen; // URL completa
-      }
-      // Asegurarse de que hay solo un '/' entre la base y la ruta
-      return `${API_BASE_URL}${imagen.startsWith('/') ? '' : '/'}${imagen}`;
-    }
-
-    // Si 'imagen' es un objeto con propiedad 'url'
-    if (imagen.url && typeof imagen.url === 'string') {
-      if (/^https?:\/\//i.test(imagen.url)) {
-        return imagen.url; // URL completa
-      }
-      return `${API_BASE_URL}${imagen.url.startsWith('/') ? '' : '/'}${imagen.url}`;
-    }
-
-    // Si 'imagen' no coincide con ninguno de los anteriores, usar la imagen por defecto
-    return '/default-equipo-image.jpg';
-  };
 
   // Cargar datos del colaborador
   useEffect(() => {
@@ -59,9 +35,9 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
       .get(`${API_BASE_URL}/api/colaboradores/${colaboradorId}/equipos`)
       .then((response) => {
         const data = response.data;
-        console.log('Datos del colaborador recibidos:', data); // Registro de datos
-        setColaborador(data); // Almacenar datos del colaborador
-        setEquipos(data.equipos || []); // Equipos asociados
+        console.log('Datos del colaborador recibidos:', data);
+        setColaborador(data);
+        setEquipos(data.equipos || []);
         setFormData({
           id_empleado: data.id_empleado || '',
           nombre: data.nombre || '',
@@ -71,8 +47,7 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
           correo_smex: data.correo_smex || '',
           telefono_personal: data.telefono_personal || '',
           telefono_smex: data.telefono_smex || '',
-          // Agrega otros campos según sea necesario
-        }); // Inicializamos formData con los datos del colaborador
+        });
       })
       .catch((err) => {
         console.error('Error al cargar los datos del colaborador:', err);
@@ -86,11 +61,10 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
   // Eliminar colaborador
   const handleDelete = () => {
     if (equipos.length > 0) {
-      // Mostrar mensaje si tiene equipos asociados
       alert('No puedes eliminar este colaborador porque tiene equipos asociados. Por favor, reasigna los equipos antes de eliminarlo.');
       return;
     }
-  
+
     if (window.confirm('¿Estás seguro de que deseas eliminar este colaborador?')) {
       axios
         .delete(`${API_BASE_URL}/api/colaboradores/${colaboradorId}`)
@@ -103,7 +77,7 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
           setError('Error al eliminar el colaborador.');
         });
     }
-  };  
+  };
 
   // Manejar cambios en los campos de edición
   const handleInputChange = (e) => {
@@ -114,133 +88,168 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
     }));
   };
 
-  // Guardar cambios del colaborador
-  const handleSaveChanges = () => {
-    // Validar los campos si es necesario
-    axios
-      .put(`${API_BASE_URL}/api/colaboradores/${colaboradorId}`, formData)
-      .then(() => {
-        setColaborador(formData);
-        setIsEditing(false);
-        alert('Cambios guardados exitosamente.');
-      })
-      .catch((err) => {
-        console.error('Error al actualizar los datos del colaborador:', err);
-        setError('Error al actualizar los datos del colaborador.');
-      });
+  // Manejar cambio de imagen
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
   };
 
-  if (loading) return <div>Cargando información del colaborador...</div>;
-  if (error) return <div className="error">{error}</div>;
-  if (!colaborador) return <div>No se encontraron los datos del colaborador.</div>;
+  // Guardar cambios del colaborador
+  const handleSaveChanges = async () => {
+    try {
+      // Crear un objeto FormData para enviar los datos y la imagen
+      const formDataToSend = new FormData();
+      Object.keys(formData).forEach((key) => {
+        formDataToSend.append(key, formData[key]);
+      });
+      if (imageFile) {
+        formDataToSend.append('fotografia', imageFile);
+      }
+
+      const response = await axios.put(
+        `${API_BASE_URL}/api/colaboradores/${colaboradorId}`,
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      // Actualizar el estado con los nuevos datos del colaborador
+      setColaborador(response.data.data);
+      setEquipos(response.data.data.equipos || []);
+      setIsEditing(false);
+      setImageFile(null);
+      alert('Cambios guardados exitosamente.');
+    } catch (err) {
+      console.error('Error al actualizar los datos del colaborador:', err);
+      if (err.response && err.response.status === 404) {
+        setError('Colaborador no encontrado.');
+      } else {
+        setError('Error al actualizar los datos del colaborador.');
+      }
+    }
+  };
+
+  if (loading) return <div className={styles.loading}>Cargando información del colaborador...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
+  if (!colaborador) return <div className={styles.noData}>No se encontraron los datos del colaborador.</div>;
 
   return (
-    <div className="colaborador-detail">
-      <div className="img-container">
-        {colaborador.fotografia ? (
-          <img
-            src={`${API_BASE_URL}/uploads/colaboradores/${colaborador.fotografia}`}
-            alt="Fotografía del colaborador"
-            className="colaborador-foto"
-            onError={(e) => {
-              if (!e.target.dataset.hasError) { // Evitar bucles infinitos
-                e.target.src = '/default-colaborador-image.jpg';
-                e.target.dataset.hasError = true;
-              }
-            }}
-          />
-        ) : (
-          <img
-            src="/default-colaborador-image.jpg"
-            alt="Fotografía por defecto"
-            className="colaborador-foto"
-          />
-        )}
-      </div>
-
+    <div className={styles.colaboradorDetail}>
       {isEditing ? (
         // Formulario de edición
-        <div className="edit-form">
-          <p>
-            <FontAwesomeIcon icon={faIdBadge} /> <strong>ID Empleado:</strong>
-            <input
-              type="text"
-              name="id_empleado"
-              value={formData.id_empleado}
-              onChange={handleInputChange}
-              disabled
-            />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faUser} /> <strong>Nombre:</strong>
+        <div className={styles.editForm}>
+          {/* Campo para editar la imagen con vista previa */}
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faImage} /> <strong>Fotografía:</strong>
+            </label>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+            {imageFile && (
+              <div className={styles.imgPreview}>
+                <p>Imagen seleccionada:</p>
+                <img
+                  src={URL.createObjectURL(imageFile)}
+                  alt="Vista previa"
+                  className={styles.previewImage}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Campos de edición */}
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faUser} /> <strong>Nombre:</strong>
+            </label>
             <input
               type="text"
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
             />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faBuilding} /> <strong>Área:</strong>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faBuilding} /> <strong>Área:</strong>
+            </label>
             <input
               type="text"
               name="area"
               value={formData.area}
               onChange={handleInputChange}
             />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faUser} /> <strong>Cargo:</strong>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faUser} /> <strong>Cargo:</strong>
+            </label>
             <input
               type="text"
               name="cargo"
               value={formData.cargo}
               onChange={handleInputChange}
             />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo Personal:</strong>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo Personal:</strong>
+            </label>
             <input
               type="email"
               name="correo"
               value={formData.correo}
               onChange={handleInputChange}
             />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo SMEX:</strong>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo SMEX:</strong>
+            </label>
             <input
               type="email"
               name="correo_smex"
               value={formData.correo_smex}
               onChange={handleInputChange}
             />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono Personal:</strong>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono Personal:</strong>
+            </label>
             <input
               type="tel"
               name="telefono_personal"
               value={formData.telefono_personal}
               onChange={handleInputChange}
             />
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono SMEX:</strong>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono SMEX:</strong>
+            </label>
             <input
               type="tel"
               name="telefono_smex"
               value={formData.telefono_smex}
               onChange={handleInputChange}
             />
-          </p>
-          {/* Agrega más campos de ser necesario */}
+          </div>
 
-          <div className="form-buttons">
-            <button onClick={handleSaveChanges} className="save-btn">
+          <div className={styles.formButtons}>
+            <button onClick={handleSaveChanges} className={styles.saveBtn}>
               <FontAwesomeIcon icon={faSave} /> Guardar Cambios
             </button>
-            <button onClick={() => setIsEditing(false)} className="cancel-btn">
+            <button onClick={() => setIsEditing(false)} className={styles.cancelBtn}>
               <FontAwesomeIcon icon={faTimes} /> Cancelar
             </button>
           </div>
@@ -248,78 +257,76 @@ const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
       ) : (
         // Información del colaborador
         <>
-          <p>
-            <FontAwesomeIcon icon={faIdBadge} /> <strong>ID Empleado:</strong> {colaborador.id_empleado}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faUser} /> <strong>Nombre:</strong> {colaborador.nombre}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faBuilding} /> <strong>Área:</strong> {colaborador.area}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faUser} /> <strong>Cargo:</strong> {colaborador.cargo}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo Personal:</strong> {colaborador.correo}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo SMEX:</strong> {colaborador.correo_smex || 'No disponible'}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono Personal:</strong> {colaborador.telefono_personal}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono SMEX:</strong> {colaborador.telefono_smex || 'No disponible'}
-          </p>
+          <div className={styles.colaboradorInfo}>
+            <div className={styles.imgContainer}>
+              <img
+                src={`${API_BASE_URL}/uploads/colaboradores/${colaborador.fotografia || 'default.png'}?t=${new Date().getTime()}`}
+                alt={`Foto de ${colaborador.nombre || 'Colaborador'}`}
+                className={styles.colaboradorImage}
+              />
+            </div>
+            <div className={styles.infoDetails}>
+              <p>
+                <FontAwesomeIcon icon={faIdBadge} /> <strong>ID Empleado:</strong> {colaborador.id_empleado}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faUser} /> <strong>Nombre:</strong> {colaborador.nombre}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faBuilding} /> <strong>Área:</strong> {colaborador.area}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faUser} /> <strong>Cargo:</strong> {colaborador.cargo}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo Personal:</strong> {colaborador.correo}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faEnvelope} /> <strong>Correo SMEX:</strong> {colaborador.correo_smex || 'No disponible'}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono Personal:</strong> {colaborador.telefono_personal}
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono SMEX:</strong> {colaborador.telefono_smex || 'No disponible'}
+              </p>
+            </div>
+          </div>
 
           {/* Equipos Asociados */}
-          <h2>Equipos Asociados</h2>
+          <h2 className={styles.sectionTitle}>Equipos Asociados</h2>
           {equipos.length > 0 ? (
-            <div className="equipos-grid">
-              {equipos.map((equipo) => {
-                console.log(`Equipo ID: ${equipo.id_equipos}, imagen:`, equipo.imagen);
-
-                const imageUrl = getImageUrl(equipo.imagen);
-
-                return (
-                  <div key={equipo.id_equipos} className="equipo-item">
-                    <img
-                      src={imageUrl}
-                      alt={`Equipo ${equipo.id_equipos} - ${equipo.tipoDispositivo} de marca ${equipo.marca}`}
-                      className="equipo-imagen"
-                      onClick={() => onEquipoClick(equipo.id_equipos)}
-                      onError={(e) => {
-                        if (!e.target.dataset.hasError) { // Evitar bucles infinitos
-                          e.target.src = '/default-equipo-image.jpg';
-                          e.target.dataset.hasError = true;
-                        }
-                      }}
-                      loading="lazy" // Carga diferida para optimizar
-                      tabIndex="0" // Para accesibilidad
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          onEquipoClick(equipo.id_equipos);
-                        }
-                      }}
-                    />
-                    <div className="equipo-info">
-                      <p><strong>Tipo:</strong> {equipo.tipoDispositivo}</p>
-                      <p><strong>Marca:</strong> {equipo.marca}</p>
-                    </div>
+            <div className={styles.equiposGrid}>
+              {equipos.map((equipo) => (
+                <div key={equipo.id_equipos} className={styles.equipoItem}>
+                  <div
+                    className={styles.equipoId}
+                    onClick={() => onEquipoClick(equipo.id_equipos)}
+                    tabIndex="0"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        onEquipoClick(equipo.id_equipos);
+                      }
+                    }}
+                  >
+                    {equipo.id_equipos}
                   </div>
-                );
-              })}
+                  <div className={styles.equipoInfo}>
+                    <p><strong>Tipo:</strong> {equipo.tipoDispositivo}</p>
+                    <p><strong>Marca:</strong> {equipo.marca}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-            <p>No hay equipos asociados a este colaborador.</p>
+            <p className={styles.noEquipos}>No hay equipos asociados a este colaborador.</p>
           )}
 
-          <div className="button-container">
-            <button onClick={() => setIsEditing(true)} className="edit-btn">
+          <div className={styles.buttonContainer}>
+            <button onClick={() => setIsEditing(true)} className={styles.editBtn}>
               <FontAwesomeIcon icon={faEdit} /> Editar
             </button>
-            <button onClick={handleDelete} className="delete-btn">
+            <button onClick={handleDelete} className={styles.deleteBtn}>
               <FontAwesomeIcon icon={faTimes} /> Eliminar
             </button>
           </div>

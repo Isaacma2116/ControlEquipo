@@ -1,41 +1,39 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Asegúrate de importar la instancia de sequelize
-const Equipo = require('./Equipo'); // Importar el modelo Equipo si es necesario para las relaciones
+const sequelize = require('../config/database');
 
-// Definir el modelo Auxiliar
 const Auxiliar = sequelize.define('Auxiliar', {
-    id_auxiliar: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+  id_auxiliar: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  id_equipo: {
+    type: DataTypes.STRING,
+    allowNull: true, // Permitir null para "Sin Uso"
+    references: {
+      model: 'equipos',
+      key: 'id_equipos',
     },
-    id_equipo: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-            model: Equipo, // Relación con el modelo Equipo
-            key: 'id_equipos'
-        }
-    },
-    nombre_auxiliar: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    numero_serie_aux: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL', // Cambiar a SET NULL para dejar "Sin Uso"
+  },
+  nombre_auxiliar: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  numero_serie_aux: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  estadoActivo: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    defaultValue: 1, // Por defecto, todos los auxiliares estarán activos
+  },
 }, {
-    tableName: 'auxiliares',
-    timestamps: false // No usar timestamps automáticos
+  tableName: 'auxiliares',
+  timestamps: false,
 });
 
-// Definir la relación con `Equipo` si es necesario
-Auxiliar.associate = (models) => {
-    Auxiliar.belongsTo(models.Equipo, {
-        foreignKey: 'id_equipo',
-        as: 'equipo'
-    });
-};
-
+// Exportar el modelo
 module.exports = Auxiliar;

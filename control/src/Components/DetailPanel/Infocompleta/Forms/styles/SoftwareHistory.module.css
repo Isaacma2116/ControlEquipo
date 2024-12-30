@@ -1,0 +1,161 @@
+/* Overlay del modal */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+  }
+  
+  /* Contenedor principal del modal */
+  .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    overflow: auto;
+    border-radius: 8px;
+    outline: none;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 90vh;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  
+  /* Modificador para expandir el modal */
+  .historial-modal-expanded {
+    /* Puedes agregar estilos adicionales si es necesario */
+  }
+  
+  /* Encabezado del modal */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  /* Botón de cerrar */
+  .close-button {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.3s ease;
+  }
+  
+  .close-button:hover {
+    color: #000;
+  }
+  
+  /* Contenido principal del modal */
+  .modal-content-expanded {
+    /* Estilos para el contenido del modal */
+  }
+  
+  /* Estado de carga */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+  }
+  
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #555;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-top: 10px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Estado de error */
+  .error {
+    text-align: center;
+    color: #d9534f;
+  }
+  
+  .retry-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #0275d8;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .retry-button:hover {
+    background-color: #025aa5;
+  }
+  
+  /* Contenedor de tablas */
+  .table-container-expanded {
+    margin-bottom: 30px;
+    overflow-x: auto;
+  }
+  
+  .table-container-expanded h3 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  /* Tabla de historial */
+  .historial-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .historial-table th,
+  .historial-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .historial-table th {
+    background-color: #f8f8f8;
+    color: #333;
+  }
+  
+  .historial-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .historial-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 600px) {
+    .modal {
+      width: 95%;
+      padding: 15px;
+    }
+  
+    .modal-header h2 {
+      font-size: 1.2rem;
+    }
+  
+    .close-button {
+      font-size: 1.2rem;
+    }
+  }
+  

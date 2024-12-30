@@ -1,15 +1,19 @@
+// src/components/SoftwareHistory.js
+
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faTimes } from '@fortawesome/free-solid-svg-icons';
-import './styles/SoftwareHistory.css';
+import styles from './styles/SoftwareHistory.module.css'; // Importar como módulo
 
 // Configuración del modal
 Modal.setAppElement('#root');
 
 const SoftwareHistory = ({ isOpen, onClose, idSoftware }) => {
-  const [historial, setHistorial] = useState([]);
+  const [softwareHistorial, setSoftwareHistorial] = useState([]);
+  const [licenciasHistorial, setLicenciasHistorial] = useState([]);
+  const [equiposHistorial, setEquiposHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,18 +27,16 @@ const SoftwareHistory = ({ isOpen, onClose, idSoftware }) => {
     }
 
     setLoading(true);
+    setError(null);
 
     try {
       const response = await axios.get(`http://localhost:3550/api/software/${idSoftware}/historial`);
-      const historialData = response.data;
+      const { softwareHistorial, licenciasHistorial, equiposHistorial } = response.data;
 
-      if (Array.isArray(historialData)) {
-        setHistorial(historialData);
-        setError(null);
-      } else {
-        setHistorial([]);
-        setError('El formato de los datos del historial es inválido.');
-      }
+      // Asegurarse de que los datos sean arrays
+      setSoftwareHistorial(Array.isArray(softwareHistorial) ? softwareHistorial : []);
+      setLicenciasHistorial(Array.isArray(licenciasHistorial) ? licenciasHistorial : []);
+      setEquiposHistorial(Array.isArray(equiposHistorial) ? equiposHistorial : []);
     } catch (err) {
       console.error('Error al obtener el historial del software:', err);
       setError('Error al obtener el historial del software.');
@@ -48,6 +50,7 @@ const SoftwareHistory = ({ isOpen, onClose, idSoftware }) => {
     if (isOpen) {
       fetchHistorial();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, idSoftware]);
 
   return (
@@ -55,106 +58,127 @@ const SoftwareHistory = ({ isOpen, onClose, idSoftware }) => {
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Historial del Software"
-      className="modal historial-modal-expanded"
-      overlayClassName="overlay"
+      className={styles['modal'] + ' ' + styles['historial-modal-expanded']}
+      overlayClassName={styles['overlay']}
     >
-      <div className="modal-header">
+      <div className={styles['modal-header']}>
         <h2>
           <FontAwesomeIcon icon={faHistory} /> Historial del Software
         </h2>
-        <button className="close-button" onClick={onClose}>
+        <button className={styles['close-button']} onClick={onClose}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>
 
-      <div className="modal-content-expanded">
+      <div className={styles['modal-content-expanded']}>
         {loading ? (
-          <div className="loading">
+          <div className={styles['loading']}>
             <p>Cargando historial...</p>
-            <div className="spinner"></div>
+            <div className={styles['spinner']}></div>
           </div>
         ) : error ? (
-          <div className="error">
+          <div className={styles['error']}>
             <p>{error}</p>
-            <button onClick={fetchHistorial} className="retry-button">
+            <button onClick={fetchHistorial} className={styles['retry-button']}>
               Reintentar
             </button>
           </div>
-        ) : historial.length > 0 ? (
+        ) : (
           <>
             {/* Historial principal del software */}
-            <div className="table-container-expanded">
+            <div className={styles['table-container-expanded']}>
               <h3>Información General</h3>
-              <table className="historial-table">
-                <thead>
-                  <tr>
-                    <th>Fecha de Operación</th>
-                    <th>Nombre</th>
-                    <th>Versión</th>
-                    <th>Tipo de Licencia</th>
-                    <th>Operación</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historial.map((registro, index) => (
-                    <tr key={index}>
-                      <td>
-                        {registro.fecha_operacion
-                          ? new Date(registro.fecha_operacion).toLocaleString()
-                          : 'No disponible'}
-                      </td>
-                      <td>{registro.nombre || 'No disponible'}</td>
-                      <td>{registro.version || 'No disponible'}</td>
-                      <td>{registro.tipoLicencia || 'No disponible'}</td>
-                      <td>{registro.operacion || 'No disponible'}</td>
+              {softwareHistorial.length > 0 ? (
+                <table className={styles['historial-table']}>
+                  <thead>
+                    <tr>
+                      <th>Fecha de Operación</th>
+                      <th>Nombre</th>
+                      <th>Versión</th>
+                      <th>Tipo de Licencia</th>
+                      <th>Operación</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {softwareHistorial.map((registro) => (
+                      <tr key={registro.id_historial}>
+                        <td>
+                          {registro.fecha_operacion
+                            ? new Date(registro.fecha_operacion).toLocaleString()
+                            : 'No disponible'}
+                        </td>
+                        <td>{registro.nombre || 'No disponible'}</td>
+                        <td>{registro.version || 'No disponible'}</td>
+                        <td>{registro.tipoLicencia || 'No disponible'}</td>
+                        <td>{registro.accion || 'No disponible'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No se encontraron registros en el historial general.</p>
+              )}
             </div>
 
-            {/* Licencias asociadas */}
-            <div className="table-container-expanded">
+            {/* Historial de Licencias */}
+            <div className={styles['table-container-expanded']}>
               <h3>Historial de Licencias</h3>
-              <table className="historial-table">
-                <thead>
-                  <tr>
-                    <th>Clave de Licencia</th>
-                    <th>Correo Asociado</th>
-                    <th>Estado de Renovación</th>
-                    <th>Compartida</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historial.flatMap((registro) =>
-                    registro.licencias?.map((licencia, index) => (
-                      <tr key={`${registro.idSoftware}-${index}`}>
+              {licenciasHistorial.length > 0 ? (
+                <table className={styles['historial-table']}>
+                  <thead>
+                    <tr>
+                      <th>Fecha de Operación</th>
+                      <th>Clave de Licencia</th>
+                      <th>Correo Asociado</th>
+                      <th>Estado de Renovación</th>
+                      <th>Compartida</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {licenciasHistorial.map((licencia) => (
+                      <tr key={licencia.id_historial}>
+                        <td>
+                          {licencia.fecha_operacion
+                            ? new Date(licencia.fecha_operacion).toLocaleString()
+                            : 'No disponible'}
+                        </td>
                         <td>{licencia.claveLicencia || 'No disponible'}</td>
                         <td>{licencia.correoAsociado || 'No disponible'}</td>
                         <td>{licencia.estadoRenovacion || 'No disponible'}</td>
                         <td>{licencia.compartida ? 'Sí' : 'No'}</td>
+                        <td>{licencia.accion || 'No disponible'}</td>
                       </tr>
-                    )) || []
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No se encontraron registros en el historial de licencias.</p>
+              )}
             </div>
 
-            {/* Equipos asociados */}
-            <div className="table-container-expanded">
+            {/* Historial de Equipos Asociados */}
+            <div className={styles['table-container-expanded']}>
               <h3>Historial de Equipos Asociados</h3>
-              <table className="historial-table">
-                <thead>
-                  <tr>
-                    <th>ID Equipo</th>
-                    <th>Fecha de Asignación</th>
-                    <th>Estado de Asignación</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historial.flatMap((registro) =>
-                    registro.equiposAsociados?.map((equipo, index) => (
-                      <tr key={`${registro.idSoftware}-${index}`}>
+              {equiposHistorial.length > 0 ? (
+                <table className={styles['historial-table']}>
+                  <thead>
+                    <tr>
+                      <th>Fecha de Operación</th>
+                      <th>ID Equipo</th>
+                      <th>Fecha de Asignación</th>
+                      <th>Estado de Asignación</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {equiposHistorial.map((equipo) => (
+                      <tr key={equipo.id_historial}>
+                        <td>
+                          {equipo.fecha_operacion
+                            ? new Date(equipo.fecha_operacion).toLocaleString()
+                            : 'No disponible'}
+                        </td>
                         <td>{equipo.id_equipos || 'No disponible'}</td>
                         <td>
                           {equipo.fechaAsignacion
@@ -162,15 +186,16 @@ const SoftwareHistory = ({ isOpen, onClose, idSoftware }) => {
                             : 'No disponible'}
                         </td>
                         <td>{equipo.estado_asignacion || 'No disponible'}</td>
+                        <td>{equipo.accion || 'No disponible'}</td>
                       </tr>
-                    )) || []
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No se encontraron registros en el historial de equipos asociados.</p>
+              )}
             </div>
           </>
-        ) : (
-          <p>No se encontraron registros en el historial del software.</p>
         )}
       </div>
     </Modal>

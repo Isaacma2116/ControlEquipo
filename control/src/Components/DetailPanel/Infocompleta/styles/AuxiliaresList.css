@@ -1,0 +1,391 @@
+/* src/components/styles/AuxiliaresList.css */
+
+/* Contenedor Principal */
+.auxiliares-list-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  .auxiliares-list-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #444;
+  }
+  
+  /* Barra de Búsqueda y Filtros */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  /* Búsqueda */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 30px;
+    flex: 1;
+    max-width: 500px;
+  }
+  
+  .search-bar .icon {
+    margin-right: 10px;
+    color: #888;
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  /* Filtros como Menú Desplegable */
+  .filter-dropdown {
+    position: relative;
+  }
+  
+  .filter-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 20px;
+  }
+  
+  .filter-content {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    width: 250px;
+  }
+  
+  .filter-dropdown:hover .filter-content {
+    display: block;
+  }
+  
+  .filter-item {
+    margin-bottom: 15px;
+  }
+  
+  .filter-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .filter-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .filter-item select {
+    width: 100%;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+  }
+  
+  /* Ícono para Agregar Nuevo Auxiliar */
+  .add-auxiliar-icon {
+    position: relative;
+  }
+  
+  .add-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #28a745;
+    font-size: 24px;
+  }
+  
+  .add-icon-button:hover {
+    color: #218838;
+  }
+  
+  /* Lista de Auxiliares */
+  .auxiliares-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .auxiliares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+  }
+  
+  .auxiliar-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .auxiliar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Encabezado de la Tarjeta */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #e0e0e0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .card-header h2 {
+    font-size: 18px;
+    color: #444;
+  }
+  
+  .card-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    color: #000;
+  }
+  
+  .delete-button {
+    color: #dc3545;
+  }
+  
+  .delete-button:hover {
+    color: #c82333;
+  }
+  
+  /* Cuerpo de la Tarjeta */
+  .card-body {
+    padding: 15px 20px;
+    color: #555;
+  }
+  
+  .card-body p {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  
+  .card-body p strong {
+    color: #333;
+  }
+  
+  /* Modal */
+  .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 20px;
+    color: #444;
+  }
+  
+  /* react-select overrides */
+  .react-select__control {
+    border-color: #ddd !important;
+    box-shadow: none !important;
+  }
+  
+  .react-select__menu {
+    z-index: 1000;
+  }
+  
+  .close-modal-button {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    transition: background-color 0.3s ease;
+  }
+  
+  .close-modal-button:hover {
+    background-color: #5a6268;
+  }
+  
+  /* Modal para Agregar Nuevo Auxiliar */
+  .modal-content .add-auxiliar-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .modal-content .add-auxiliar-form input,
+  .modal-content .add-auxiliar-form select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .modal-content .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .modal-content .add-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 9px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-content .add-button:hover {
+    background-color: #218838;
+  }
+  
+  .modal-content .cancel-button {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-content .cancel-button:hover {
+    background-color: #5a6268;
+  }
+  
+  /* Estilos de Agregar y Remover Auxiliares */
+  .add-button,
+  .remove-auxiliar-button,
+  .save-auxiliar-button,
+  .cancel-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-button:hover,
+  .remove-auxiliar-button:hover,
+  .save-auxiliar-button:hover,
+  .cancel-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .remove-auxiliar-button {
+    background-color: #dc3545;
+  }
+  
+  .remove-auxiliar-button:hover {
+    background-color: #c82333;
+  }
+  
+  .save-auxiliar-button {
+    background-color: #28a745;
+  }
+  
+  .save-auxiliar-button:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-button {
+    background-color: #6c757d;
+  }
+  
+  .cancel-button:hover {
+    background-color: #5a6268;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .search-bar {
+      max-width: 100%;
+    }
+  
+    .filter-dropdown {
+      align-self: flex-start;
+    }
+  
+    .add-auxiliar-icon {
+      align-self: flex-end;
+    }
+  
+    .auxiliares-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  }
+  

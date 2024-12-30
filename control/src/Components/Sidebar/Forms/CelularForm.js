@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './styles/CelularForm.css'; // Asegúrate de tener los estilos adecuados
+import './styles/CelularForm.css';
 
 const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
     const [formData, setFormData] = useState({
@@ -22,7 +22,6 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formError, setFormError] = useState('');
 
-    // Cargar colaboradores y datos iniciales
     useEffect(() => {
         const fetchColaboradores = async () => {
             try {
@@ -46,7 +45,6 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
         }
     }, [celularData]);
 
-    // Manejo de cambios en el formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -63,13 +61,11 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
         }
     };
 
-    // Manejo de envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setFormError('');
 
-        // Validaciones adicionales
         if (imeiError) {
             setFormError('Por favor, corrige los errores antes de enviar el formulario.');
             setIsSubmitting(false);
@@ -78,21 +74,15 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
 
         try {
             if (celularData) {
-                // Actualizar celular
                 await axios.put(`http://localhost:3550/api/celulares/${celularData.idmovil}`, formData);
             } else {
-                // Crear nuevo celular
                 await axios.post('http://localhost:3550/api/celulares', formData);
             }
-            await refreshCelulares(); // Actualizar la lista de celulares
-            handleClose(); // Cerrar el formulario
+            await refreshCelulares();
+            handleClose();
         } catch (error) {
             console.error('Error al guardar celular:', error);
-            if (error.response && error.response.data && error.response.data.error) {
-                setFormError(`Error: ${error.response.data.error}`);
-            } else {
-                setFormError('No se pudo guardar el celular. Inténtalo nuevamente.');
-            }
+            setFormError('No se pudo guardar el celular. Inténtalo nuevamente.');
         } finally {
             setIsSubmitting(false);
         }
@@ -102,13 +92,14 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-content">
+            <div className="modal-container">
                 <h2>{celularData ? 'Editar Celular' : 'Agregar Celular'}</h2>
                 {formError && <p className="form-error">{formError}</p>}
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>Color</label>
+                <form onSubmit={handleSubmit} className="celular-form">
+                    <div className="form-group">
+                        <label htmlFor="color">Color</label>
                         <input
+                            id="color"
                             type="text"
                             name="color"
                             value={formData.color}
@@ -116,9 +107,10 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
                             required
                         />
                     </div>
-                    <div>
-                        <label>Marca</label>
+                    <div className="form-group">
+                        <label htmlFor="marca">Marca</label>
                         <input
+                            id="marca"
                             type="text"
                             name="marca"
                             value={formData.marca}
@@ -126,9 +118,10 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
                             required
                         />
                     </div>
-                    <div>
-                        <label>Modelo</label>
+                    <div className="form-group">
+                        <label htmlFor="modelo">Modelo</label>
                         <input
+                            id="modelo"
                             type="text"
                             name="modelo"
                             value={formData.modelo}
@@ -136,20 +129,23 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
                             required
                         />
                     </div>
-                    <div>
-                        <label>IMEI</label>
+                    <div className="form-group">
+                        <label htmlFor="imei">IMEI</label>
                         <input
+                            id="imei"
                             type="text"
                             name="imei"
                             value={formData.imei}
                             onChange={handleChange}
                             required
+                            aria-describedby="imei-error"
                         />
-                        {imeiError && <p className="error-text">{imeiError}</p>}
+                        {imeiError && <span id="imei-error" className="error-text">{imeiError}</span>}
                     </div>
-                    <div>
-                        <label>Número de Serie</label>
+                    <div className="form-group">
+                        <label htmlFor="numeroDeSerie">Número de Serie</label>
                         <input
+                            id="numeroDeSerie"
                             type="text"
                             name="numeroDeSerie"
                             value={formData.numeroDeSerie}
@@ -157,53 +153,59 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
                             required
                         />
                     </div>
-                    <div>
-                        <label>Contraseña o PIN</label>
+                    <div className="form-group">
+                        <label htmlFor="contrasena_o_pin">Contraseña o PIN</label>
                         <input
+                            id="contrasena_o_pin"
                             type="text"
                             name="contrasena_o_pin"
                             value={formData.contrasena_o_pin}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label>Correo Asociado</label>
+                    <div className="form-group">
+                        <label htmlFor="correoAsociado">Correo Asociado</label>
                         <input
+                            id="correoAsociado"
                             type="email"
                             name="correoAsociado"
                             value={formData.correoAsociado}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label>Contraseña del Correo</label>
+                    <div className="form-group">
+                        <label htmlFor="contrasenaDelCorreo">Contraseña del Correo</label>
                         <input
+                            id="contrasenaDelCorreo"
                             type="text"
                             name="contrasenaDelCorreo"
                             value={formData.contrasenaDelCorreo}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label>Componentes del Celular</label>
+                    <div className="form-group">
+                        <label htmlFor="componentesDelCelular">Componentes del Celular</label>
                         <textarea
+                            id="componentesDelCelular"
                             name="componentesDelCelular"
                             value={formData.componentesDelCelular}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label>Renovación del Equipo</label>
+                    <div className="form-group">
+                        <label htmlFor="renovacionDelEquipo">Renovación del Equipo</label>
                         <input
+                            id="renovacionDelEquipo"
                             type="date"
                             name="renovacionDelEquipo"
                             value={formData.renovacionDelEquipo}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label>ID del Colaborador (Opcional)</label>
+                    <div className="form-group">
+                        <label htmlFor="idColaborador">ID del Colaborador (Opcional)</label>
                         <select
+                            id="idColaborador"
                             name="idColaborador"
                             value={formData.idColaborador || ''}
                             onChange={handleChange}
@@ -216,11 +218,11 @@ const CelularForm = ({ show, handleClose, celularData, refreshCelulares }) => {
                             ))}
                         </select>
                     </div>
-                    <div className="modal-actions">
+                    <div className="form-actions">
                         <button type="submit" disabled={isSubmitting}>
                             {celularData ? 'Actualizar' : 'Crear'}
                         </button>
-                        <button type="button" onClick={handleClose}>
+                        <button type="button" className="btn-close" onClick={handleClose}>
                             Cerrar
                         </button>
                     </div>

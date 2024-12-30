@@ -56,33 +56,33 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Historial del Equipo"
-      className="modal historial-modal-expanded" // Modal ampliado
-      overlayClassName="overlay"
+      className="equipo-historial-modal modal historial-modal-expanded" // Modal ampliado
+      overlayClassName="equipo-historial-modal overlay"
     >
-      <div className="modal-header">
+      <div className="equipo-historial-modal modal-header">
         <h2>
           <FontAwesomeIcon icon={faHistory} /> Historial del Equipo
         </h2>
-        <button className="close-button" onClick={onClose}>
+        <button className="equipo-historial-modal close-button" onClick={onClose}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>
-      <div className="modal-content-expanded">
+      <div className="equipo-historial-modal modal-content-expanded">
         {loading ? (
-          <div className="loading">
+          <div className="equipo-historial-modal loading">
             <p>Cargando historial...</p>
             <div className="spinner"></div>
           </div>
         ) : error ? (
-          <div className="error">
+          <div className="equipo-historial-modal error">
             <p>{error}</p>
-            <button onClick={fetchHistorial} className="retry-button">
+            <button onClick={fetchHistorial} className="equipo-historial-modal retry-button">
               Reintentar
             </button>
           </div>
         ) : historial.length > 0 ? (
-          <div className="table-container-expanded">
-            <table className="historial-table">
+          <div className="equipo-historial-modal table-container-expanded">
+            <table className="equipo-historial-modal historial-table">
               <thead>
                 <tr>
                   <th>Fecha de Operación</th>
@@ -108,7 +108,6 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
                   <th>Hostname</th>
                   <th>ID Colaborador</th>
                   <th>Operación</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -155,7 +154,6 @@ const EquipoHistorialModal = ({ isOpen, onClose, idEquipo }) => {
         )}
       </div>
     </Modal>
-
   );
 };
 

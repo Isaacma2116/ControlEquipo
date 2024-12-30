@@ -1,0 +1,71 @@
+/* Contenedor principal */
+.analysisContainer {
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Título principal */
+  .analysisTitle {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Sección de gráficas */
+  .graphSection {
+    margin-bottom: 2rem;
+  }
+  
+  .graphTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .graphContainer {
+    width: 100%;
+    height: 300px;
+    margin: 0 auto;
+  }
+  
+  /* Información adicional */
+  .additionalInfo {
+    font-size: 1rem;
+    color: #555;
+    margin: 1rem 0;
+  }
+  
+  .additionalInfo strong {
+    color: #333;
+  }
+  
+  /* Botón de cierre */
+  .closeButton {
+    display: block;
+    margin: 1.5rem auto 0;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .closeButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .closeButton:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+  }
+  

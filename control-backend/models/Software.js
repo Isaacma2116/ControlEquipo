@@ -1,11 +1,13 @@
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Software = sequelize.define('Software', {
+class Software extends Model {}
+
+Software.init({
     id_software: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         autoIncrement: true,
+        primaryKey: true,
     },
     nombre: {
         type: DataTypes.STRING,
@@ -26,22 +28,28 @@ const Software = sequelize.define('Software', {
     tipoLicencia: {
         type: DataTypes.ENUM('mensual', 'anual', 'vitalicia'),
         allowNull: false,
-        defaultValue: 'mensual',
     },
     estado: {
-        type: DataTypes.ENUM('activo', 'sin uso', 'vencido', 'vencido con equipo'),
+        type: DataTypes.ENUM('activo', 'sin uso', 'vencido', 'vencido con equipo', 'inactivo'),
         allowNull: false,
     },
     licenciaCaducada: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: false,
     },
     maxDispositivos: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    estadoActivo: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: 1, // 1 indica que el software está activo
+    },
 }, {
+    sequelize,
+    modelName: 'Software',
     tableName: 'software',
     timestamps: false,
 });
