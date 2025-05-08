@@ -1,18 +1,17 @@
-// src/Components/Sidebar/Sidebar.js
-
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronDown,
   faChevronRight,
-  faBars,
   faUsers,
   faDesktop,
   faMobileAlt,
   faTools,
   faTv,
 } from '@fortawesome/free-solid-svg-icons';
+import { motion, AnimatePresence } from 'framer-motion';
 import './styles/Sidebar.css';
+
 import Colaboradores from './Colaboradores';
 import Equipos from './Equipos';
 import Celulares from './Celulares';
@@ -24,103 +23,103 @@ const Sidebar = ({
   onCelularClick,
   onSoftwareClick,
   onEquipoAnalysisClick,
-  onAuxiliaresClick, // Nueva función para manejar auxiliares
+  onAuxiliaresClick,
 }) => {
-  const [isColaboradoresVisible, setIsColaboradoresVisible] = useState(false);
-  const [isEquiposVisible, setIsEquiposVisible] = useState(false);
-  const [isCelularesVisible, setIsCelularesVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
 
-  // Alternar visibilidad de Colaboradores
-  const toggleColaboradoresVisibility = () => {
-    setIsColaboradoresVisible(!isColaboradoresVisible);
-  };
-
-  // Alternar visibilidad de Equipos
-  const toggleEquiposVisibility = () => {
-    setIsEquiposVisible(!isEquiposVisible);
-  };
-
-  // Alternar visibilidad de Celulares
-  const toggleCelularesVisibility = () => {
-    setIsCelularesVisible(!isCelularesVisible);
+  const toggleSection = (section) => {
+    setActiveSection((prev) => (prev === section ? null : section));
+    if (section === 'colaboradores') onColaboradorListClick();
   };
 
   return (
-    <div className="sidebar">
+    <div className="sidebar-container">
       {/* Logo */}
       <div className="logo-container">
         <img src="/logo.png" alt="SysLink Logo" className="logo" />
       </div>
 
-      {/* Colaboradores */}
-      <div
-        className="menu-item"
-        onClick={() => {
-          toggleColaboradoresVisibility();
-          onColaboradorListClick();
-        }}
-      >
-        <h2>
-          <FontAwesomeIcon icon={faUsers} className="menu-icon" /> Colaboradores
-          {isColaboradoresVisible ? (
-            <FontAwesomeIcon icon={faChevronDown} />
-          ) : (
-            <FontAwesomeIcon icon={faChevronRight} />
+      {/* Menú */}
+      <div className="menu">
+        <SidebarItem
+          icon={faUsers}
+          label="Colaboradores"
+          isOpen={activeSection === 'colaboradores'}
+          onClick={() => toggleSection('colaboradores')}
+        />
+        <AnimatePresence>
+          {activeSection === 'colaboradores' && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="submenu"
+            >
+              <Colaboradores onColaboradorClick={onColaboradorClick} />
+            </motion.div>
           )}
-        </h2>
-      </div>
-      {isColaboradoresVisible && <Colaboradores onColaboradorClick={onColaboradorClick} />}
+        </AnimatePresence>
 
-      {/* Equipos */}
-      <div className="menu-item" onClick={toggleEquiposVisibility}>
-        <h2>
-          <FontAwesomeIcon icon={faDesktop} className="menu-icon" /> Equipos
-          {isEquiposVisible ? (
-            <FontAwesomeIcon icon={faChevronDown} />
-          ) : (
-            <FontAwesomeIcon icon={faChevronRight} />
+        <SidebarItem
+          icon={faDesktop}
+          label="Equipos"
+          isOpen={activeSection === 'equipos'}
+          onClick={() => toggleSection('equipos')}
+        />
+        <AnimatePresence>
+          {activeSection === 'equipos' && (
+            <motion.div className="submenu" initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}>
+              <Equipos onEquipoClick={onEquipoClick} />
+            </motion.div>
           )}
-        </h2>
-      </div>
-      {isEquiposVisible && <Equipos onEquipoClick={onEquipoClick} />}
+        </AnimatePresence>
 
-      {/* Celulares */}
-      <div className="menu-item" onClick={toggleCelularesVisibility}>
-        <h2>
-          <FontAwesomeIcon icon={faMobileAlt} className="menu-icon" /> Celulares
-          {isCelularesVisible ? (
-            <FontAwesomeIcon icon={faChevronDown} />
-          ) : (
-            <FontAwesomeIcon icon={faChevronRight} />
+        <SidebarItem
+          icon={faMobileAlt}
+          label="Celulares"
+          isOpen={activeSection === 'celulares'}
+          onClick={() => toggleSection('celulares')}
+        />
+        <AnimatePresence>
+          {activeSection === 'celulares' && (
+            <motion.div className="submenu" initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}>
+              <Celulares onCelularClick={onCelularClick} />
+            </motion.div>
           )}
-        </h2>
-      </div>
-      {isCelularesVisible && <Celulares onCelularClick={onCelularClick} />}
+        </AnimatePresence>
 
-      {/* Software */}
-      <div className="menu-item" onClick={onSoftwareClick}>
-        <h2>
-          <FontAwesomeIcon icon={faTools} className="menu-icon" /> Software
-          <FontAwesomeIcon icon={faChevronRight} />
-        </h2>
-      </div>
+        <SidebarItem
+          icon={faTools}
+          label="Software"
+          onClick={onSoftwareClick}
+        />
 
-      {/* Análisis de Equipos */}
-      <div className="menu-item" onClick={onEquipoAnalysisClick}>
-        <h2>
-          <FontAwesomeIcon icon={faDesktop} className="menu-icon" /> Análisis de Equipos
-        </h2>
-      </div>
+        <SidebarItem
+          icon={faDesktop}
+          label="Análisis de Equipos"
+          onClick={onEquipoAnalysisClick}
+        />
 
-      {/* Auxiliares */}
-      <div className="menu-item" onClick={onAuxiliaresClick}>
-        <h2>
-          <FontAwesomeIcon icon={faTv} className="menu-icon" /> Auxiliares
-          <FontAwesomeIcon icon={faChevronRight} />
-        </h2>
+        <SidebarItem
+          icon={faTv}
+          label="Auxiliares"
+          onClick={onAuxiliaresClick}
+        />
       </div>
     </div>
   );
 };
+
+const SidebarItem = ({ icon, label, onClick, isOpen }) => (
+  <div className="sidebar-item" onClick={onClick}>
+    <div className="item-content">
+      <FontAwesomeIcon icon={icon} className="item-icon" />
+      <span className="item-label">{label}</span>
+    </div>
+    {isOpen !== undefined && (
+      <FontAwesomeIcon icon={isOpen ? faChevronDown : faChevronRight} className="chevron-icon" />
+    )}
+  </div>
+);
 
 export default Sidebar;

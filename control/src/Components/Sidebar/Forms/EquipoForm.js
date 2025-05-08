@@ -55,7 +55,6 @@ const FormField = ({
   </div>
 );
 
-// Componente FormRow para organizar campos en una fila
 const FormRow = ({ children }) => (
   <div className="form-group-row">
     {children}
@@ -75,6 +74,7 @@ const EquipoForm = ({ show, handleClose }) => {
     tarjetaMadre: '',
     tarjetaGrafica: '',
     procesador: '',
+    // Ahora componentesAdicionales y auxiliares inician vacíos o con un ítem vacío, pero no se validan
     componentesAdicionales: [''],
     estadoFisico: '',
     detallesIncidentes: '',
@@ -93,10 +93,11 @@ const EquipoForm = ({ show, handleClose }) => {
   const [loading, setLoading] = useState(false);
   const [colaboradores, setColaboradores] = useState([]);
   const [peripheralsList] = useState([
-    "Teclado", "Mouse", "Impresora", "Escáner", "Monitor", "Parlantes", "Cámara Web", "Micrófono", "Pantalla"
+    "Teclado", "Mouse", "Impresora", "Escáner", "Monitor", 
+    "Parlantes", "Cámara Web", "Micrófono", "Pantalla"
   ]);
 
-  // Fetch initial data
+  // Obtener datos iniciales
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -105,29 +106,27 @@ const EquipoForm = ({ show, handleClose }) => {
           axios.get('http://localhost:3550/api/colaboradores')
         ]);
 
-        // Depuración: Verificar la estructura de la respuesta de colaboradores
         console.log('colaboradoresResponse.data:', colaboradoresResponse.data);
 
-        // Asegurarse de que colaboradoresResponse.data es un arreglo
         let colaboradoresData = [];
-
         if (Array.isArray(colaboradoresResponse.data)) {
           colaboradoresData = colaboradoresResponse.data;
-        } else if (colaboradoresResponse.data.colaboradores && Array.isArray(colaboradoresResponse.data.colaboradores)) {
+        } else if (
+          colaboradoresResponse.data.colaboradores &&
+          Array.isArray(colaboradoresResponse.data.colaboradores)
+        ) {
           colaboradoresData = colaboradoresResponse.data.colaboradores;
-        } else {
-          console.warn('La estructura de la respuesta de colaboradores no es la esperada.');
         }
-
         setColaboradores(colaboradoresData);
 
-        // Manejar datos de equipos
+        // Generar siguiente ID
         const equipos = equiposResponse.data;
         const nextId = equipos.length
           ? `EQUIPO-${String(
-            Math.max(...equipos.map((e) => parseInt(e.id_equipos.split('-')[1], 10))) + 1
-          ).padStart(3, '0')}`
+              Math.max(...equipos.map((e) => parseInt(e.id_equipos.split('-')[1], 10))) + 1
+            ).padStart(3, '0')}`
           : 'EQUIPO-001';
+
         setFormData((prevData) => ({ ...prevData, id_equipos: nextId }));
       } catch (error) {
         console.error('Error al cargar los datos:', error);
@@ -143,13 +142,13 @@ const EquipoForm = ({ show, handleClose }) => {
     fetchData();
   }, []);
 
-  // Reset form and close modal
+  // Reset form y cerrar
   const resetForm = useCallback(() => {
     setFormData(initialFormData);
     handleClose();
   }, [initialFormData, handleClose]);
 
-  // Handle input changes
+  // Manejo de cambios en inputs
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -158,12 +157,12 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Handle file input changes
+  // Manejo de archivo
   const handleFileChange = useCallback((e) => {
     setFormData(prevData => ({ ...prevData, imagen: e.target.files[0] }));
   }, []);
 
-  // Handle changes in componentesAdicionales
+  // Manejo de componentesAdicionales
   const handleComponentChange = useCallback((index, e) => {
     const { value } = e.target;
     setFormData(prevData => ({
@@ -174,7 +173,6 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Add a new componente adicional
   const addComponent = useCallback(() => {
     setFormData(prevData => ({
       ...prevData,
@@ -182,7 +180,6 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Remove a componente adicional
   const removeComponent = useCallback((index) => {
     if (formData.componentesAdicionales.length > 1) {
       setFormData(prevData => ({
@@ -192,7 +189,7 @@ const EquipoForm = ({ show, handleClose }) => {
     }
   }, [formData.componentesAdicionales]);
 
-  // Handle changes in auxiliares
+  // Manejo de auxiliares
   const handleAuxiliarChange = useCallback((index, e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -203,7 +200,6 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Add a new auxiliar
   const addAuxiliar = useCallback(() => {
     setFormData(prevData => ({
       ...prevData,
@@ -211,7 +207,6 @@ const EquipoForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Remove an auxiliar
   const removeAuxiliar = useCallback((index) => {
     if (formData.auxiliares.length > 1) {
       setFormData(prevData => ({
@@ -221,40 +216,13 @@ const EquipoForm = ({ show, handleClose }) => {
     }
   }, [formData.auxiliares]);
 
-  // Handle form submission
+  // Manejo del submit
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Validar auxiliares
-    const validAuxiliares = formData.auxiliares.every(aux =>
-      aux.nombre_auxiliar?.trim() && aux.numero_serie_aux?.trim()
-    );
-
-    if (!validAuxiliares) {
-      Swal.fire({
-        title: 'Error de Validación',
-        text: 'Todos los auxiliares deben tener un nombre y un número de serie.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-      setLoading(false);
-      return;
-    }
-
-    // Validar componentes adicionales
-    const validComponentes = formData.componentesAdicionales.every(componente => componente?.trim());
-
-    if (!validComponentes) {
-      Swal.fire({
-        title: 'Error de Validación',
-        text: 'Todos los componentes adicionales deben tener datos válidos.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-      setLoading(false);
-      return;
-    }
+    // ~~ Quitar validación obligatoria de auxiliares ~~
+    // ~~ Quitar validación obligatoria de componentes ~~
 
     const formDataToSend = new FormData();
     Object.keys(formData).forEach(key => {
@@ -301,7 +269,7 @@ const EquipoForm = ({ show, handleClose }) => {
         <button className="close-button" onClick={resetForm}>&times;</button>
         <h2 className="modal-title">Registrar Equipo</h2>
         <form className="equipo-form" onSubmit={handleSubmit}>
-          {/* Campo para ID del equipo */}
+          {/* ID del Equipo */}
           <FormField
             label="ID del Equipo"
             icon={faLaptop}
@@ -313,28 +281,27 @@ const EquipoForm = ({ show, handleClose }) => {
             readOnly
           />
 
-          {/* Campo para Tipo de Dispositivo */}
+          {/* Tipo de Dispositivo */}
           <div className="form-group">
-  <label htmlFor="tipoDispositivo">
-    <FontAwesomeIcon icon={faTag} /> Tipo de Dispositivo
-  </label>
-  <select
-    id="tipoDispositivo"
-    name="tipoDispositivo"
-    value={formData.tipoDispositivo}
-    onChange={handleChange}
-    required
-  >
-    <option value="" disabled>
-      Seleccione un tipo de dispositivo
-    </option>
-    <option value="Laptop">Laptop</option>
-    <option value="PC">PC</option>
-  </select>
-</div>
+            <label htmlFor="tipoDispositivo">
+              <FontAwesomeIcon icon={faTag} /> Tipo de Dispositivo
+            </label>
+            <select
+              id="tipoDispositivo"
+              name="tipoDispositivo"
+              value={formData.tipoDispositivo}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                Seleccione un tipo de dispositivo
+              </option>
+              <option value="Laptop">Laptop</option>
+              <option value="PC">PC</option>
+            </select>
+          </div>
 
-
-          {/* Campos para Marca y Modelo */}
+          {/* Marca y Modelo */}
           <FormRow>
             <FormField
               label="Marca"
@@ -354,7 +321,7 @@ const EquipoForm = ({ show, handleClose }) => {
             />
           </FormRow>
 
-          {/* Campos para Número de Serie y Contraseña */}
+          {/* Número de Serie y Contraseña */}
           <FormRow>
             <FormField
               label="No. de Serie"
@@ -410,7 +377,7 @@ const EquipoForm = ({ show, handleClose }) => {
             onChange={handleChange}
           />
 
-          {/* Componentes Adicionales */}
+          {/* Componentes Adicionales (No obligatorios) */}
           {formData.componentesAdicionales.map((componente, index) => (
             <FormRow key={index}>
               <FormField
@@ -432,7 +399,11 @@ const EquipoForm = ({ show, handleClose }) => {
               )}
             </FormRow>
           ))}
-          <button type="button" onClick={addComponent} className="add-button">
+          <button
+            type="button"
+            onClick={addComponent}
+            className="add-button"
+          >
             <FontAwesomeIcon icon={faPlus} /> Agregar Componente
           </button>
 
@@ -500,7 +471,7 @@ const EquipoForm = ({ show, handleClose }) => {
             />
           </FormRow>
 
-          {/* Dirección MAC y Hostname */}
+          {/* MAC y Hostname */}
           <FormRow>
             <FormField
               label="MAC"
@@ -518,68 +489,64 @@ const EquipoForm = ({ show, handleClose }) => {
             />
           </FormRow>
 
-          {/* Auxiliares/Periféricos */}
+          {/* Auxiliares/Periféricos (No obligatorios) */}
           {formData.auxiliares.map((auxiliar, index) => (
             <FormRow key={index}>
-            <label htmlFor={`nombre_auxiliar-${index}`}>
-              Auxiliar {index + 1}:
-            </label>
-            <input
-  type="text"
-  id={`nombre_auxiliar-${index}`}
-  name="nombre_auxiliar"
-  value={auxiliar.nombre_auxiliar}
-  onChange={(e) => handleAuxiliarChange(index, e)}
-  placeholder="Seleccione o escriba un periférico"
-  list={`peripheralList-${index}`}
-  required
-/>
-<datalist id={`peripheralList-${index}`}>
-  <option value="Teclado" />
-  <option value="Mouse" />
-  <option value="Impresora" />
-  <option value="Escáner" />
-  <option value="Monitor" />
-  <option value="Parlantes" />
-  <option value="Cámara Web" />
-  <option value="Micrófono" />
-  <option value="Pantalla" />
-</datalist>
+              <label htmlFor={`nombre_auxiliar-${index}`}>
+                Auxiliar {index + 1}:
+              </label>
+              <input
+                type="text"
+                id={`nombre_auxiliar-${index}`}
+                name="nombre_auxiliar"
+                value={auxiliar.nombre_auxiliar}
+                onChange={(e) => handleAuxiliarChange(index, e)}
+                placeholder="Seleccione o escriba un periférico"
+                list={`peripheralList-${index}`}
+              />
+              <datalist id={`peripheralList-${index}`}>
+                {peripheralsList.map((p) => (
+                  <option key={p} value={p} />
+                ))}
+              </datalist>
 
-          
-            <label htmlFor={`numero_serie_aux-${index}`} style={{ marginTop: "16px" }}>
-              Número de Serie Periférico:
-            </label>
-            <input
-              type="text"
-              id={`numero_serie_aux-${index}`}
-              name="numero_serie_aux"
-              value={auxiliar.numero_serie_aux}
-              onChange={(e) => handleAuxiliarChange(index, e)}
-              placeholder="Ingrese el número de serie"
-              required
-            />
-          
-            {formData.auxiliares.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeAuxiliar(index)}
-                className="remove-button"
-                aria-label={`Eliminar Periférico ${index + 1}`}
+              <label
+                htmlFor={`numero_serie_aux-${index}`}
                 style={{ marginTop: "16px" }}
               >
-                <FontAwesomeIcon icon={faMinus} />
-              </button>
-            )}
-          </FormRow>
-          
-            
+                Número de Serie Periférico:
+              </label>
+              <input
+                type="text"
+                id={`numero_serie_aux-${index}`}
+                name="numero_serie_aux"
+                value={auxiliar.numero_serie_aux}
+                onChange={(e) => handleAuxiliarChange(index, e)}
+                placeholder="Ingrese el número de serie"
+              />
+
+              {formData.auxiliares.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeAuxiliar(index)}
+                  className="remove-button"
+                  aria-label={`Eliminar Periférico ${index + 1}`}
+                  style={{ marginTop: "16px" }}
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+              )}
+            </FormRow>
           ))}
-          <button type="button" onClick={addAuxiliar} className="add-button">
+          <button
+            type="button"
+            onClick={addAuxiliar}
+            className="add-button"
+          >
             <FontAwesomeIcon icon={faPlus} /> Agregar Periférico
           </button>
 
-          {/* Campo para Subir Imagen */}
+          {/* Subir Imagen */}
           <div className="form-group">
             <label htmlFor="imagen">
               <FontAwesomeIcon icon={faFileImage} /> Imagen
@@ -594,7 +561,7 @@ const EquipoForm = ({ show, handleClose }) => {
             />
           </div>
 
-          {/* Campo para Seleccionar Colaborador */}
+          {/* Seleccionar Colaborador */}
           <div className="form-group">
             <label htmlFor="idColaborador">
               <FontAwesomeIcon icon={faTag} /> Seleccionar Colaborador
@@ -614,13 +581,19 @@ const EquipoForm = ({ show, handleClose }) => {
                   </option>
                 ))
               ) : (
-                <option value="" disabled>No hay colaboradores disponibles</option>
+                <option value="" disabled>
+                  No hay colaboradores disponibles
+                </option>
               )}
             </select>
           </div>
 
-          {/* Botón para Enviar el Formulario */}
-          <button type="submit" className="submit-button" disabled={loading}>
+          {/* Botón para Enviar */}
+          <button
+            type="submit"
+            className="submit-button"
+            disabled={loading}
+          >
             {loading ? 'Guardando...' : 'Guardar'}
           </button>
         </form>

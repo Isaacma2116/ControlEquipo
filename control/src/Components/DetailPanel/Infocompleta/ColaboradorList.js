@@ -9,14 +9,18 @@ const ColaboradorList = ({ onViewDetail }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchColaboradores = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get('http://localhost:3550/api/colaboradores');
         setColaboradores(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -49,47 +53,107 @@ const ColaboradorList = ({ onViewDetail }) => {
   };
 
   return (
-    <div className={styles.colaboradorList}>
-      <h2>Lista de Colaboradores</h2>
-      <div className={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Buscar por nombre"
-          value={searchTerm}
-          onChange={handleChange}
-          className={styles.searchBar}
-        />
-        <button className={styles.filterButton} onClick={toggleFilterMenu}>
-          <FontAwesomeIcon icon={faFilter} />
-        </button>
+    <div className={styles.container}>
+      {/* Header Section */}
+      <div className={styles.header}>
+        <h2 className={styles.title}>Lista de Colaboradores</h2>
 
-        {filterOpen && (
-          <div className={styles.filterMenu}>
-            <p>Ordenar por:</p>
-            <button onClick={() => handleSortChange('name-asc')}>Nombre A-Z</button>
-            <button onClick={() => handleSortChange('name-desc')}>Nombre Z-A</button>
+        {/* Search and Filter Section */}
+        <div className={styles.controls}>
+          <div className={styles.searchContainer}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Buscar por nombre"
+              value={searchTerm}
+              onChange={handleChange}
+              className={styles.searchBar}
+            />
           </div>
-        )}
+
+          <div className={styles.filterWrapper}>
+            <button
+              className={`${styles.filterButton} ${filterOpen ? styles.active : ''}`}
+              onClick={toggleFilterMenu}
+              aria-label="Filtrar colaboradores"
+            >
+              <FontAwesomeIcon icon={faFilter} />
+              <span>Filtrar</span>
+            </button>
+
+            {/* Filter Dropdown */}
+            {filterOpen && (
+              <div className={styles.filterMenu}>
+                <p className={styles.filterTitle}>Ordenar por:</p>
+                <button
+                  className={`${styles.filterOption} ${sortOrder === 'name-asc' ? styles.selected : ''}`}
+                  onClick={() => handleSortChange('name-asc')}
+                >
+                  Nombre A-Z
+                </button>
+                <button
+                  className={`${styles.filterOption} ${sortOrder === 'name-desc' ? styles.selected : ''}`}
+                  onClick={() => handleSortChange('name-desc')}
+                >
+                  Nombre Z-A
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <ul className={styles.colaboradoresList}>
-        {sortedColaboradores()
-          .filter((colaborador) =>
-            colaborador.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((colaborador) => (
-            <li key={colaborador.id} onClick={() => onViewDetail(colaborador.id)}>
-              <img
-                src={`http://localhost:3550/uploads/colaboradores/${colaborador.fotografia || 'default.png'}`}
-                alt={`Foto de ${colaborador.nombre || 'Colaborador'}`}
-              />
-              <p>
-                <strong>{colaborador.nombre || 'No disponible'}</strong>
-              </p>
-              <p>{colaborador.area || 'No disponible'}</p>
-            </li>
-          ))}
-      </ul>
+      {/* Loading State */}
+      {isLoading ? (
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner}></div>
+          <p>Cargando colaboradores...</p>
+        </div>
+      ) : (
+        /* Collaborators List */
+        <div className={styles.content}>
+          <ul className={styles.colaboradoresGrid}>
+            {sortedColaboradores()
+              .filter((colaborador) =>
+                colaborador.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((colaborador) => (
+                <li
+                  key={colaborador.id}
+                  className={styles.colaboradorCard}
+                  onClick={() => onViewDetail(colaborador.id)}
+                >
+                  <div className={styles.cardImageContainer}>
+                    <img
+                      src={`http://localhost:3550/uploads/colaboradores/${colaborador.fotografia || 'default.png'}`}
+                      alt={`Foto de ${colaborador.nombre || 'Colaborador'}`}
+                      className={styles.colaboradorImage}
+                      onError={(e) => {
+                        e.target.src = 'http://localhost:3550/uploads/colaboradores/default.png';
+                      }}
+                    />
+                  </div>
+                  <div className={styles.cardBody}>
+                    <h3 className={styles.colaboradorName}>
+                      {colaborador.nombre || 'No disponible'}
+                    </h3>
+                    <p className={styles.colaboradorArea}>
+                      {colaborador.area || 'No disponible'}
+                    </p>
+                  </div>
+                </li>
+              ))}
+          </ul>
+
+          {/* Empty State */}
+          {sortedColaboradores().filter(colab =>
+            colab.nombre.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
+            <div className={styles.emptyState}>
+              <p>No se encontraron colaboradores</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

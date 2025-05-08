@@ -1,7 +1,9 @@
 // controllers/equipoController.js
 
-const { Sequelize } = require('sequelize');
+// Quitamos la importación duplicada de Sequelize
+// const { Sequelize } = require('sequelize');  // <-- Eliminada
 const sequelize = require('../config/database');
+
 const Equipo = require('../models/Equipo');
 const Auxiliar = require('../models/Auxiliar');
 const EquipoHistorial = require('../models/EquipoHistorial');
@@ -63,151 +65,144 @@ exports.getEquipoById = async (req, res) => {
 };
 
 // Crear un nuevo equipo con auxiliares
+// controllers/equipoController.js (fragmento)
 exports.createEquipo = async (req, res) => {
     const {
-        id_equipos,
-        tipoDispositivo,
-        marca,
-        modelo,
-        numeroSerie,
-        contrasenaEquipo,
-        ram,
-        discoDuro,
-        tarjetaMadre,
-        tarjetaGrafica,
-        procesador,
-        componentesAdicionales,
-        estadoFisico,
-        detallesIncidentes,
-        garantia,
-        fechaCompra,
-        activo,
-        sistemaOperativo,
-        mac,
-        hostname,
-        auxiliares,
-        idColaborador,
+      id_equipos,
+      tipoDispositivo,
+      marca,
+      modelo,
+      numeroSerie,
+      contrasenaEquipo,
+      ram,
+      discoDuro,
+      tarjetaMadre,
+      tarjetaGrafica,
+      procesador,
+      componentesAdicionales,
+      estadoFisico,
+      detallesIncidentes,
+      garantia,
+      fechaCompra,
+      activo,
+      sistemaOperativo,
+      mac,
+      hostname,
+      auxiliares,
+      idColaborador,
     } = req.body;
+  
     const file = req.file;
-
-    // Validar campos requeridos
+    // Validación mínima
     if (!id_equipos || !tipoDispositivo || !numeroSerie) {
-        return res.status(400).json({ message: 'Faltan datos requeridos: id_equipos, tipoDispositivo, numeroSerie.' });
+      return res
+        .status(400)
+        .json({ message: 'Faltan datos requeridos: id_equipos, tipoDispositivo, numeroSerie.' });
     }
-
-    // Asignar la ruta de la imagen si se subió un archivo, de lo contrario null
+  
+    // Manejo de imagen
     const imagen = file ? `/uploads/equipos/${file.filename}` : null;
-
+  
     const transaction = await sequelize.transaction();
-
     try {
-        // Manejar `idColaborador`: convertir cadena vacía a null
-        let parsedIdColaborador = idColaborador;
-        if (parsedIdColaborador === '') {
-            parsedIdColaborador = null;
-        } else if (parsedIdColaborador) {
-            parsedIdColaborador = parseInt(parsedIdColaborador, 10);
-            if (isNaN(parsedIdColaborador)) {
-                throw new Error('idColaborador debe ser un número entero o null.');
-            }
+      // Convertir idColaborador vacío a null si es necesario
+      let parsedIdColaborador = idColaborador;
+      if (parsedIdColaborador === '') {
+        parsedIdColaborador = null;
+      } else if (parsedIdColaborador) {
+        parsedIdColaborador = parseInt(parsedIdColaborador, 10);
+        if (isNaN(parsedIdColaborador)) {
+          throw new Error('idColaborador debe ser un número entero o null.');
         }
-
-        // Parsear `componentesAdicionales`
-        let parsedComponentesAdicionales = [];
-        if (componentesAdicionales) {
-            try {
-                parsedComponentesAdicionales =
-                    typeof componentesAdicionales === 'string'
-                        ? JSON.parse(componentesAdicionales)
-                        : componentesAdicionales;
-            } catch (error) {
-                return res.status(400).json({
-                    message: 'El campo "componentesAdicionales" no contiene un JSON válido.',
-                    error: error.message,
-                });
-            }
+      }
+  
+      // Convertir componentesAdicionales a array si viene en string
+      let parsedComponentes = [];
+      if (componentesAdicionales) {
+        try {
+          parsedComponentes = Array.isArray(componentesAdicionales)
+            ? componentesAdicionales
+            : JSON.parse(componentesAdicionales);
+        } catch (error) {
+          // Si no quieres error, simplemente ignora el valor
+          parsedComponentes = [];
         }
-
-        // Crear el equipo
-        const equipo = await Equipo.create(
-            {
-                id_equipos,
-                tipoDispositivo,
-                marca,
-                modelo,
-                numeroSerie,
-                contrasenaEquipo,
-                ram,
-                discoDuro,
-                tarjetaMadre,
-                tarjetaGrafica,
-                procesador,
-                componentesAdicionales: parsedComponentesAdicionales,
-                estadoFisico,
-                detallesIncidentes,
-                garantia,
-                fechaCompra,
-                activo,
-                sistemaOperativo,
-                mac,
-                hostname,
-                idColaborador: parsedIdColaborador,
-                imagen,
-            },
-            { transaction }
-        );
-
-        // Parsear y crear `auxiliares`
+      }
+  
+      // Crear equipo
+      const equipo = await Equipo.create(
+        {
+          id_equipos,
+          tipoDispositivo,
+          marca,
+          modelo,
+          numeroSerie,
+          contrasenaEquipo,
+          ram,
+          discoDuro,
+          tarjetaMadre,
+          tarjetaGrafica,
+          procesador,
+          componentesAdicionales: parsedComponentes,
+          estadoFisico,
+          detallesIncidentes,
+          garantia,
+          fechaCompra,
+          activo,
+          sistemaOperativo,
+          mac,
+          hostname,
+          idColaborador: parsedIdColaborador,
+          imagen,
+        },
+        { transaction }
+      );
+  
+      // Manejo de auxiliares
+      if (auxiliares) {
         let parsedAuxiliares = [];
-        if (auxiliares) {
-            try {
-                parsedAuxiliares = Array.isArray(auxiliares) ? auxiliares : JSON.parse(auxiliares);
-            } catch (error) {
-                return res.status(400).json({
-                    message: 'El campo "auxiliares" no contiene un JSON válido.',
-                    error: error.message,
-                });
-            }
-
-            for (const auxiliar of parsedAuxiliares) {
-                if (auxiliar.nombre_auxiliar && auxiliar.numero_serie_aux) {
-                    await Auxiliar.create(
-                        {
-                            nombre_auxiliar: auxiliar.nombre_auxiliar,
-                            numero_serie_aux: auxiliar.numero_serie_aux,
-                            id_equipo: equipo.id_equipos, // Relación con el equipo recién creado
-                        },
-                        { transaction }
-                    );
-                } else {
-                    return res.status(400).json({
-                        message: 'Cada auxiliar debe tener "nombre_auxiliar" y "numero_serie_aux".',
-                    });
-                }
-            }
+        try {
+          parsedAuxiliares = Array.isArray(auxiliares)
+            ? auxiliares
+            : JSON.parse(auxiliares);
+        } catch (error) {
+          // Si no quieres error, ignoras auxiliares inválidos
+          parsedAuxiliares = [];
         }
-
-        // Confirmar transacción
-        await transaction.commit();
-        res.status(201).json({ message: 'Equipo creado con éxito.', equipo });
-    } catch (err) {
-        // Revertir transacción si algo falla
-        await transaction.rollback();
-        console.error('Error al crear el equipo:', err);
-        if (err.name === 'SequelizeForeignKeyConstraintError') {
-            res.status(400).json({ message: 'El colaborador seleccionado no existe.', error: err.message });
-        } else if (err.name === 'SequelizeUniqueConstraintError') {
-            res.status(400).json({ message: 'El ID del equipo ya existe.', error: err.message });
-        } else {
-            res.status(500).json({ message: 'Error al crear el equipo.', error: err.message });
+  
+        // Crear solo auxiliares que tengan algo
+        for (const aux of parsedAuxiliares) {
+          // Solo se crean si al menos uno de los dos campos tiene valor
+          if (aux.nombre_auxiliar?.trim() || aux.numero_serie_aux?.trim()) {
+            await Auxiliar.create(
+              {
+                nombre_auxiliar: aux.nombre_auxiliar || '',
+                numero_serie_aux: aux.numero_serie_aux || '',
+                id_equipo: equipo.id_equipos,
+              },
+              { transaction }
+            );
+          }
         }
-
-        // Si se subió una imagen y hubo un error, eliminar el archivo subido
-        if (file && fs.existsSync(path.join(__dirname, '..', imagen))) {
-            fs.unlinkSync(path.join(__dirname, '..', imagen));
+      }
+  
+      await transaction.commit();
+      res.status(201).json({ message: 'Equipo creado con éxito.', equipo });
+    } catch (error) {
+      await transaction.rollback();
+      console.error('Error al crear el equipo:', error);
+      res.status(500).json({ message: 'Error al crear el equipo.', error: error.message });
+  
+      // Si se subió una imagen y ocurre un error, la eliminas si gustas
+      if (file) {
+        const pathImagen = path.join(__dirname, '..', imagen);
+        if (fs.existsSync(pathImagen)) {
+          fs.unlinkSync(pathImagen);
         }
+      }
     }
-};
+  };
+  
 
 // Actualizar un equipo y sus auxiliares
 exports.updateEquipo = async (req, res) => {
@@ -310,7 +305,7 @@ exports.updateEquipo = async (req, res) => {
             }
         }
 
-        // **Registrar la edición en el historial**:
+        // Registrar la edición en el historial
         await EquipoHistorial.create(
             {
                 ...equipo.toJSON(), // Incluye los campos actuales del equipo
@@ -344,8 +339,6 @@ exports.updateEquipo = async (req, res) => {
 };
 
 // Controlador para la actualización de la imagen
-// controllers/equipoController.js
-
 exports.updateEquipoImagen = async (req, res) => {
     const { id_equipos } = req.params;
     const file = req.file; // Asegúrate de que el archivo esté en `req.file`
@@ -366,7 +359,6 @@ exports.updateEquipoImagen = async (req, res) => {
         // Verificar que 'imagen' es una cadena de texto
         if (typeof equipo.imagen !== 'string') {
             console.error('El campo "imagen" no es una cadena de texto:', equipo.imagen);
-            // Opcional: eliminar el archivo subido para evitar basura
             fs.unlinkSync(file.path);
             return res.status(500).json({ message: 'Error interno del servidor: imagen inválida.' });
         }
@@ -386,13 +378,11 @@ exports.updateEquipoImagen = async (req, res) => {
         await equipo.update({ imagen: imagenPath });
 
         // Registrar la actualización en el historial
-        await EquipoHistorial.create(
-            {
-                id_equipos: equipo.id_equipos,
-                operacion: 'actualizacion_imagen',
-                fecha_operacion: new Date(),
-            }
-        );
+        await EquipoHistorial.create({
+            id_equipos: equipo.id_equipos,
+            operacion: 'actualizacion_imagen',
+            fecha_operacion: new Date(),
+        });
 
         // Devolver la nueva URL de la imagen
         res.status(200).json({ imagen: imagenPath });
@@ -415,8 +405,6 @@ exports.updateEquipoImagen = async (req, res) => {
 // Eliminar (desactivar) un equipo y sus auxiliares
 exports.deleteEquipo = async (req, res) => {
     const { id_equipos } = req.params;
-
-    // Iniciar una transacción para garantizar consistencia
     const transaction = await sequelize.transaction();
 
     try {
@@ -437,7 +425,8 @@ exports.deleteEquipo = async (req, res) => {
             await transaction.rollback();
             return res.status(400).json({
                 message:
-                    'No puedes eliminar este equipo porque tiene auxiliares asociados. Por favor, reasigna o elimina los auxiliares antes de desactivar el equipo.',
+                    'No puedes eliminar este equipo porque tiene auxiliares asociados. ' +
+                    'Por favor, reasigna o elimina los auxiliares antes de desactivar el equipo.',
             });
         }
 
@@ -458,10 +447,8 @@ exports.deleteEquipo = async (req, res) => {
         // Confirmar la transacción
         await transaction.commit();
 
-        // Responder al cliente con éxito
         res.status(200).json({ message: 'Equipo desactivado correctamente.' });
     } catch (err) {
-        // Revertir transacción en caso de error
         await transaction.rollback();
         console.error('Error al desactivar el equipo:', err);
         res.status(500).json({ message: 'Error al desactivar el equipo.', error: err.message });
@@ -479,7 +466,9 @@ exports.getEquipoHistorial = async (req, res) => {
         });
 
         if (!historial || historial.length === 0) {
-            return res.status(200).json({ message: 'No se encontraron registros en el historial.', historial: [] });
+            return res
+                .status(200)
+                .json({ message: 'No se encontraron registros en el historial.', historial: [] });
         }
 
         res.status(200).json(historial);
@@ -522,9 +511,9 @@ exports.updateAuxiliares = async (req, res) => {
                 });
                 if (!equipoAsignado) {
                     await transaction.rollback();
-                    return res
-                        .status(400)
-                        .json({ message: `El equipo con ID ${auxiliar.id_equipo} no existe o está inactivo.` });
+                    return res.status(400).json({
+                        message: `El equipo con ID ${auxiliar.id_equipo} no existe o está inactivo.`,
+                    });
                 }
             }
 

@@ -1,128 +1,71 @@
-/* Estilo principal del contenedor */
+/* DetailPanel.css - Versión Compacta */
+
 .detail-panel {
-  display: block;
   width: 100%;
-  height: auto;
-  padding: 20px;
-  background-color: #ffffff; /* Fondo blanco */
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-  font-family: 'Roboto', sans-serif;
-}
-
-.detail-panel h1 {
-  font-size: 28px;
-  color: #2c3e50; /* Color azul oscuro */
-  margin-bottom: 15px;
-  font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 10px;
-}
-
-/* Listas dentro del panel */
-.detail-panel ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.detail-panel ul li {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
+  height: 100%;
+  padding: 0.5rem; /* Reducir el padding */
+  overflow-y: auto;
+  background-color: #f8f9fa;
   border-radius: 8px;
-  background-color: #f9f9f9;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.detail-panel ul li:hover {
-  background-color: #f4f4f4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.detail-panel ul li.active {
-  background-color: #3498db;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-/* Navegación superior */
+/* Navigation Buttons - Más compactos */
 .navigation-buttons {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  gap: 0.5rem; /* Reducir espacio entre botones */
+  margin-bottom: 0.5rem; /* Reducir margen inferior */
+  padding: 0.25rem 0; /* Reducir padding vertical */
 }
 
 .nav-button {
-  padding: 10px 20px;
-  background-color: #3498db;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
+  padding: 0.3rem 0.8rem; /* Botones más pequeños */
+  font-size: 0.85rem;
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .nav-button:hover {
-  background-color: #2980b9;
-  transform: translateY(-3px); /* Elevación en hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #dee2e6;
 }
 
-.nav-button:active {
-  transform: translateY(1px); /* Efecto de presión */
+/* Estilos para los componentes internos */
+.detail-panel > div:not(.navigation-buttons) {
+  margin-top: 0.5rem; /* Reducir espacio superior */
 }
 
-/* Placeholder cuando no hay elementos seleccionados */
-.detail-panel p {
-  text-align: center;
-  color: #7f8c8d;
-  font-size: 18px;
-  font-style: italic;
+/* Ajustes específicos para componentes */
+.colaborador-list,
+.colaborador-detail,
+.equipo-completo,
+.software-list,
+.equipo-analysis,
+.historial-container,
+.grouped-names,
+.celular-detail,
+.auxiliares-list {
+  padding: 0.75rem; /* Reducir padding interno */
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.75rem; /* Reducir espacio entre componentes */
 }
 
-/* Botones de acción adicionales */
-.detail-panel .action-button {
-  padding: 10px 15px;
-  background-color: #16a085;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.detail-panel .action-button:hover {
-  background-color: #1abc9c;
-  transform: translateY(-3px);
-}
-
-.detail-panel .action-button:active {
-  transform: translateY(1px);
-}
-
-/* Responsividad */
+/* Ajustes responsivos */
 @media (max-width: 768px) {
   .detail-panel {
-      padding: 15px;
+    padding: 0.25rem;
   }
-
+  
+  .navigation-buttons {
+    gap: 0.25rem;
+  }
+  
   .nav-button {
-      font-size: 14px;
-      padding: 8px 15px;
-  }
-
-  .detail-panel ul li {
-      font-size: 14px;
-      padding: 10px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
   }
 }

@@ -1,187 +1,119 @@
-/* Contenedor principal para el sidebar */
-.container {
+/* Sidebar general container */
+.sidebar-container {
+    width: 21.875rem; /* 350px */
+    max-width: 100%; /* Asegura que no exceda el ancho de la pantalla */
+    background: linear-gradient(to bottom, #1e1e2f, #111112);
+    color: #f5f5f5;
+    min-height: 100vh;
     display: flex;
-    height: 100vh; /* Ocupa toda la altura de la ventana */
-    overflow: hidden;
+    flex-direction: column;
+    border-right: 2px solid #333;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Estilos generales para el sidebar */
-.sidebar {
-    width: 280px; /* Ancho del sidebar */
-    background-color: #1f2937; /* Azul oscuro elegante */
-    color: #ecf0f1;
-    padding: 20px;
-    box-sizing: border-box;
-    height: 100vh; /* Ocupa toda la altura de la ventana */
-    overflow-y: auto; /* Desplazamiento interno */
-    position: fixed; /* Fija el sidebar */
-    left: 0;
-    top: 0;
-    border-right: 2px solid #38bdf8; /* Línea de separación */
-    z-index: 10; /* Asegura que el sidebar esté encima del contenido */
-    transition: width 0.4s ease-in-out, background-color 0.3s ease-in-out;
+/* Responsividad para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .sidebar-container {
+        width: 18.75rem; /* 300px, ajustado para pantallas medianas */
+    }
 }
 
-/* Expande ligeramente al pasar el mouse */
-.sidebar:hover {
-    width: 320px;
-    background-color: #111827; /* Fondo más oscuro */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Sombra envolvente */
+@media (max-width: 480px) {
+    .sidebar-container {
+        width: 16rem; /* 256px, ajustado para pantallas pequeñas */
+    }
 }
 
-/* Contenedor del logo */
+/* Logo section */
 .logo-container {
+    padding: 1rem;
+    border-bottom: 1px solid #444;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: linear-gradient(145deg, #1f2937, #374151); /* Fondo degradado */
-    border-radius: 15px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4); /* Sombra envolvente */
-    position: relative;
-    overflow: hidden;
 }
 
 .logo {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-height: 2.5rem; /* 40px */
+    width: auto;
+    object-fit: contain;
+    animation: logo-bounce 2s infinite;
 }
 
-.logo-container:hover .logo {
-    transform: scale(1.2);
-    box-shadow: 0px 15px 25px rgba(56, 189, 248, 0.6); /* Resplandor dinámico */
+@keyframes logo-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
 }
 
-.logo-title {
-    font-size: 22px;
-    color: #38bdf8;
-    font-weight: bold;
-    margin-top: 15px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
-    text-align: center;
+/* Menu items */
+.menu {
+    padding: 1rem;
+    flex: 1;
+    overflow-y: auto;
 }
 
-/* Título del menú */
-.sidebar h1 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #38bdf8;
-    text-align: center;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.menu-title .menu-icon {
-    margin-right: 10px;
-}
-
-/* Estilo de los elementos del menú */
-.menu-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 15px 20px;
-    cursor: pointer;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    overflow: hidden;
-}
-
-.menu-item:hover {
-    background-color: rgba(56, 189, 248, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0px 5px 10px rgba(56, 189, 248, 0.3);
-}
-
-.menu-item h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #ecf0f1;
-    flex-grow: 1;
+.sidebar-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: color 0.3s ease;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
 }
 
-.menu-icon {
-    font-size: 20px;
-    color: #38bdf8;
-    margin-right: 10px;
+.sidebar-item:hover {
+    background-color: #ffbb33;
+    color: #111112;
+    transform: translateX(5px);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Rotación del ícono al pasar el mouse */
-.menu-item h2 svg {
-    margin-left: 10px;
-    transition: transform 0.3s ease-in-out;
+.item-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.menu-item:hover h2 {
-    color: #38bdf8;
+.item-icon {
+    font-size: 1.25rem;
 }
 
-.menu-item:hover h2 svg {
-    transform: rotate(90deg);
+.item-label {
+    font-size: 1rem;
+    font-weight: bold;
 }
 
-.menu-item.active {
-    background-color: rgba(56, 189, 248, 0.3);
-    color: #38bdf8;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+.chevron-icon {
+    font-size: 1rem;
+    color: #b0b0b0;
 }
 
-/* Contenido principal */
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #f8fafc;
-    box-sizing: border-box;
-    margin-left: 320px;
-    transition: margin-left 0.4s ease-in-out;
+/* Submenu styling */
+.submenu {
+    margin-left: 1.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Barras de desplazamiento personalizadas */
-.sidebar::-webkit-scrollbar {
+/* Scrollbar styles */
+::-webkit-scrollbar {
     width: 8px;
 }
 
-.sidebar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #ff6f61, #ffbb33);
+    border-radius: 4px;
 }
 
-.sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #ffbb33, #ff6f61);
 }
 
-.sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 250px;
-    }
-
-    .sidebar:hover {
-        width: 280px;
-    }
-
-    .main-content {
-        margin-left: 280px;
-    }
+::-webkit-scrollbar-track {
+    background: #222;
 }

@@ -1,120 +1,119 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faFilter, faUser } from '@fortawesome/free-solid-svg-icons';
-import styles from './styles/Colaboradores.module.css';
-import ColaboradorForm from './Forms/ColaboradorForm'; // Ajusta la ruta si es necesario
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faFilter, faUser } from "@fortawesome/free-solid-svg-icons";
+import styles from "./styles/Colaboradores.module.css";
+import ColaboradorForm from "./Forms/ColaboradorForm";
 
 const Colaboradores = ({ onColaboradorClick }) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [colaboradores, setColaboradores] = useState([]);
-    const [showForm, setShowForm] = useState(false); // Estado para controlar la visibilidad del formulario
-    const [filterOpen, setFilterOpen] = useState(false); // Estado para mostrar/ocultar el menú de filtros
-    const [sortOrder, setSortOrder] = useState(''); // Estado para controlar el orden de filtrado
+  const [searchTerm, setSearchTerm] = useState("");
+  const [colaboradores, setColaboradores] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOrder, setSortOrder] = useState("");
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchColaboradores = async () => {
-            try {
-                const response = await axios.get('http://localhost:3550/api/colaboradores');
-                setColaboradores(response.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchColaboradores();
-    }, []);
-
-    const handleChange = (event) => {
-        setSearchTerm(event.target.value);
+  useEffect(() => {
+    const fetchColaboradores = async () => {
+      try {
+        const response = await axios.get("http://localhost:3550/api/colaboradores");
+        setColaboradores(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
     };
 
-    const handleAddClick = () => {
-        setShowForm(true); // Muestra el formulario cuando se hace clic
-    };
+    fetchColaboradores();
+  }, []);
 
-    const handleFormClose = () => {
-        setShowForm(false); // Cierra el formulario
-    };
+  const handleSearchChange = (event) => setSearchTerm(event.target.value);
 
-    const toggleFilterMenu = () => {
-        setFilterOpen(!filterOpen); // Alterna la visibilidad del menú de filtros
-    };
+  const handleAddClick = () => setShowForm(true);
 
-    const handleSortChange = (criteria) => {
-        setSortOrder(criteria); // Actualiza el estado de ordenamiento
-        setFilterOpen(false); // Cierra el menú de filtros
-    };
+  const handleFormClose = () => setShowForm(false);
 
-    const sortedColaboradores = () => {
-        if (!Array.isArray(colaboradores)) {
-            return []; // Asegúrate de que siempre devuelve un arreglo
-        }
+  const toggleFilterMenu = () => setFilterOpen(!filterOpen);
 
-        if (sortOrder === 'name-asc') {
-            return [...colaboradores].sort((a, b) => a.nombre.localeCompare(b.nombre));
-        } else if (sortOrder === 'name-desc') {
-            return [...colaboradores].sort((a, b) => b.nombre.localeCompare(a.nombre));
-        } else if (sortOrder === 'date-asc') {
-            return [...colaboradores].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-        } else if (sortOrder === 'date-desc') {
-            return [...colaboradores].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-        }
+  const handleSortChange = (criteria) => {
+    setSortOrder(criteria);
+    setFilterOpen(false);
+  };
 
-        return colaboradores;
-    };
+  const getSortedColaboradores = () => {
+    if (!Array.isArray(colaboradores)) {
+      return [];
+    }
 
-    return (
-        <div className={styles.colaboradoresSidebarMenu}>
-            <div className={styles.searchContainer}>
-                <input
-                    type="text"
-                    placeholder="Buscar colaboradores..."
-                    value={searchTerm}
-                    onChange={handleChange}
-                    className={styles.searchBar}
-                />
-                <button className={styles.filterButton} onClick={toggleFilterMenu}>
-                    <FontAwesomeIcon icon={faFilter} />
-                </button>
+    const sorted = [...colaboradores];
+    if (sortOrder === "name-asc") return sorted.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    if (sortOrder === "name-desc") return sorted.sort((a, b) => b.nombre.localeCompare(a.nombre));
+    if (sortOrder === "date-asc") return sorted.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    if (sortOrder === "date-desc") return sorted.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    return sorted;
+  };
 
-                {filterOpen && (
-                    <div className={styles.filterMenu}>
-                        <p>Ordenar por:</p>
-                        <button onClick={() => handleSortChange('name-asc')}>Nombre A-Z</button>
-                        <button onClick={() => handleSortChange('name-desc')}>Nombre Z-A</button>
-                        <button onClick={() => handleSortChange('date-asc')}>Fecha Ascendente</button>
-                        <button onClick={() => handleSortChange('date-desc')}>Fecha Descendente</button>
-                    </div>
-                )}
+  const filteredColaboradores = getSortedColaboradores().filter((colaborador) =>
+    colaborador.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className={styles.colaboradoresContainer}>
+      <div className={styles.header}>
+        <div className={styles.searchSection}>
+          <input
+            type="text"
+            placeholder="Buscar colaboradores..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className={styles.searchBar}
+          />
+          <button className={styles.filterButton} onClick={toggleFilterMenu}>
+            <FontAwesomeIcon icon={faFilter} />
+          </button>
+          {filterOpen && (
+            <div className={styles.filterMenu}>
+              <p className={styles.filterTitle}>Ordenar por:</p>
+              <button onClick={() => handleSortChange("name-asc")}>Nombre A-Z</button>
+              <button onClick={() => handleSortChange("name-desc")}>Nombre Z-A</button>
+              <button onClick={() => handleSortChange("date-asc")}>Fecha Ascendente</button>
+              <button onClick={() => handleSortChange("date-desc")}>Fecha Descendente</button>
             </div>
-
-            <ul className={styles.colaboradoresList}>
-                {sortedColaboradores()
-                    .filter((colaborador) =>
-                        colaborador.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-                    )
-                    .map((colaborador) => (
-                        <li key={colaborador.id} onClick={() => onColaboradorClick(colaborador.id)} className={styles.colaboradorItem}>
-                            <FontAwesomeIcon icon={faUser} className={styles.colaboradorIcon} />
-                            <span className={styles.colaboradorNombre}>{colaborador.nombre}</span>
-                        </li>
-                    ))}
-            </ul>
-
-            <button onClick={handleAddClick} className={styles.addColaboradorButton}>
-                <FontAwesomeIcon icon={faPlus} /> Agregar Colaborador
-            </button>
-
-            {/* Renderiza el formulario si `showForm` es verdadero */}
-            {showForm && (
-                <ColaboradorForm
-                    show={showForm}
-                    handleClose={handleFormClose}
-                />
-            )}
+          )}
         </div>
-    );
+      </div>
+
+      <div className={styles.content}>
+        {loading ? (
+          <p className={styles.loadingText}>Cargando colaboradores...</p>
+        ) : filteredColaboradores.length > 0 ? (
+          <ul className={styles.colaboradoresList}>
+            {filteredColaboradores.map((colaborador) => (
+              <li
+                key={colaborador.id}
+                onClick={() => onColaboradorClick && onColaboradorClick(colaborador.id)}
+                className={styles.colaboradorItem}
+              >
+                <FontAwesomeIcon icon={faUser} className={styles.colaboradorIcon} />
+                <span className={styles.colaboradorNombre}>{colaborador.nombre}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.noDataText}>No hay colaboradores registrados.</p>
+        )}
+      </div>
+
+      <div className={styles.footer}>
+        <button onClick={handleAddClick} className={styles.addColaboradorButton}>
+          <FontAwesomeIcon icon={faPlus} /> Agregar Colaborador
+        </button>
+      </div>
+
+      {showForm && <ColaboradorForm show={showForm} handleClose={handleFormClose} />}
+    </div>
+  );
 };
 
 export default Colaboradores;

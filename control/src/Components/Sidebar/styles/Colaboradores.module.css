@@ -1,183 +1,142 @@
-/* Contenedor principal del sidebar */
-.colaboradoresSidebarMenu {
-  width: 100%;
-  padding: 15px;
-  font-family: 'Roboto', sans-serif;
-  color: #ecf0f1;
-  box-sizing: border-box;
-  overflow-y: auto;
-  background: linear-gradient(145deg, #1f2937, #293546); /* Fondo degradado oscuro */
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra definida */
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+/* General Container */
+.colaboradoresContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #1e1e2f;
+  color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
 }
 
-/* Contenedor del buscador */
-.searchContainer {
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Search and Filter Container */
+.searchFilterContainer {
   position: relative;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
-  background: linear-gradient(135deg, #2c3e50, #34495e); /* Fondo degradado */
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Icono de búsqueda */
-.searchIcon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #7f8c8d;
-  font-size: 16px;
-}
-
-/* Campo de entrada del buscador */
-.searchBar {
+  flex-direction: column;
+  gap: 0.5rem;
   width: 100%;
-  padding: 10px 15px 10px 40px; /* Espacio para el icono */
-  border-radius: 20px;
-  border: 1px solid #bbb;
-  background-color: #f5f5f5;
-  color: #2c3e50;
-  font-size: 14px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  height: 40px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.searchSection {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.searchBar {
+  padding: 0.5rem;
+  flex: 1;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background: #333;
+  color: #fff;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .searchBar:focus {
-  outline: none;
-  background-color: #fff;
-  border: 1px solid #3498db;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: #444;
 }
 
-/* Botón del filtro */
 .filterButton {
-  background-color: #3498db;
-  color: #fff;
+  background: #ffbb33;
   border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  border-radius: 4px;
+  padding: 0.5rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease-in-out;
 }
 
 .filterButton:hover {
-  background-color: #1f77b4;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
 }
 
-.filterButton:active {
-  transform: translateY(1px);
-}
-
-/* Menú emergente de filtros */
+/* Filter Menu (adjust position) */
 .filterMenu {
   position: absolute;
-  top: 50px;
-  right: 0;
-  background-color: #ecf0f1;
-  border: 1px solid #ccc;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 10px;
-  z-index: 10;
-  width: 200px;
-  animation: fadeIn 0.3s ease;
-}
-
-.filterMenu p {
-  margin: 0 0 10px;
-  font-weight: bold;
-  color: #2c3e50;
-  font-size: 14px;
-}
-
-.filterMenu button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: block;
+  top: 100%;
+  left: 0;
   width: 100%;
-  text-align: left;
-  padding: 8px 10px;
-  border-radius: 8px;
-  color: #2c3e50;
-  font-size: 14px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  z-index: 10;
+  background: #2a2a3a;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
-.filterMenu button:hover {
-  background-color: #3498db;
-  color: #fff;
+.filterTitle {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
-/* Lista de colaboradores */
+/* Content Section */
+.content {
+  flex: 1;
+}
+
 .colaboradoresList {
   list-style: none;
-  padding: 8px;
+  padding: 0;
   margin: 0;
-  max-height: 250px;
-  overflow-y: auto;
-  background-color: #2c3e50;
-  border-radius: 10px;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.colaboradoresList li {
-  padding: 10px;
-  margin-bottom: 8px;
-  background-color: #34495e;
-  border-radius: 8px;
-  cursor: pointer;
-  color: #ecf0f1;
-  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.colaboradoresList li:hover {
-  background: linear-gradient(135deg, #1abc9c, #16a085); /* Fondo dinámico */
-  transform: translateX(8px);
-  color: #fff;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Botón para agregar colaborador */
-.addColaboradorButton {
-  background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
+.colaboradorItem {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-  margin-top: 20px;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.colaboradorItem:hover {
+  background: #ffbb33;
+  transform: translateX(5px);
+}
+
+.colaboradorIcon {
+  font-size: 1.5rem;
+  color: #ffbb33;
+}
+
+.colaboradorNombre {
+  font-weight: bold;
+}
+
+/* Footer Section */
+.footer {
+  margin-top: 1rem;
+}
+
+.addColaboradorButton {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .addColaboradorButton:hover {
-  background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: #218838;
 }
 
-.addColaboradorButton:active {
-  transform: translateY(1px);
+/* Loading and No Data Text */
+.loadingText, .noDataText {
+  text-align: center;
+  font-size: 1rem;
+  color: #ccc;
 }
