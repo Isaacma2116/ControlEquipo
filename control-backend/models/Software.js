@@ -1,11 +1,13 @@
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Software = sequelize.define('Software', {
+class Software extends Model {}
+
+Software.init({
     id_software: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         autoIncrement: true,
+        primaryKey: true,
     },
     nombre: {
         type: DataTypes.STRING,
@@ -13,7 +15,7 @@ const Software = sequelize.define('Software', {
     },
     version: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     fecha_adquisicion: {
         type: DataTypes.DATE,
@@ -25,36 +27,29 @@ const Software = sequelize.define('Software', {
     },
     tipoLicencia: {
         type: DataTypes.ENUM('mensual', 'anual', 'vitalicia'),
-        allowNull: true,
-        defaultValue: 'mensual',
-    },
-    claveLicencia: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    correoAsociado: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    contrasenaCorreo: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     estado: {
-        type: DataTypes.ENUM('sin uso', 'activo', 'vencido con equipo'),
+        type: DataTypes.ENUM('activo', 'sin uso', 'vencido', 'vencido con equipo', 'inactivo'),
         allowNull: false,
     },
     licenciaCaducada: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
     },
     maxDispositivos: {
         type: DataTypes.INTEGER,
-        allowNull: false, // El valor no puede ser nulo
-        defaultValue: 1,  // Puedes cambiar o eliminar este valor por defecto
+        allowNull: false,
+    },
+    estadoActivo: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: 1, // 1 indica que el software está activo
     },
 }, {
+    sequelize,
+    modelName: 'Software',
     tableName: 'software',
     timestamps: false,
 });

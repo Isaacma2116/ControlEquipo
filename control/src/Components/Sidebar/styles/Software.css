@@ -7,22 +7,25 @@
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: #2c3e50;  /* Fondo oscuro para todo el contenedor */
+    background-color: #2c3e50; /* Fondo oscuro */
     border-radius: 10px;
+    margin-left: 30px; /* Asegura que no colisione con el Sidebar */
+    margin-top: 20px; /* Separación superior */
+    margin-bottom: 20px; /* Separación inferior */
 }
 
 /* Estilos para la barra de desplazamiento (scrollbar) vertical */
 .software-sidebar-menu::-webkit-scrollbar {
-    width: 8px;  /* Ancho de la barra de desplazamiento vertical */
+    width: 8px; /* Ancho de la barra de desplazamiento vertical */
 }
 
 .software-sidebar-menu::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);  /* Color suave para la barra */
+    background-color: rgba(255, 255, 255, 0.2); /* Color suave para la barra */
     border-radius: 10px;
 }
 
 .software-sidebar-menu::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.4);  /* Un poco más visible al hacer hover */
+    background-color: rgba(255, 255, 255, 0.4); /* Más visible al hacer hover */
 }
 
 .software-sidebar-menu::-webkit-scrollbar-track {
@@ -88,7 +91,7 @@
 .software-sidebar-menu ul li {
     padding: 12px;
     margin-bottom: 10px;
-    background-color: #34495e;  /* Fondo oscuro para cada elemento */
+    background-color: #34495e; /* Fondo oscuro para cada elemento */
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s ease-in-out;

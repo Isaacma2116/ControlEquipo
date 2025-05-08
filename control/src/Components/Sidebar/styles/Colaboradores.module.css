@@ -1,0 +1,142 @@
+/* General Container */
+.colaboradoresContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #1e1e2f;
+  color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Search and Filter Container */
+.searchFilterContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.searchSection {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.searchBar {
+  padding: 0.5rem;
+  flex: 1;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background: #333;
+  color: #fff;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.searchBar:focus {
+  background: #444;
+}
+
+.filterButton {
+  background: #ffbb33;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.filterButton:hover {
+  transform: scale(1.1);
+}
+
+/* Filter Menu (adjust position) */
+.filterMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: #2a2a3a;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.filterTitle {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Content Section */
+.content {
+  flex: 1;
+}
+
+.colaboradoresList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.colaboradorItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.colaboradorItem:hover {
+  background: #ffbb33;
+  transform: translateX(5px);
+}
+
+.colaboradorIcon {
+  font-size: 1.5rem;
+  color: #ffbb33;
+}
+
+.colaboradorNombre {
+  font-weight: bold;
+}
+
+/* Footer Section */
+.footer {
+  margin-top: 1rem;
+}
+
+.addColaboradorButton {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.addColaboradorButton:hover {
+  background: #218838;
+}
+
+/* Loading and No Data Text */
+.loadingText, .noDataText {
+  text-align: center;
+  font-size: 1rem;
+  color: #ccc;
+}

@@ -1,14 +1,17 @@
+// src/Components/DetailPanel/Infocompleta/Forms/SoftwareForm.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import stringSimilarity from 'string-similarity';
 import '../styles/SoftwareForm.css';
 
-const SoftwareForm = ({ onSave, onClose }) => {
+const SoftwareForm = ({ onSave = () => { }, onClose }) => {
     const [nombre, setNombre] = useState('');
     const [version, setVersion] = useState('');
-    const [fechaAdquisicion, setFechaAdquisicion] = useState(null);
-    const [fechaCaducidad, setFechaCaducidad] = useState(null);
+    const [fechaAdquisicion, setFechaAdquisicion] = useState('');
+    const [fechaCaducidad, setFechaCaducidad] = useState('');
     const [tipoLicencia, setTipoLicencia] = useState('mensual');
     const [estado, setEstado] = useState('sin uso');
     const [equipos, setEquipos] = useState([]);
@@ -22,45 +25,92 @@ const SoftwareForm = ({ onSave, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [tooltip, setTooltip] = useState(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [existingSoftwareNames, setExistingSoftwareNames] = useState([]);
+    const [suggestedCorrection, setSuggestedCorrection] = useState('');
+    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
 
-    // Fetch equipos
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3550/api';
+
     useEffect(() => {
         const fetchEquipos = async () => {
-            setLoading(true);
             try {
-                const response = await axios.get('http://localhost:3550/api/equipos');
+                const response = await axios.get(`${API_BASE_URL}/equipos`);
+                console.log('Equipos obtenidos:', response.data);
                 setEquipos(response.data);
             } catch (error) {
-                setError('Hubo un problema al cargar los equipos.');
+                console.error('Error al cargar equipos:', error);
+                setError('Error al cargar los equipos');
             }
-            setLoading(false);
         };
         fetchEquipos();
     }, []);
 
-    // Actualizar el estado del software y contar licencias en uso y sin uso
-    useEffect(() => {
-        const enUso = softwareLicencias.filter(licencia => licencia.id_equipos && licencia.id_equipos.length > 0).length;
-        const sinUso = Math.max(0, maxLicencias - enUso);
-
-        setLicenciasEnUso(enUso);
-        setLicenciasSinUso(sinUso);
-
-        // Actualizar el estado del software
-        if (licenciaCaducada && enUso > 0) {
-            setEstado('vencido con equipo');
-        } else if (enUso > 0 && !licenciaCaducada) {
-            setEstado('en uso');
-        } else if (licenciaCaducada) {
-            setEstado('vencido');
-        } else {
-            setEstado('sin uso');
+    const checkNameCorrection = (value) => {
+        if (existingSoftwareNames.length > 0) {
+            const bestMatch = stringSimilarity.findBestMatch(value.toLowerCase(), existingSoftwareNames);
+            if (bestMatch.bestMatch.rating > 0.8 && bestMatch.bestMatch.target !== value.toLowerCase()) {
+                setSuggestedCorrection(bestMatch.bestMatch.target);
+            } else {
+                setSuggestedCorrection('');
+            }
         }
-    }, [softwareLicencias, maxLicencias, licenciaCaducada]);
+    };
 
-    // Agregar una nueva licencia
+    const handleNombreChange = (e) => {
+        const value = e.target.value;
+        setNombre(value);
+        checkNameCorrection(value);
+
+        if (value) {
+            const filtered = existingSoftwareNames.filter(name =>
+                name.includes(value.toLowerCase())
+            ).slice(0, 5);
+            setFilteredSuggestions(filtered);
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setNombre(suggestion);
+        setShowSuggestions(false);
+        setSuggestedCorrection('');
+    };
+
+    const handleApplySuggestion = () => {
+        setNombre(suggestedCorrection);
+        setShowSuggestions(false);
+        setSuggestedCorrection('');
+    };
+
+    // Actualizar fecha de caducidad automáticamente según el tipo de licencia
+    useEffect(() => {
+        if (!fechaAdquisicion) {
+            setFechaCaducidad('');
+            return;
+        }
+
+        const fecha = new Date(fechaAdquisicion);
+        let nuevaFechaCaducidad = null;
+
+        if (tipoLicencia === 'mensual') {
+            fecha.setMonth(fecha.getMonth() + 1);
+            nuevaFechaCaducidad = fecha.toISOString().split('T')[0];
+        } else if (tipoLicencia === 'anual') {
+            fecha.setFullYear(fecha.getFullYear() + 1);
+            nuevaFechaCaducidad = fecha.toISOString().split('T')[0];
+        } else if (tipoLicencia === 'vitalicia') {
+            nuevaFechaCaducidad = '';
+        }
+
+        setFechaCaducidad(nuevaFechaCaducidad);
+    }, [fechaAdquisicion, tipoLicencia]);
+
     const handleAddLicencia = () => {
-        if (softwareLicencias.length < maxLicencias) {
+        if (maxLicencias === 0 || softwareLicencias.length < maxLicencias) {
             setSoftwareLicencias([
                 ...softwareLicencias,
                 { claveLicencia: '', correoAsociado: '', contrasenaCorreo: '', id_equipos: [], compartida: false }
@@ -70,243 +120,340 @@ const SoftwareForm = ({ onSave, onClose }) => {
         }
     };
 
-    // Manejar cambios en las licencias
+    const handleRemoveLicencia = (index) => {
+        const updatedLicencias = [...softwareLicencias];
+        updatedLicencias.splice(index, 1);
+        setSoftwareLicencias(updatedLicencias);
+    };
+
     const handleLicenciaChange = (index, field, value) => {
         const updatedLicencias = [...softwareLicencias];
         updatedLicencias[index][field] = value;
         setSoftwareLicencias(updatedLicencias);
     };
 
-    // Manejar selección de equipos cuando la licencia es compartida
     const handleEquiposCheckboxChange = (index, equipoId) => {
         const updatedLicencias = [...softwareLicencias];
-        const selectedEquipos = updatedLicencias[index].id_equipos;
+        const selectedEquipos = updatedLicencias[index].id_equipos || [];
 
-        // Verificar si se alcanzó el número máximo de equipos
         if (selectedEquipos.includes(equipoId)) {
-            // Eliminar el equipo si ya estaba seleccionado
             updatedLicencias[index].id_equipos = selectedEquipos.filter(id => id !== equipoId);
-        } else if (selectedEquipos.length < maxLicencias) {
-            // Agregar el equipo si no se ha alcanzado el límite
-            updatedLicencias[index].id_equipos = [...selectedEquipos, equipoId];
         } else {
-            setError('Has alcanzado el número máximo de equipos permitidos para esta licencia.');
+            updatedLicencias[index].id_equipos = [...selectedEquipos, equipoId];
         }
+
         setSoftwareLicencias(updatedLicencias);
     };
 
-    // Manejar el cambio de estado de compartida
     const handleCompartidaChange = (index) => {
         const updatedLicencias = [...softwareLicencias];
         updatedLicencias[index].compartida = !updatedLicencias[index].compartida;
-        if (!updatedLicencias[index].compartida) {
-            // Si se desmarca, aseguramos que solo un equipo esté seleccionado
-            updatedLicencias[index].id_equipos = updatedLicencias[index].id_equipos.slice(0, 1);
-        }
         setSoftwareLicencias(updatedLicencias);
     };
 
-    // Manejar el cambio del número máximo de licencias
     const handleMaxLicenciasChange = (e) => {
-        const value = parseInt(e.target.value, 10) || 0;
-        setMaxLicencias(value);
+        const value = parseInt(e.target.value, 10);
+        setMaxLicencias(value >= 0 ? value : 0);
+
+        if (value > 0 && softwareLicencias.length > value) {
+            setSoftwareLicencias(softwareLicencias.slice(0, value));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        setError(null);
+    
+        // Validación ajustada: permitir cualquier licencia sin restricciones de equipos
+        const licenciasValidas = true; // O ajusta según necesidades
 
-        const softwareData = {
-            nombre,
-            version,
-            fechaAdquisicion: fechaAdquisicion || null,
-            fechaCaducidad: tipoLicencia === 'vitalicia' ? null : fechaCaducidad,
-            tipoLicencia,
-            estado,
-            licenciaCaducada,
-            maxLicencias,
-            softwareLicencias, // Enviamos las licencias como un array
-        };
-
-        try {
-            const response = await axios.post('http://localhost:3550/api/software', softwareData);
-            if (response.status === 201) {
-                onSave(response.data);
-                onClose();
-            } else {
-                setError('Error al guardar el software.');
-            }
-        } catch (error) {
-            setError(error.response?.data.message || 'Error al enviar los datos.');
+        if (!licenciasValidas) {
+            setError(
+                'Existe un error en las licencias.'
+            );
+            return;
         }
+    
+        const softwareLicenciasPayload = softwareLicencias.map(licencia => ({
+            claveLicencia: licencia.claveLicencia?.trim() || null,
+            correoAsociado: licencia.correoAsociado?.trim() || null,
+            contrasenaCorreo: licencia.contrasenaCorreo?.trim() || null,
+            compartida: licencia.compartida || false,
+            equipos_asociados: licencia.id_equipos.length > 0 ? licencia.id_equipos : null,
+        }));        
+    
+        const softwareData = {
+            nombre: nombre.trim(),
+            version: version.trim(),
+            fechaAdquisicion: fechaAdquisicion || null,
+            fechaCaducidad: tipoLicencia === 'vitalicia' ? null : fechaCaducidad || null,
+            tipoLicencia: tipoLicencia || 'mensual',
+            estado: estado || 'sin uso',
+            licenciaCaducada: licenciaCaducada ? 1 : 0,
+            maxDispositivos: maxLicencias || 0,
+            softwareLicencias: softwareLicenciasPayload || [],
+        };
+    
+        console.log('Datos a enviar:', JSON.stringify(softwareData, null, 2));
+    
+        try {
+            const response = await axios.post(`${API_BASE_URL}/software`, softwareData);
+            onSave(response.data);
+            onClose();
+        } catch (error) {
+            console.error("Error al guardar el software:", error.response?.data || error.message);
+            setError(error.response?.data?.message || 'Error al enviar los datos.');
+        }
+    };    
+
+    const handleClose = () => {
+        if (
+            nombre ||
+            version ||
+            fechaAdquisicion ||
+            softwareLicencias.some(licencia => licencia.claveLicencia || licencia.correoAsociado || licencia.contrasenaCorreo)
+        ) {
+            setShowConfirmation(true);
+        } else {
+            onClose();
+        }
+    };
+
+    const confirmClose = () => {
+        setShowConfirmation(false);
+        onClose();
+    };
+
+    const cancelClose = () => {
+        setShowConfirmation(false);
     };
 
     const toggleTooltip = (field) => {
         setTooltip(tooltip === field ? null : field);
     };
 
+    if (loading) {
+        return <div className="software-form-loading">Cargando datos...</div>;
+    }
+
     return (
         <div className="software-form-modal">
             <div className="software-form-content">
-                <span className="close-button" onClick={onClose}>&times;</span>
-                <form onSubmit={handleSubmit}>
+                <button className="software-form-close-button" onClick={handleClose}>&times;</button>
+                <form onSubmit={handleSubmit} className="software-form">
                     <h2>Agregar Software</h2>
 
-                    {error && <p className="error-message">{error}</p>}
+                    {error && <p className="software-form-error-message">{error}</p>}
 
-                    <label>
+                    {/* Nombre del Software con Sugerencias y Tooltip */}
+                    <label className="software-form-label">
                         Nombre del Software:
-                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('nombre')} className="info-icon" />
-                        {tooltip === 'nombre' && <div className="tooltip">Este campo es obligatorio.</div>}
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('nombre')} className="software-form-info-icon" />
+                        {tooltip === 'nombre' && <div className="software-form-tooltip">Este campo es obligatorio.</div>}
                     </label>
                     <input
                         type="text"
                         value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
+                        onChange={handleNombreChange}
+                        onFocus={() => setShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                         required
+                        className="software-form-input"
                     />
+                    {suggestedCorrection && (
+                        <p className="software-form-suggestion-message">
+                            ¿Quisiste decir <span onClick={handleApplySuggestion} className="software-form-suggestion">{suggestedCorrection}</span>?
+                        </p>
+                    )}
+                    {showSuggestions && filteredSuggestions.length > 0 && (
+                        <ul className="software-form-suggestions-list">
+                            {filteredSuggestions.map((suggestion, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    className="software-form-suggestion-item"
+                                >
+                                    {suggestion}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
 
-                    <label>
+                    {/* Versión con Tooltip */}
+                    <label className="software-form-label">
                         Versión:
-                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('version')} className="info-icon" />
-                        {tooltip === 'version' && <div className="tooltip">Opcional. Ingresa la versión del software.</div>}
+                        <FontAwesomeIcon icon={faInfoCircle} onClick={() => toggleTooltip('version')} className="software-form-info-icon" />
+                        {tooltip === 'version' && <div className="software-form-tooltip">Opcional. Ingresa la versión del software.</div>}
                     </label>
                     <input
                         type="text"
                         value={version}
                         onChange={(e) => setVersion(e.target.value)}
+                        className="software-form-input"
                     />
 
-                    <label>
+                    {/* Fecha de Adquisición */}
+                    <label className="software-form-label">
                         Fecha de Adquisición:
-                        <input
-                            type="date"
-                            value={fechaAdquisicion || ''}
-                            onChange={(e) => setFechaAdquisicion(e.target.value)}
-                        />
                     </label>
+                    <input
+                        type="date"
+                        value={fechaAdquisicion || ''}
+                        onChange={(e) => setFechaAdquisicion(e.target.value)}
+                        className="software-form-input"
+                    />
 
-                    <label>
+                    {/* Fecha de Caducidad */}
+                    <label className="software-form-label">
                         Fecha de Caducidad:
-                        <input
-                            type="date"
-                            value={fechaCaducidad || ''}
-                            readOnly
-                        />
                     </label>
+                    <input
+                        type="date"
+                        value={fechaCaducidad || ''}
+                        readOnly
+                        className="software-form-input"
+                    />
 
-                    <label>
+                    {/* Tipo de Licencia */}
+                    <label className="software-form-label">
                         Tipo de Licencia:
                     </label>
                     <select
                         value={tipoLicencia}
                         onChange={(e) => setTipoLicencia(e.target.value)}
+                        className="software-form-select"
                     >
                         <option value="mensual">Mensual</option>
                         <option value="anual">Anual</option>
                         <option value="vitalicia">Vitalicia</option>
                     </select>
 
-                    <div>
-                        <label>
+                    {/* Licencia Caducada */}
+                    <div className="software-form-checkbox-group">
+                        <label className="software-form-checkbox-label">
                             <input
                                 type="checkbox"
                                 checked={licenciaCaducada}
                                 onChange={(e) => setLicenciaCaducada(e.target.checked)}
+                                className="software-form-checkbox"
                             />
                             Licencia ya caducada
                         </label>
                     </div>
 
-                    <label>
+                    {/* Máximo de Licencias */}
+                    <label className="software-form-label">
                         Máximo de Licencias:
-                        <input
-                            type="number"
-                            min="0"
-                            value={maxLicencias}
-                            onChange={handleMaxLicenciasChange}
-                            required
-                        />
                     </label>
-                    <p>Licencias en uso: {licenciasEnUso}</p>
-                    <p>Licencias sin uso: {licenciasSinUso}</p>
+                    <input
+                        type="number"
+                        min="0"
+                        value={maxLicencias}
+                        onChange={handleMaxLicenciasChange}
+                        required
+                        className="software-form-input"
+                    />
+                    <p className="software-form-licencias-info">Licencias en uso: {licenciasEnUso}</p>
+                    <p className="software-form-licencias-info">Licencias sin uso: {licenciasSinUso}</p>
 
-                    <h3>Licencias Específicas</h3>
+                    {/* Sección de Licencias Específicas */}
+                    <h3 className="software-form-section-title">Licencias Específicas</h3>
                     {softwareLicencias.map((licencia, index) => (
-                        <div key={index} className="licencia-section">
-                            <label>Clave de Licencia:</label>
+                        <div key={index} className="software-form-licencia-section">
+                            {/* Clave de Licencia */}
+                            <label className="software-form-label">
+                                Clave de Licencia:
+                            </label>
                             <input
                                 type="text"
                                 value={licencia.claveLicencia}
                                 onChange={(e) => handleLicenciaChange(index, 'claveLicencia', e.target.value)}
+                                className="software-form-input"
                             />
 
-                            <label>Correo Asociado:</label>
+                            {/* Correo Asociado */}
+                            <label className="software-form-label">
+                                Correo Asociado:
+                            </label>
                             <input
                                 type="email"
                                 value={licencia.correoAsociado}
                                 onChange={(e) => handleLicenciaChange(index, 'correoAsociado', e.target.value)}
+                                className="software-form-input"
                             />
 
-                            <label>Contraseña del Correo:</label>
+                            {/* Contraseña del Correo */}
+                            <label className="software-form-label">
+                                Contraseña del Correo:
+                            </label>
                             <input
                                 type="password"
                                 value={licencia.contrasenaCorreo}
                                 onChange={(e) => handleLicenciaChange(index, 'contrasenaCorreo', e.target.value)}
+                                className="software-form-input"
                             />
 
-                            <label>IDs de Equipos:</label>
-                            {licencia.compartida ? (
-                                <div className="equipos-checkbox-list">
-                                    {equipos.map((equipo) => (
-                                        <label key={equipo.id_equipos}>
-                                            <input
-                                                type="checkbox"
-                                                value={equipo.id_equipos}
-                                                checked={licencia.id_equipos.includes(equipo.id_equipos)}
-                                                onChange={() => handleEquiposCheckboxChange(index, equipo.id_equipos)}
-                                                disabled={licencia.id_equipos.length >= maxLicencias && !licencia.id_equipos.includes(equipo.id_equipos)}
-                                            />
-                                            {equipo.id_equipos} - {equipo.nombre}
-                                        </label>
-                                    ))}
-                                </div>
-                            ) : (
-                                <select
-                                    value={licencia.id_equipos[0] || ''}
-                                    onChange={(e) => handleLicenciaChange(index, 'id_equipos', [e.target.value])}
-                                >
-                                    <option value="">Seleccionar un equipo</option>
-                                    {equipos.map((equipo) => (
-                                        <option key={equipo.id_equipos} value={equipo.id_equipos}>
-                                            {equipo.id_equipos} - {equipo.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            )}
+                            {/* Licencia Compartida */}
+                            <div className="software-form-checkbox-group">
+                                <label className="software-form-checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        checked={licencia.compartida}
+                                        onChange={() => handleCompartidaChange(index)}
+                                        className="software-form-checkbox"
+                                    />
+                                    Usar esta licencia en múltiples equipos
+                                </label>
+                            </div>
 
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={licencia.compartida}
-                                    onChange={() => handleCompartidaChange(index)}
-                                />
-                                Usar esta licencia en múltiples equipos
-                            </label>
+                            {/* IDs de Equipos Asociados */}
+                            <div className="software-form-equipos-checkbox-list">
+                                {equipos.map((equipo) => (
+                                    <label key={equipo.id_equipos} className="software-form-equipos-checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            value={equipo.id_equipos}
+                                            checked={Array.isArray(licencia.id_equipos) ? licencia.id_equipos.includes(equipo.id_equipos) : false}
+                                            onChange={() => handleEquiposCheckboxChange(index, equipo.id_equipos)}
+                                            className="software-form-checkbox"
+                                        />
+                                        {equipo.id_equipos} - {equipo.nombre}
+                                    </label>
+                                ))}
+                            </div>
+
+                            {/* Eliminar Licencia */}
+                            <button type="button" onClick={() => handleRemoveLicencia(index)} className="software-form-remove-licencia-button">
+                                <FontAwesomeIcon icon={faTrash} /> Eliminar Licencia
+                            </button>
                         </div>
                     ))}
 
-                    {softwareLicencias.length < maxLicencias && (
-                        <button type="button" onClick={handleAddLicencia}>
-                            Agregar Licencia
+                    {/* Agregar Nueva Licencia */}
+                    {softwareLicencias.length < maxLicencias || maxLicencias === 0 ? (
+                        <button type="button" onClick={handleAddLicencia} className="software-form-add-licencia-button">
+                            <FontAwesomeIcon icon={faPlus} /> Agregar Licencia
                         </button>
-                    )}
+                    ) : null}
 
-                    <label>
+                    {/* Estado del Software */}
+                    <label className="software-form-label">
                         Estado del Software:
-                        <input type="text" value={estado} readOnly />
                     </label>
+                    <input type="text" value={estado} readOnly className="software-form-input readonly-input" />
 
-                    <button className="button" type="submit">Guardar</button>
+                    {/* Botón de Guardar */}
+                    <button className="software-form-submit-button" type="submit">Guardar</button>
+
+                    {/* Modal de Confirmación al Cerrar */}
+                    {showConfirmation && (
+                        <div className="software-form-confirmation-modal">
+                            <p>¿Estás seguro de que deseas cerrar el formulario? Se perderán los datos no guardados.</p>
+                            <button onClick={confirmClose} className="software-form-confirm-button">Sí, cerrar</button>
+                            <button onClick={cancelClose} className="software-form-cancel-button">No, continuar</button>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

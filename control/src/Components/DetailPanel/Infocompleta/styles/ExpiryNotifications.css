@@ -1,0 +1,43 @@
+/* Contenedor principal de notificaciones */
+.expiry-notifications {
+  background-color: #fdfdfd; /* Fondo claro */
+  border: 1px solid #ddd; /* Borde suave */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  max-width: 400px; /* Ancho máximo */
+  margin: 20px auto; /* Centrado automático */
+  font-family: Arial, sans-serif; /* Fuente base */
+  font-size: 14px; /* Tamaño de texto */
+}
+
+/* Estilo de las notificaciones individuales */
+.expiry-notifications p {
+  background-color: #ffecec; /* Fondo de alerta */
+  color: #e74c3c; /* Color de texto rojo */
+  border: 1px solid #e74c3c; /* Borde rojo */
+  border-radius: 6px; /* Bordes redondeados */
+  padding: 10px; /* Espaciado interno */
+  margin: 10px 0; /* Espaciado entre notificaciones */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  display: flex; /* Alineación interna */
+  align-items: center;
+  gap: 10px; /* Espacio entre íconos y texto */
+}
+
+/* Animación para entrada de notificaciones */
+.expiry-notifications p {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animación de desvanecimiento */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}

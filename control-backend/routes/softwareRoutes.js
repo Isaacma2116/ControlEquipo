@@ -1,29 +1,20 @@
+// routes/softwareRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const softwareController = require('../controllers/softwareController');
 
-// Ruta para obtener los nombres de los softwares
-router.get('/names', softwareController.getSoftwareNames);
-
-// Ruta para obtener todos los softwares
-router.get('/', softwareController.getSoftwares);
-
-// Ruta para obtener un software por su ID
-router.get('/:id', softwareController.getSoftware);
-
-// Ruta para obtener softwares asociados a un equipo
+// **Rutas Más Específicas Primero**
+router.get('/:id/historial', softwareController.getSoftwareHistorial);
+router.get('/:id/equipos-usados', softwareController.getEquiposUsados);
 router.get('/equipo/:idEquipo', softwareController.getSoftwaresByEquipo);
+router.get('/expiring', softwareController.getExpiringSoftware);
 
-// Ruta para crear un software
+// **Rutas Generales Después**
+router.get('/', softwareController.getSoftwares);
+router.get('/:id', softwareController.getSoftware);
 router.post('/', softwareController.createSoftware);
-
-// Ruta para actualizar un software por su ID
 router.put('/:id', softwareController.updateSoftware);
-
-// Ruta para eliminar un software por su ID
 router.delete('/:id', softwareController.deleteSoftware);
-
-// NUEVA RUTA: Obtener el número de equipos asociados a un software por nombre
-router.get('/:nombre/equipos-usados', softwareController.getEquiposUsados);
 
 module.exports = router;

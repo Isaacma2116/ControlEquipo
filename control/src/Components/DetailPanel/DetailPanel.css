@@ -1,0 +1,71 @@
+/* DetailPanel.css - Versión Compacta */
+
+.detail-panel {
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem; /* Reducir el padding */
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Buttons - Más compactos */
+.navigation-buttons {
+  display: flex;
+  gap: 0.5rem; /* Reducir espacio entre botones */
+  margin-bottom: 0.5rem; /* Reducir margen inferior */
+  padding: 0.25rem 0; /* Reducir padding vertical */
+}
+
+.nav-button {
+  padding: 0.3rem 0.8rem; /* Botones más pequeños */
+  font-size: 0.85rem;
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+  background-color: #dee2e6;
+}
+
+/* Estilos para los componentes internos */
+.detail-panel > div:not(.navigation-buttons) {
+  margin-top: 0.5rem; /* Reducir espacio superior */
+}
+
+/* Ajustes específicos para componentes */
+.colaborador-list,
+.colaborador-detail,
+.equipo-completo,
+.software-list,
+.equipo-analysis,
+.historial-container,
+.grouped-names,
+.celular-detail,
+.auxiliares-list {
+  padding: 0.75rem; /* Reducir padding interno */
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.75rem; /* Reducir espacio entre componentes */
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .detail-panel {
+    padding: 0.25rem;
+  }
+  
+  .navigation-buttons {
+    gap: 0.25rem;
+  }
+  
+  .nav-button {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}

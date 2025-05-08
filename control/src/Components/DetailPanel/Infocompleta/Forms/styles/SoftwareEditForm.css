@@ -1,0 +1,242 @@
+/* styles/SoftwareEditForm.css */
+
+.software-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInModal 0.4s ease-in-out;
+}
+
+.software-form-content {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  padding: 25px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90%;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.4s ease-in-out;
+}
+
+@keyframes fadeInModal {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+  to {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #6c757d;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.close-button:hover {
+  color: #dc3545;
+  transform: rotate(90deg);
+}
+
+h2, h3, h4 {
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #343a40;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.software-details,
+.license-section {
+  margin-bottom: 25px;
+  border: 1px solid #e9ecef;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.software-details:hover,
+.license-section:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #495057;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.add-license-button,
+.remove-license-button,
+.save-button {
+  padding: 12px 20px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+}
+
+.add-license-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.add-license-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(0, 91, 187, 0.3);
+}
+
+.remove-license-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.remove-license-button:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(200, 35, 51, 0.3);
+}
+
+.save-button {
+  background-color: #28a745;
+  color: white;
+  width: 100%;
+}
+
+.save-button:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(33, 136, 56, 0.3);
+}
+
+.error-message {
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+  animation: shake 0.3s ease-in-out;
+}
+
+.limit-message {
+  color: #ffc107;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+.equipments-selection {
+  margin-top: 15px;
+}
+
+.equipments-selection p {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #343a40;
+}
+
+.equipment-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.equipment-checkbox:hover {
+  background-color: #e9f7ff;
+  transform: scale(1.03);
+}
+
+.equipment-checkbox input {
+  margin-right: 10px;
+}
+
+.equipment-search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+}
+
+.equipment-search-input:focus {
+  border-color: #007bff;
+  outline: none;
+}

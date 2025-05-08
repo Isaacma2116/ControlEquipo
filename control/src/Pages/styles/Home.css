@@ -1,0 +1,111 @@
+/* Home.css - Sidebar 450px y espacio reducido */
+
+.home-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    gap: 0; /* Eliminar espacio entre sidebar y detail panel */
+  }
+  
+  /* Sidebar de 450px exactos */
+  .sidebar-container {
+    width: 350px;
+    min-width: 350px; /* Fijar el ancho */
+    height: 100vh;
+    background-color: #2c3e50;
+    color: white;
+    overflow-y: auto;
+    padding: 0;
+    border-right: none; /* Eliminar borde si lo prefieres */
+  }
+  
+  /* DetailPanel pegado al sidebar */
+  .detail-panel {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    margin-left: 0; /* Eliminar margen izquierdo */
+  }
+  
+  /* Logo y elementos del sidebar ajustados */
+  .logo-container {
+    padding: 1rem; /* Ajuste para mantener proporción */
+    text-align: center;
+    border-bottom: 1px solid #3d5166;
+  }
+  
+  .logo {
+    max-width: 70%;
+    height: auto;
+  }
+  
+  /* Menú ajustado para 450px */
+  .menu {
+    padding: 0.5rem 0;
+  }
+  
+  .sidebar-item {
+    padding: 0.8rem 1.5rem;
+    margin: 0.1rem 0;
+    font-size: 1rem;
+  }
+  
+  .item-content {
+    gap: 1rem;
+  }
+  
+  .item-icon {
+    font-size: 1.1rem;
+  }
+  
+  .item-label {
+    font-size: 1rem;
+  }
+  
+  /* Responsive para pantallas medianas */
+  @media (max-width: 1200px) {
+    .sidebar-container {
+      width: 350px;
+      min-width: 350px;
+    }
+  }
+  
+  /* Responsive para móviles */
+  @media (max-width: 768px) {
+    .home-container {
+      flex-direction: column;
+    }
+    
+    .sidebar-container {
+      width: 100%;
+      min-width: 100%;
+      height: auto;
+      max-height: 60px;
+      display: flex;
+    }
+    
+    .menu {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+    
+    .sidebar-item {
+      padding: 0.8rem 1rem;
+      min-width: max-content;
+    }
+    
+    .detail-panel {
+      height: calc(100vh - 60px);
+      margin-left: 0;
+    }
+    
+    .logo-container {
+      display: none; /* Ocultar logo en móvil para ahorrar espacio */
+    }
+  }

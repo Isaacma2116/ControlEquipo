@@ -1,0 +1,275 @@
+/* Contenedor principal */
+.colaboradorDetail {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f7fa, #e6e6e6);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  /* Información del colaborador */
+  .infoSection {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  /* Imagen del colaborador */
+  .colaboradorPhoto {
+    flex: 1;
+    max-width: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .colaboradorPhoto img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  
+  .colaboradorPhoto:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .colaboradorPhoto:hover img {
+    filter: brightness(1.2);
+  }
+  
+  /* Detalles del colaborador */
+  .colaboradorDetails {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: #2c3e50;
+  }
+  
+  .colaboradorDetails p {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+  
+  .colaboradorDetails p strong {
+    color: #34495e;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .colaboradorDetails p:hover strong {
+    color: #2980b9;
+    cursor: pointer;
+  }
+  
+  /* Equipos asociados */
+  .equiposSection {
+    margin-top: 2rem;
+  }
+  
+  .equiposSection h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  
+  .equipoCard {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .equipoCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .equipoCard p {
+    margin: 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1rem;
+  }
+  
+  .equipoCard strong {
+    font-weight: bold;
+  }
+  
+  /* Botones de acción */
+  .actionsSection {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .actionsSection button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .editBtn {
+    background-color: #3498db;
+  }
+  
+  .editBtn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  .deleteBtn {
+    background-color: #e74c3c;
+  }
+  
+  .deleteBtn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+  }
+  
+  /* Formulario de edición */
+  .editSection {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .editSection h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+  
+  .formGroup {
+    margin-bottom: 1.5rem;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #34495e;
+    font-weight: bold;
+  }
+  
+  .formGroup input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .formGroup input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    outline: none;
+  }
+  
+  /* Botones del formulario */
+  .formButtons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .saveBtn {
+    background-color: #27ae60;
+  }
+  
+  .saveBtn:hover {
+    background-color: #229954;
+    transform: translateY(-2px);
+  }
+  
+  .cancelBtn {
+    background-color: #e74c3c;
+  }
+  
+  .cancelBtn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+  }
+  
+  /* Estado de carga */
+  .loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto;
+  }
+  
+  /* Estado de error */
+  .error {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #e74c3c;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  /* Animaciones */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .infoSection {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .colaboradorDetails {
+      text-align: center;
+    }
+  
+    .actionsSection {
+      justify-content: center;
+    }
+  }

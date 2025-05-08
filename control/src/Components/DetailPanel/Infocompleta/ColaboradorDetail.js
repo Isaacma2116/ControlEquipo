@@ -1,97 +1,208 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faUser, faIdBadge, faBuilding, faEnvelope, faPhone, faLaptop
+  faUser,
+  faIdBadge,
+  faBuilding,
+  faEnvelope,
+  faPhone,
+  faEdit,
+  faSave,
+  faTimes,
+  faImage,
 } from '@fortawesome/free-solid-svg-icons';
-import './styles/ColaboradorDetail.css';  // Asegúrate de que la ruta al archivo CSS es correcta
+import axios from 'axios';
+import styles from './styles/ColaboradorDetail.module.css';
 
-const ColaboradorDetail = ({ colaboradorId }) => {
+const ColaboradorDetail = ({ colaboradorId, onEquipoClick }) => {
   const [colaborador, setColaborador] = useState(null);
-  const [equipos, setEquipos] = useState([]);  // Estado para los equipos asociados
-  const [showEquipos, setShowEquipos] = useState(false);  // Controla la visibilidad de los equipos
-  const [loading, setLoading] = useState(true);  // Estado de carga
-  const [error, setError] = useState(null);  // Estado para manejar errores
+  const [equipos, setEquipos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [imageFile, setImageFile] = useState(null);
+
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3550';
 
   useEffect(() => {
-    // Reiniciar los estados en cada carga del colaborador
-    setColaborador(null);
-    setEquipos([]);
-    setShowEquipos(false);
     setLoading(true);
     setError(null);
 
-    // Solicitud para obtener los datos del colaborador
-    axios.get(`http://localhost:3550/api/colaboradores/${colaboradorId}`)
-      .then(response => {
+    axios
+      .get(`${API_BASE_URL}/api/colaboradores/${colaboradorId}/equipos`)
+      .then((response) => {
         const data = response.data;
-
-        // Verifica si el colaborador tiene equipos y asigna los estados correctamente
         setColaborador(data);
-        setEquipos(data.equipos || []);  // Asegurarse de que siempre sea un array
+        setEquipos(data.equipos || []);
+        setFormData({
+          id_empleado: data.id_empleado || '',
+          nombre: data.nombre || '',
+          area: data.area || '',
+          cargo: data.cargo || '',
+          correo: data.correo || '',
+          correo_corporativo: data.correo_smex || '', // Renombrado
+          telefono_personal: data.telefono_personal || '',
+          telefono_corporativo: data.telefono_smex || '', // Renombrado
+        });
       })
-      .catch(error => {
+      .catch(() => {
         setError('Error al cargar los datos del colaborador.');
       })
       .finally(() => {
-        setLoading(false);  // Finalizar la carga independientemente del resultado
+        setLoading(false);
       });
-  }, [colaboradorId]);
+  }, [colaboradorId, API_BASE_URL]);
 
-  // Mostrar un mensaje de carga si los datos aún no están disponibles
-  if (loading) {
-    return <div>Cargando información del colaborador...</div>;
-  }
+  const handleDelete = () => {
+    if (equipos.length > 0) {
+      alert('No puedes eliminar este colaborador porque tiene equipos asociados.');
+      return;
+    }
 
-  // Mostrar un mensaje de error si algo salió mal
-  if (error) {
-    return <div>{error}</div>;
-  }
+    if (window.confirm('¿Estás seguro de que deseas eliminar este colaborador?')) {
+      axios
+        .delete(`${API_BASE_URL}/api/colaboradores/${colaboradorId}`)
+        .then(() => {
+          alert('Colaborador eliminado con éxito.');
+          window.location.reload();
+        })
+        .catch(() => {
+          setError('Error al eliminar el colaborador.');
+        });
+    }
+  };
 
-  // Verificar si no se encontró el colaborador
-  if (!colaborador) {
-    return <div>No se encontraron los datos del colaborador.</div>;
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const formDataToSend = new FormData();
+      Object.keys(formData).forEach((key) => {
+        formDataToSend.append(key, formData[key]);
+      });
+      if (imageFile) {
+        formDataToSend.append('fotografia', imageFile);
+      }
+
+      const response = await axios.put(
+        `${API_BASE_URL}/api/colaboradores/${colaboradorId}`,
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      setColaborador(response.data.data);
+      setEquipos(response.data.data.equipos || []);
+      setIsEditing(false);
+      setImageFile(null);
+      alert('Cambios guardados exitosamente.');
+    } catch {
+      setError('Error al actualizar los datos del colaborador.');
+    }
+  };
+
+  if (loading) return <div className={styles.loading}>Cargando información del colaborador...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
+  if (!colaborador) return <div className={styles.noData}>No se encontraron los datos del colaborador.</div>;
 
   return (
-    <div className="colaborador-detail">
-      <div className="img-container">
-        {colaborador.fotografia && (
-          <img src={`http://localhost:3550/uploads/colaboradores/${colaborador.fotografia}`} alt="Fotografía del colaborador" />
-        )}
-      </div>
-      <p><FontAwesomeIcon icon={faIdBadge} /> ID Empleado: {colaborador.id_empleado}</p>
-      <p><FontAwesomeIcon icon={faUser} /> Nombre: {colaborador.nombre}</p>
-      <p><FontAwesomeIcon icon={faBuilding} /> Área: {colaborador.area}</p>
-      <p><FontAwesomeIcon icon={faUser} /> Cargo: {colaborador.cargo}</p>
-      <p><FontAwesomeIcon icon={faEnvelope} /> Correo Personal: {colaborador.correo}</p>
-      <p><FontAwesomeIcon icon={faPhone} /> Teléfono Personal: {colaborador.telefono_personal}</p>
-
-      {/* Botón para mostrar/ocultar equipos solo si existen */}
-      {equipos.length > 0 && (
-        <button onClick={() => setShowEquipos(!showEquipos)}>
-          <FontAwesomeIcon icon={faLaptop} /> {showEquipos ? 'Ocultar Equipos' : 'Ver Equipos'}
-        </button>
-      )}
-
-      {/* Lista de equipos asociados si se han cargado */}
-      {showEquipos && equipos.length > 0 && (
-        <div className="equipos-list">
-          <h2>Equipos Asociados</h2>
-          {equipos.map(equipo => (
-            <div key={equipo.id_equipos} className="equipo-info">
-              {equipo.imagen && (
-                <img src={`http://localhost:3550/uploads/equipos/${equipo.imagen}`} alt={`Equipo ${equipo.nombre}`} />
-              )}
-              <p><strong>ID:</strong> {equipo.id_equipos}</p>
-              <p><strong>Nombre:</strong> {equipo.nombre}</p>
+    <div className={styles.colaboradorDetail}>
+      {isEditing ? (
+        <div className={styles.editSection}>
+          <h2 className={styles.sectionTitle}>Editar Colaborador</h2>
+          <div className={styles.formGroup}>
+            <label>
+              <FontAwesomeIcon icon={faImage} /> Fotografía:
+            </label>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+            {imageFile && (
+              <div className={styles.imgPreview}>
+                <img src={URL.createObjectURL(imageFile)} alt="Vista previa" />
+              </div>
+            )}
+          </div>
+          {Object.keys(formData).map((key) => (
+            <div className={styles.formGroup} key={key}>
+              <label>
+                <strong>{key.replace('_', ' ').toUpperCase()}:</strong>
+              </label>
+              <input
+                type="text"
+                name={key}
+                value={formData[key]}
+                onChange={handleInputChange}
+              />
             </div>
           ))}
+          <div className={styles.formButtons}>
+            <button onClick={handleSaveChanges} className={styles.saveBtn}>
+              <FontAwesomeIcon icon={faSave} /> Guardar
+            </button>
+            <button onClick={() => setIsEditing(false)} className={styles.cancelBtn}>
+              <FontAwesomeIcon icon={faTimes} /> Cancelar
+            </button>
+          </div>
         </div>
+      ) : (
+        <>
+          <div className={styles.infoSection}>
+            <div className={styles.colaboradorPhoto}>
+              <img
+                src={`${API_BASE_URL}/uploads/colaboradores/${colaborador.fotografia || 'default.png'}`}
+                alt="Foto"
+              />
+            </div>
+            <div className={styles.colaboradorDetails}>
+              {Object.keys(formData).map((key) => (
+                <p key={key}>
+                  <strong>{key.replace('_', ' ').toUpperCase()}:</strong> {colaborador[key]}
+                </p>
+              ))}
+            </div>
+          </div>
+          <div className={styles.equiposSection}>
+            <h2>Equipos Asociados</h2>
+            {equipos.length > 0 ? (
+              equipos.map((equipo) => (
+                <div key={equipo.id_equipos} className={styles.equipoCard}>
+                  <p>
+                    <strong>Tipo:</strong> {equipo.tipoDispositivo}
+                  </p>
+                  <p>
+                    <strong>Marca:</strong> {equipo.marca}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No hay equipos asociados.</p>
+            )}
+          </div>
+          <div className={styles.actionsSection}>
+            <button onClick={() => setIsEditing(true)} className={styles.editBtn}>
+              <FontAwesomeIcon icon={faEdit} /> Editar
+            </button>
+            <button onClick={handleDelete} className={styles.deleteBtn}>
+              <FontAwesomeIcon icon={faTimes} /> Eliminar
+            </button>
+          </div>
+        </>
       )}
-
-      {/* Si no hay equipos */}
-      {equipos.length === 0 && <p>No hay equipos asociados.</p>}
     </div>
   );
 };

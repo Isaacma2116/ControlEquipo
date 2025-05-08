@@ -1,185 +1,460 @@
-/* Modal overlay que cubre toda la pantalla */
+/* src/Components/DetailPanel/Infocompleta/styles/SoftwareForm.css */
+
+/* ---------------------------------------------------
+   Contenedor Principal del Formulario
+---------------------------------------------------- */
 .software-form-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  /* Contenedor del formulario */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.software-form-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  position: relative;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.software-form-content h2 {
+  margin-bottom: 25px;
+  color: #333333;
+  font-size: 1.8rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Botón de Cierre */
+.software-form-content .software-form-close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #888888;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.software-form-content .software-form-close-button:hover {
+  color: #333333;
+}
+
+/* ---------------------------------------------------
+   Estilos del Formulario
+---------------------------------------------------- */
+.software-form-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.software-form-content .software-form-label {
+  font-size: 1rem;
+  color: #333333;
+  margin-bottom: 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.software-form-content .software-form-info-icon {
+  margin-left: 8px;
+  color: #17a2b8;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.software-form-content .software-form-info-icon:hover {
+  color: #138496;
+}
+
+.software-form-content .software-form-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #17a2b8;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.software-form-content .software-form-input,
+.software-form-content .software-form-select {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.software-form-content .software-form-input:focus,
+.software-form-content .software-form-select:focus {
+  border-color: #17a2b8;
+  box-shadow: 0 2px 5px rgba(23, 162, 184, 0.2);
+  outline: none;
+}
+
+.software-form-content .software-form-checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.software-form-content .software-form-checkbox-label {
+  font-size: 0.95rem;
+  color: #555555;
+  display: flex;
+  align-items: center;
+}
+
+.software-form-content .software-form-checkbox {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.software-form-content .readonly-input {
+  background-color: #f1f1f1;
+  cursor: not-allowed;
+}
+
+.software-form-content .software-form-licencias-info {
+  font-size: 0.95rem;
+  color: #555555;
+  margin-bottom: 10px;
+}
+
+/* ---------------------------------------------------
+   Botones del Formulario
+---------------------------------------------------- */
+.software-form-content .software-form-add-licencia-button,
+.software-form-content .software-form-remove-licencia-button {
+  background-color: #28a745; /* Verde */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.software-form-content .software-form-add-licencia-button:hover,
+.software-form-content .software-form-remove-licencia-button:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+.software-form-content .software-form-add-licencia-button svg,
+.software-form-content .software-form-remove-licencia-button svg {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+/* Botón Guardar */
+.software-form-content .software-form-submit-button {
+  background-color: #17a2b8; /* Azul Claro */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.software-form-content .software-form-submit-button:hover {
+  background-color: #138496;
+  transform: scale(1.02);
+}
+
+/* ---------------------------------------------------
+   Secciones de Licencias y Equipos
+---------------------------------------------------- */
+.software-form-content .software-form-licencia-section {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.software-form-content .software-form-licencia-section h3 {
+  font-size: 1.2rem;
+  color: #333333;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.software-form-content .software-form-licencia-section h3 svg {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.software-form-content .software-form-remove-licencia-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #dc3545; /* Rojo */
+}
+
+.software-form-content .software-form-remove-licencia-button:hover {
+  background-color: #c82333;
+}
+
+/* ---------------------------------------------------
+   Lista de Equipos con Checkboxes
+---------------------------------------------------- */
+.software-form-content .software-form-equipos-checkbox-list label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.software-form-content .software-form-equipos-checkbox-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.software-form-content .software-form-equipos-checkbox-list input[type="checkbox"],
+.software-form-content .software-form-checkbox {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------
+   Selección de Equipo para Licencias No Compartidas
+---------------------------------------------------- */
+.software-form-content .software-form-equipo-select-container select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.software-form-content .software-form-equipo-select-container select:focus {
+  border-color: #17a2b8;
+  box-shadow: 0 2px 5px rgba(23, 162, 184, 0.2);
+  outline: none;
+}
+
+/* ---------------------------------------------------
+   Mensajes de Sugerencia y Error
+---------------------------------------------------- */
+.software-form-content .software-form-suggestion-message {
+  font-size: 0.95rem;
+  color: #ffc107; /* Amarillo */
+  margin-bottom: 10px;
+}
+
+.software-form-content .software-form-suggestion {
+  color: #17a2b8;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.software-form-content .software-form-suggestion:hover {
+  color: #138496;
+}
+
+.software-form-content .software-form-error-message {
+  color: #dc3545; /* Rojo */
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------
+   Modal de Confirmación al Cerrar
+---------------------------------------------------- */
+.software-form-content .software-form-confirmation-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.software-form-content .software-form-confirmation-modal p {
+  font-size: 1rem;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+.software-form-content .software-form-confirm-button {
+  background-color: #28a745; /* Verde */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.software-form-content .software-form-confirm-button:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+.software-form-content .software-form-cancel-button {
+  background-color: #dc3545; /* Rojo */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.software-form-content .software-form-cancel-button:hover {
+  background-color: #c82333;
+  transform: scale(1.02);
+}
+
+/* ---------------------------------------------------
+   Sugerencias de Nombres de Software
+---------------------------------------------------- */
+.software-form-content .software-form-suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
+
+.software-form-content .software-form-suggestions-list .software-form-suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.software-form-content .software-form-suggestions-list .software-form-suggestion-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* ---------------------------------------------------
+   Responsividad Mejorada
+---------------------------------------------------- */
+@media (max-width: 768px) {
   .software-form-content {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    width: 600px;
-    max-height: 80vh;
-    overflow-y: auto; /* Barra de desplazamiento si el contenido es largo */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    position: relative;
+    padding: 20px;
   }
-  
-  /* Botón de cerrar en la esquina superior derecha */
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
-    color: #333;
-    cursor: pointer;
+
+  .software-form-content h2 {
+    font-size: 1.6rem;
   }
-  
-  /* Título del formulario */
-  h2 {
-    font-size: 1.8rem;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: 600;
+
+  .software-form-content .software-form-submit-button {
+    padding: 10px 16px;
   }
-  
-  /* Estilo general de las etiquetas */
-  label {
-    font-weight: bold;
-    margin-bottom: 8px;
-    display: block;
-    color: #444;
-  }
-  
-  /* Estilo para los iconos de información */
-  .info-icon {
-    margin-left: 5px;
-    cursor: pointer;
-    color: #007bff;
-    font-size: 1.2rem;
-  }
-  
-  .info-icon:hover {
-    color: #0056b3;
-  }
-  
-  /* Input de texto y demás campos */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="date"],
-  select,
-  input[type="number"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    background-color: #f9f9f9;
-  }
-  
-  input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  /* Contenedor de la lista de equipos */
-  .equipos-list {
-    max-height: 150px;
-    overflow-y: auto; /* Barra de desplazamiento si hay muchos equipos */
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    margin-bottom: 15px;
-  }
-  
-  /* Estilo para cada opción de equipo */
-  .equipos-list label {
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-    font-weight: normal;
-    border-bottom: 1px solid #eee; /* Línea divisoria entre los equipos */
-    gap: 10px; /* Espacio entre el checkbox y el texto */
-  }
-  
-  /* Checkbox completamente alineado a la izquierda */
-  .equipos-list input[type="checkbox"] {
-    margin-right: 10px; /* Ajuste de espacio entre el checkbox y el texto */
-    transform: scale(1.2); /* Aumenta el tamaño del checkbox para mejor visibilidad */
-    margin-left: 0; /* Asegura que esté alineado a la izquierda */
-  }
-  
-  /* Texto del equipo */
-  .equipos-list span {
-    font-size: 1rem;
-    color: #333;
-    flex-grow: 1; /* Permite que el texto ocupe todo el espacio restante */
-    white-space: nowrap; /* Asegura que el texto no se desborde */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Si el texto es demasiado largo, añade "..." */
-  }
-  
-  /* Estilo del botón "Agregar nuevo equipo" */
-  button.add-equipo-button {
-    background-color: #28a745;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  button.add-equipo-button:hover {
-    background-color: #218838;
-  }
-  
-  /* Botón principal */
-  .button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Mensajes de error */
-  .error-message {
-    color: red;
-    margin-bottom: 15px;
-    font-weight: bold;
-  }
-  
-  /* Tooltip de ayuda */
-  .tooltip {
-    background-color: #333;
-    color: #fff;
-    border-radius: 5px;
-    padding: 8px 10px;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
+
+  .software-form-content .software-form-add-licencia-button,
+  .software-form-content .software-form-remove-licencia-button {
+    padding: 8px 14px;
     font-size: 0.9rem;
-    z-index: 100;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   }
-  
+
+  .software-form-content .software-form-confirmation-modal {
+    padding: 20px;
+  }
+
+  .software-form-content .software-form-confirm-button,
+  .software-form-content .software-form-cancel-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .software-form-content {
+    padding: 15px;
+  }
+
+  .software-form-content .software-form-label {
+    font-size: 0.95rem;
+  }
+
+  .software-form-content .software-form-input,
+  .software-form-content .software-form-select {
+    font-size: 0.9rem;
+  }
+
+  .software-form-content .software-form-info-icon {
+    font-size: 1rem;
+  }
+
+  .software-form-content .software-form-tooltip {
+    font-size: 0.85rem;
+  }
+
+  .software-form-content .software-form-suggestion-message {
+    font-size: 0.9rem;
+  }
+}
+
+/* ---------------------------------------------------
+   Estilos de Carga
+---------------------------------------------------- */
+.software-form-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #555555;
+}

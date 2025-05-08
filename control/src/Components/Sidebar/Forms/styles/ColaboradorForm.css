@@ -1,4 +1,4 @@
-/* Coloca el fondo oscuro */
+/* Fondo oscuro para la superposición */
 .form-overlay {
     position: fixed;
     top: 0;
@@ -32,6 +32,8 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más profunda */
     position: relative;
     animation: slideDown 0.4s ease-in-out; /* Animación al aparecer */
+    overflow-y: auto; /* Habilitar el desplazamiento vertical si el contenido es largo */
+    max-height: 80vh; /* Limitar la altura máxima */
 }
 
 @keyframes slideDown {
@@ -184,4 +186,37 @@ button {
 
 button:focus {
     box-shadow: 0 0 8px rgba(26, 188, 156, 0.4); /* Efecto de foco suave */
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .form-content {
+        width: 90%;
+        max-height: 75vh;
+        padding: 20px;
+    }
+
+    .btn-register {
+        width: 100%;
+    }
+
+    .form-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-content {
+        width: 90%;
+        max-height: 70vh;
+        padding: 15px;
+    }
+
+    .btn-register {
+        font-size: 14px;
+    }
+
+    .form-title {
+        font-size: 18px;
+    }
 }
